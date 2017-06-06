@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" type="text/css" href="../css/account.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <a class="mui-icon mui-pull-right recharge">充值</a>
+		    <h1 class="mui-title">我的账户</h1>
+		</header>
+		<div class="mui-content">
+			<div class="balance-box">
+				<p>账户余额(元)</p>
+				<p class="balance">0.00</p>
+			</div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="balance-ul">
+						<!--<li class="mui-table-view-cell">
+							<p>
+								<span>收件(派单一件)</span>
+								<span class="mui-pull-right">+2.00元</span>
+							</p>
+							<p>
+								<span>余额：2.00元</span>
+								<span class="mui-pull-right">2017-3-09</span>
+							</p>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+		{{each data as item i}}
+			<li class="mui-table-view-cell">
+				<p>
+					<span>收件(派单一件)</span>
+					<span class="mui-pull-right">+2.00元</span>
+				</p>
+				<p>
+					<span>余额：2.00元</span>
+					<span class="mui-pull-right">{{item.createTime}}</span>
+				</p>
+			</li>
+		{{/each}}
+		</script>
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var pull;
+			var limit = 10;
+			var offset = 0;
+			var balance = app.$c('balance');
+			var balanceBox = app.$c('balance-ul');
+			var deceleration = mui.os.ios?0.003:0.0009;
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator:'none'
+				})
+				mui('.mui-scroll-wrapper').scroll({
+					indicators: true,
+					deceleration: 0.0006,
+					bounce: false
+				});
+				app.$c('recharge').addEventListener('tap',function() {
+					app.oPage('recharge.html');
+				});
+				function getBalance() {
+					app.account.balance(function(data){
+						console.log(JSON.stringify(data));
+						if ( data.code == 0 ) {
+							balance.innerHTML = data.data.balance;
+						} else {
+							app.toast(data.message, 'center');
+						}
+					});
+				}
+				getBalance();
+				pull = mui('.mui-content .mui-scroll').pullToRefresh({
+					down: {
+						height: 75,
+						callback: function() {
+							var self = this;
+							offset = 0;
+							setTimeout(function() {
+								appData();
+								self.refresh(true);
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						auto: true,
+						height: 75,
+						contentnomore: '没有更多账单信息了',
+						callback: function() {
+							var self = this;
+							setTimeout(function() {
+								appData();
+								self.endPullUpToRefresh();
+							}, 800);
+						}
+					}
+				});
+				function appData(){
+					app.account.history( offset,limit, function(data) {
+						if ( data.code == 0 ) {
+							if ( offset == 0 ) {
+								balanceBox.innerHTML = '';
+							}
+							offset += limit;
+							var html = template( 'tmpl', data);
+							balanceBox.innerHTML += html;
+							if ( data.data.length < 10 ) {
+								pull.endPullUpToRefresh(true);
+							}
+						}
+					})
+				}
+			})
+		</script>
+	</body>
+
+</html>

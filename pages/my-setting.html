@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style>
+			.mui-bar-nav~.mui-content{
+				padding: 0;
+			}
+			.mui-content{
+				height: 100%;
+				overflow: hidden;
+			}
+			.content>.mui-table-view:first-child{
+				margin-top: 0;
+			}
+			.content{
+				margin-top: 50px;
+				height: 15rem;
+				background: #fff;
+			}
+			ul li.mui-table-view-cell{
+				height: 0.9rem;
+				line-height: 0.9rem;
+				padding: 0;
+				font-size: 0.32rem;
+				text-indent: 15px;
+			}
+			.mui-table-view-cell>a:not(.mui-btn){
+				height: 0.9rem;
+				line-height: 0.9rem;
+				margin: 0;
+				font-size: 0.32rem;
+				color: #3e3e3e;
+			}
+			ul li:nth-child(3) span{
+				font-size: 0.32rem;
+				color:#888;
+				margin-right: 15px;
+				font-weight: 100;
+			}
+			.blue{
+				width: 90%;
+				height: 0.9rem;
+				position: fixed;
+				left: 5%;
+				bottom: 1rem;
+				border:none;
+				color: #fff;
+				background: #12B7F5;
+			}
+			.mui-btn,button{
+				-webkit-transition: none;
+				transition: none;
+			}
+			.blue:enabled:active{
+				background: dodgerblue;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">我的</h1>
+		</header>
+		<div class="mui-content">
+			<div class="content">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">
+							用户协议
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right">
+							使用条款
+						</a>
+					</li>
+					<li class="mui-table-view-cell update">
+						检查更新
+						<span class="mui-pull-right nowVersion">
+							当前版本 1.0.1
+						</span>
+					</li>
+				</ul>
+			</div>
+			<button type="button" class="mui-btn blue">退出当前账号</button>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var nowVersion = app.$c('newVersion');
+			mui.plusReady(function(){
+				var self = plus.webview.currentWebview();
+				self.setStyle({
+					scrollIndicator: 'none'
+				});
+				nowVersion = '当前版本  ' + plus.runtime.version;
+				app.$c('blue').addEventListener('tap', function() {
+					var btnArray = ['取消', '确定'];
+					mui.confirm('是否退出当前账号？', '提示', btnArray, function(e) {
+						if(e.index == 1) {
+							plus.nativeUI.showWaiting();
+							app.info.unbound(function(data) {
+								console.log(JSON.stringify(data));
+								plus.nativeUI.closeWaiting(); 
+								if ( data.success ) {
+									app.toast(data.message, 'center');
+									app.local.set('loginFlag','false');
+									
+//									mui.fire(plus.webview.getWebviewById('pages/express.html'),'again-login-express');
+//									mui.fire(plus.webview.getWebviewById('pages/record.html'),'again-login-record');
+									app.oLogin('login.html');
+								} else {
+									app.toast(data.message, 'center');
+								}
+							})
+						}
+					})
+				});
+				app.$c('update').addEventListener('tap',function(){
+					app.toast('当前已经是最新版本了');
+					var version = plus.runtime.version;
+					var appType;
+					if ( mui.os.android ) {
+						appType = '3';
+					} else {
+						appType = '2';
+					}
+					mui.post("http://101.64.235.90/ajzhy/rest/checkUpdate",{
+						"version":version,
+						"appType":appType
+					}, function(data){
+						console.log(JSON.stringify(data));
+						if(data.success){
+							//更新地址
+							var updateUrl = data.data.updateUrl;
+							//更新方式
+							var updateMode = data.data.updatemode;
+							//新版本名称
+							var versionName = data.data.versionName;
+							toUpdate(updateUrl, updateMode, versionName);
+						}else{
+							app.toast("已是最新版本", 'center');
+						}
+					},'json');
+				});
+				/**
+				 * 选择更新方式
+				 */
+				function toUpdate(url, mode, name){
+				    //如果是强制更新
+//					if(mode== "1"){
+//						plus.nativeUI.confirm("有新版本 ("+ name +") ，不更新将会影响使用", function(e){
+//					     	if( e.index == 0 ){
+//								plus.runtime.openURL(url)
+//							}
+//						},'版本更新',["更新","忽略"]);
+//					}else{   
+						plus.nativeUI.confirm("版本更新","有新版本("+name+")，请前往下载",function(e){ 
+						    if( e.index == 0 ){
+						    	plus.runtime.openURL(url);
+							}
+						},'版本更新',["更新","忽略"]);
+//					}
+				}
+			})
+//			console.log(compareVersion('1.0.0','8.1.4'));
+			function compareVersion( ov, nv ){
+				if ( !ov || !nv || ov=="" || nv=="" ){
+					return false;
+				}
+				var b=false,
+				ova = ov.split(".",4),
+				nva = nv.split(".",4);
+				for ( var i=0; i<ova.length&&i<nva.length; i++ ) {
+					var so=ova[i],no=parseInt(so),sn=nva[i],nn=parseInt(sn);
+					if ( nn>no || sn.length>so.length  ) {
+						return true;
+					} else if ( nn<no ) {
+						return false;
+					}
+				}
+				if ( nva.length>ova.length && 0 == nv.indexOf(ov) ) {
+					return true;
+				}
+			}
+		</script>
+	</body>
+
+</html>

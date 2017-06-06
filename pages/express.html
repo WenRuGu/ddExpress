@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" type="text/css" href="../css/pull.css"/>
+		<link rel="stylesheet" href="../css/embraceParts.css" />
+		<style>
+			.mui-table-view{
+				background: #f5f5f5;
+			}
+			.mui-slider.mui-fullscreen{
+				top: 41px;
+				background: #f5f5f5;
+			}
+			.nav {
+				height: 40px;
+				line-height: 40px;
+				width: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				background: #fff;
+				z-index: 9999;
+			}
+			.nav-list {
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: flex;
+				width: 100%;
+				height: 100%;
+				list-style: none;
+				padding:0;
+				margin: 0;
+			}
+			.nav-list>li {
+				flex: 1;
+				height: 100%;
+				font-size: 15px;
+				color: #888;
+				text-align: center;
+			}
+			.list-blue{
+				color: #12B7F5 !important;
+			}
+			.nav .nav-active {
+				position: absolute;
+				bottom: 0;
+				height: 3px;
+				width: 17%;
+				transform: translate3d( 23%,0,0);
+				border-bottom: 3px solid #12B7F5;
+				box-sizing: border-box;
+				transition: all 0.2s ease-in-out;
+			}
+			/* =============== 全部记录  ============= */
+			.four .mui-table-view-cell{
+				background: #fff;
+			}
+			.four .mui-table-view-cell:after{
+				right: 15px;
+			}
+			.four .mui-table-view-cell>a:not(.mui-btn){
+				padding-right: 30px;
+				display: -webkit-flex;
+			    display: flex;
+			    
+			    -webkit-box-direction: normal;
+			    -webkit-box-orient: horizontal;
+			    -webkit-flex-direction: row;
+			    flex-direction: row;
+			}
+			.four .mui-table-view-cell>a:not(.mui-btn) span{
+				-webkit-box-flex: 1.0;
+				-webkit-flex-grow: 1;
+				flex-grow: 1;
+				
+				font-size: 0.28rem;
+			}
+			.mui-navigate-right:after, .mui-push-right:after{
+				right: 10px;
+			}
+			.four .mui-table-view-cell>a:not(.mui-btn) span:nth-child(1){
+				text-align: left;
+			}
+			.four .mui-table-view-cell>a:not(.mui-btn) span:nth-child(2){
+				text-align: center;
+			}
+			.four .mui-table-view-cell>a:not(.mui-btn) span:nth-child(3){
+				text-align: right;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="nav">
+				<ul class="nav-list">
+					<li data-index='0' class="list-blue">待揽件</li>
+					<li data-index='1' class="">待录单</li>
+					<li data-index='2' class="">待退回</li>
+					<li data-index='3' class="">历史记录</li>
+				</ul>
+				<div class="nav-active"></div>
+			</div>
+			<div class="mui-slider mui-fullscreen" style="height: auto;">
+				<div class="mui-slider-group">
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view first" >
+									<!--<li class="view-cell">
+										<div class="info-box">
+											<div class="customer-pic">
+												<img src="../images/mall-default-3.jpg"/>
+											</div>
+											<div class="customer-info">
+												<span class="nickname">一叶知秋</span>
+												<span class="express-price">28元</span>
+												<span class="express-time">今天 12:30~4:30</span>
+												<button type="button" class="mui-btn mui-btn-primary single">抢单</button>
+											</div>
+										</div>
+										<div class="address">
+											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+										</div>
+									</li>
+									<li class="view-cell">
+										<div class="info-box">
+											<div class="customer-pic">
+												<img src="../images/mall-default-3.jpg"/>
+											</div>
+											<div class="customer-info">
+												<span class="nickname">一叶知秋</span>
+												<span class="express-price">28元</span>
+												<span class="express-time">今天 12:30~4:30</span>
+												<button type="button" class="mui-btn mui-btn-primary single">抢单</button>
+											</div>
+										</div>
+										<div class="address">
+											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+										</div>
+									</li>-->
+					            </ul>
+							</div>
+						</div>
+					</div>
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view second" >
+									<li class="view-cell">
+										<div class="info-box">
+											<div class="customer-pic">
+												<img src="../images/mall-default-3.jpg"/>
+											</div>
+											<div class="customer-info">
+												<span class="nickname">一叶知秋</span>
+												<span class="express-price">28元</span>
+												<span class="express-time">今天 12:30~4:30</span>
+												<button type="button" class="mui-btn mui-btn-primary single">抢单</button>
+											</div>
+										</div>
+										<div class="address">
+											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+										</div>
+									</li>
+					            </ul>
+							</div>
+						</div>
+					</div>
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view second" >
+									<li class="view-cell">
+										<div class="info-box">
+											<div class="customer-pic">
+												<img src="../images/mall-default-3.jpg"/>
+											</div>
+											<div class="customer-info">
+												<span class="nickname">一叶知秋</span>
+												<span class="express-price">28元</span>
+												<span class="express-time">今天 12:30~4:30</span>
+												<button type="button" class="mui-btn mui-btn-primary single">抢单</button>
+											</div>
+										</div>
+										<div class="address">
+											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+										</div>
+									</li>
+									
+					            </ul>
+							</div>
+						</div>
+					</div>
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view four">
+									<!--<li class="mui-table-view-cell">
+								        <a class="mui-navigate-right">
+								        	<span>暗示健康的拉动阿萨德</span>
+								        	<span>0-5</span>
+								        	<span>2017-05-24 14:14:14</span>
+								        </a>
+								   </li>-->
+					            </ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+			{{ each data as item i }}
+				<li class="view-cell">
+					<div class="info-box">
+						<div class="customer-pic">
+							<img src="../images/mall-default-3.jpg"/>
+						</div>
+						<div class="customer-info">
+							<span class="nickname">{{item.receiver}}</span>
+							<span class="express-price">{{item.charge}}元</span>
+							<span class="express-time">今天 12:30~4:30</span>
+							<button type="button" class="mui-btn mui-btn-primary single" data-mobile='{{item.receiverMobile}}' data-orderNo='{{item.orderNo}}'>{{item.payStatus | payStatus}}</button>
+						</div>
+					</div>
+					<div class="address">
+						<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">{{item.receiverAddress}}</span></p>
+						<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">{{item.senderAddress}}</span></p>
+					</div>
+				</li>
+			{{ /each }}
+		</script>
+		<script id="four" type="text/html">
+			{{ each data as item i }}
+				<li class="mui-table-view-cell" data-tradeid='{{item.tradeid}}' data-typeid='{{item.typeid}}' data-islandName='{{item.island_name}}'>
+			        <a class="mui-navigate-right">
+			        	<span>{{item.island_name}}</span>
+			        	<span>{{item.box_no}}</span>
+			        	<span>{{item.expired_time}}</span>
+			        </a>
+			    </li>
+			{{ /each }}
+		</script>
+		<script>
+			mui.init();
+			
+			var ul = document.getElementsByClassName('mui-table-view');
+			var nav_list = app.$c('nav-list');
+			var slide = app.$c('mui-slider');
+			var nav_li = nav_list.querySelectorAll('li');
+			var slider = mui('.mui-slider').slider();
+			var s_group = document.querySelector('.mui-slider>div');
+			var w = document.documentElement.clientWidth || window.screen.width;
+			var expressBox = document.getElementsByClassName('mui-table-view');
+			
+			var _self;
+			var sindex = 0;
+			var startX = 0;
+			var endX = 0;
+			var pull_flag = true;
+			var version = true;
+			var deceleration = mui.os.ios?0.0003:0.0006;
+			var pull = [];
+			var pageNo = [1,1,1,1];
+			var pageSize = 20;
+			mui('.mui-scroll-wrapper').scroll({
+				bounce: false,
+				indicators: true, //是否显示滚动条
+				deceleration:deceleration
+			});
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator:'none'
+				})
+				function slide_flag() {											// 避免滑动太快
+					slider.stopped = true;               						// slider禁止滑动
+					slide.removeEventListener('swiperight', swiperight, false); // 自定义右滑禁止滑动
+					slide.removeEventListener('swipeleft', swipeleft, false);
+					slide.removeEventListener('dragend', chdrag,false);			// 自定义拖拽结束禁止右话
+					setTimeout(function() {
+						slider.stopped = false;
+						slide.addEventListener('swiperight', swiperight, false);
+						slide.addEventListener('swipeleft', swipeleft, false);
+						slide.addEventListener('dragend', chdrag,false);
+					}, 350);
+				}
+				mui('.nav-list').on('tap','li', tap_slide, false);
+				function tap_slide() {											// 点击 切换事件
+					sindex = this.getAttribute('data-index');
+					mui('.nav-list li').each(function() {
+						this.className = '';
+					});
+					this.className = 'list-blue';
+					if ( version ) {
+						slide_flag();
+						slider.gotoItem( sindex );
+					} else {
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+					}
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+				};
+				slide.addEventListener('slide', function(e) {					// 以最后的 slide 事件为准，调整div显示
+					if ( version ) {
+						drag_true();
+						mui('.nav-list li').each(function(){
+							this.className = '';
+						});
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+						mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+						mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+						nav_li[sindex].className = 'list-blue';
+					}
+				});
+				slide.addEventListener('swipeleft', swipeleft, false); 			// 监听左右 滑动
+				slide.addEventListener('swiperight', swiperight ,false);
+				function swipeleft(e) {
+					e.stopPropagation();
+					sindex++;
+					if (sindex >= 3 ) {
+						sindex = 3;
+					} 
+					mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+//					console.log('左滑'+sindex);
+					if ( version ) {
+						drag_false();
+						slider.gotoItem(sindex);
+						slide_flag();
+					} else {
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+					}
+					nav_li[sindex].className = 'list-blue';
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+				};
+				function swiperight(e) {
+					e.stopPropagation();
+					sindex--;
+					if (sindex <= 0 ) {
+						sindex = 0;
+					} 
+					mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+//					console.log('右滑'+sindex);
+					if ( version ) {
+						drag_false();
+						slider.gotoItem(sindex);
+						slide_flag();
+					} else {
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+					}
+					nav_li[sindex].className = 'list-blue';
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+				};
+				if ( version ) {											// version <= 5 禁止动画
+					slide.addEventListener('touchstart',chstart,false);
+			        slide.addEventListener('touchmove',chmove,false);
+			        slide.addEventListener('touchend',chend,false);
+			        slide.addEventListener('dragend', chdrag,false);
+				}
+		        function drag_true(){
+					slide.addEventListener("dragend", chdrag, false);
+		        }
+		        function drag_false(){
+					slide.removeEventListener("dragend", chdrag, false);
+		        }
+		        function chdrag(e) {	// 覆盖原本的拖拽事件， 控制sindex
+		        	e.stopPropagation();
+		        	if (pull_flag){
+		        		return;
+		        	}
+		        	if ( (startX - endX)/360 >= 0.5) {  // ++
+		        		sindex++;
+		        		if (sindex >= 3 ) {
+							sindex = 3;
+						} 
+						slider.gotoItem(sindex);
+		        	}
+		        	if ( (startX - endX)/360 <= -0.5 ) {
+		        		sindex--;
+		        		if (sindex <= 0 ) {
+							sindex = 0;
+						} 
+		        		slider.gotoItem(sindex);
+		        	}
+//		        	console.log('拖拽'+sindex);
+		        	mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+		        	nav_li[sindex].className = 'list-blue';
+		        	s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+					s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+		        	mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+		        	mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					pull_flag = true;
+					slide_flag();
+		        };
+		        function chstart(ev){
+		        	pull_flag = false;
+		        	ev.preventDefault;
+		            var touch = ev.touches[0];
+		            startX = touch.pageX;
+		        }
+		        function chmove(ev){
+		        	ev.preventDefault;
+		            var touch = ev.touches[0];		
+		            endX = touch.pageX;
+		        }
+		        function chend(){    							// 避免切换时，点击页面，卡住
+		        	slider.gotoItem(sindex);
+		        }
+		        
+		        mui.each(document.querySelectorAll( '.mui-slider-group .mui-scroll' ), function(index, pullRefreshEl) {
+					pull[index] = mui(pullRefreshEl).pullToRefresh({
+						down: {
+							height: 75,
+							callback: function() {
+								var self = this;
+								self.refresh(true);
+								pageNo[index] = 1;
+								setTimeout(function() {
+									if ( index == 3 ) {
+										historyNo(index);
+									} else {
+										appData(index);
+									}
+									self.endPullDownToRefresh();
+								}, 600);
+							}
+						},
+						up: {
+							auto: true,
+							height: 75,
+							contentnomore: '没有更多订单了',
+							callback: function() {
+								var self = this;
+								setTimeout(function() {
+									if ( index == 3 ) {
+										historyNo(index);
+									} else {
+										appData(index);
+									}
+									self.endPullUpToRefresh();
+								}, 600);
+							}
+						}
+					});
+				});
+				template.helper('payStatus', function( payStatus ) {
+					if ( payStatus == 1) {
+						return '抢单';
+					} 
+					return '呼叫';
+				});
+				function appData(index) {
+					if ( index == 0 ) {
+						type = 'timeout';
+					} else if ( index == 1 ) {
+						type = 'wait_take';
+					} else if ( index == 2 ) {
+						type = 'taken';
+					}
+					var token = app.local.get('token');
+					if ( token == undefined || token == '' || token == null ) {
+						return;
+					} else {
+						app.order.sendOrderList( (pageNo[index]-1) * pageSize, pageSize, app.local.get('token'),app.local.get('courierId'), type, function(data) {
+							console.log(JSON.stringify(data));
+							if ( data.code == 0 ) {
+								if ( pageNo[index] == 1 ) {
+									expressBox[index].innerHTML = '';
+								}
+								pageNo[index]++;
+								if ( data.data.length < 10 ) {
+									pull[index].endPullUpToRefresh(true);
+								}
+								var html = template( 'tmpl', data);
+								expressBox[index].innerHTML += html;
+							} else {
+								app.toast(data.message, 'center');
+							}
+						});
+					}
+				}
+				window.addEventListener('login-express', function(e) {  // login.html embraceParts.html
+					pageNo = [1,1,1,1];
+					for ( var i = 0; i < 4; i++ ) {
+						pull[i].pullUpLoading();
+					}
+					slider.gotoItem(0);
+					mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+		        	nav_li[sindex].className = 'list-blue';
+				});
+				window.addEventListener('express-record', function(e) { // 刷新历史记录
+					pageNo[3] = 1;
+					pull[3].pullUpLoading();
+				});
+//				// 转换日期格式
+				function formatDate(date, pattern){
+				    var date = new Date(date);
+				    if (date == undefined) {
+				        date = new Date();
+				    }
+				    if (pattern == undefined) {
+				        pattern = "yyyy-MM-dd hh:mm:ss";
+				    }
+				    var data =  date.format(pattern);
+				    return data;
+				}
+				function historyNo(index) {
+					var Newdata = '{"data":[';
+					var tradeListStr = "";
+
+					console.log(index+','+pageNo[index]+','+pageSize);
+					app.order.history(pageNo[index], pageSize, "", "3", function(data) {
+						console.log('old == '+JSON.stringify(data));
+						if(data.success) {
+							//返回结果的处理，按订单的结束时间排序
+							var tradeList = data.data.orderInfoList;
+//							pageCount = data.data.totalPage;
+							if(tradeList.length != 0) {
+								for(var i in tradeList) {
+									Newdata += "{";
+									Newdata += "\"tradeid\":\"" + tradeList[i].TRADEID + "\",";
+									Newdata += "\"island_name\":\"" + tradeList[i].ISLAND_NAME + "\",";
+									Newdata += "\"expired_time\":\"" + formatDate(tradeList[i].EXPIRED_TIME, "yyyy-MM-dd hh:mm") + "\",";
+									Newdata += "\"box_no\":\"" + tradeList[i].BOX_NO + "\",";
+									Newdata += "\"typeid\":\"1\"";
+									Newdata += "},";
+								}
+							}
+							app.order.newallhistory((pageNo[index]-1)  * pageSize, pageSize, app.local.get('token'), app.local.get('courierId'), 'taken',function(data1) {
+								console.log('new == '+JSON.stringify(data));
+								if(data1.code == 0) {
+									if ( pageNo[index] == 1 ) {
+										expressBox[3].innerHTML = '';
+									}
+									pageNo[index]++;
+									for(var i in data1.data) {
+										Newdata += "{";
+										Newdata += "\"tradeid\":\"" + data1.data[i].id + "\",";
+										Newdata += "\"island_name\":\"" + data1.data[i].terminalName.substring(0, data1.data[i].takeTime.length - 3) + "\",";
+										Newdata += "\"expired_time\":\"" + data1.data[i].takeTime.substring(0, data1.data[i].takeTime.length - 3) + "\",";
+										Newdata += "\"box_no\":\"" + data1.data[i].boxNum + "\",";
+										Newdata += "\"typeid\":\"2\"";
+										Newdata += "},";
+									}
+								} else {
+									app.toast(data1.message, "");
+								}
+								Newdata = Newdata.substring(0, Newdata.length - 1);
+								Newdata += "]}";
+								console.log(Newdata+','+Newdata.length);
+								if(Newdata.length <= 20) {
+									pull[3].endPullUpToRefresh(true);
+								} else {
+									var Newdata1 = JSON.parse(Newdata);
+									Newdata1.data = app.jsonSort(Newdata1.data, 'expired_time', true);
+									var html = template('four', Newdata1);
+									expressBox[3].innerHTML += html;
+									if ( Newdata1.data.length < 20) {
+										pull[3].endPullUpToRefresh(true);
+									}
+								}
+							});
+						} else {
+							app.toast(data.message, 1500);
+						}
+					});
+				}
+				/**
+				 * 历史记录的详情 *
+				 */
+				mui('body').on('tap', '.four li', function() {
+					var tradeid = this.getAttribute('data-tradeid');
+					var typeid = this.getAttribute('data-typeid');
+					var islandName = this.getAttribute('data-islandName');
+					if ( typeid == '2' ) {
+						app.oPage('order-details-ys.html',{
+							islandName: islandName,
+							tradeId: tradeid
+						});
+					} else {
+						app.oPage('order-details-anji.html',{
+							tradeId: tradeid
+						});
+					}
+				});
+				/**
+				 * 抢单 *
+				 */
+				mui('.first').on('tap','.single', function() {
+					plus.nativeUI.showWaiting('正在抢单',{
+						loading:{
+							display:'inline'
+						}
+					});
+					var orderNo = this.getAttribute('data-orderNo');
+					app.order.sendOrderTake( app.local.get('token'),app.local.get('courierId'), orderNo, function(data){
+						console.log(JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						if ( data.code == 0 ) {
+							app.toast('抢单成功', 'center');
+							// 成功后刷新列表
+							setTimeout(function() {
+								pull[0].pullDownLoading();
+							}, 1000);
+						} else {
+							app.toast(data.message,'center');
+						}
+							
+					});
+				});
+				/**
+				 * 拨打寄件人的电话 *
+				 */
+				mui('.second').on('tap','.single', function() {
+					var mobile = this.getAttribute('data-mobile');
+					plus.device.dial(mobile);
+				});
+			});
+		</script>
+	</body>
+</html>

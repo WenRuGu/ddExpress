@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/dstyle.css" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">联系人列表</h1>
+		</header>
+		<div id="letter"></div>
+		<div class="mui-scroll">
+			<div class="sort_box" id="contactsList">
+			</div>
+		</div>
+
+		<div class="initials">
+			<ul>
+			</ul>
+		</div>
+		<script src="../js/base_param.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="../js/common.js" type="text/javascript" charset="utf-8"></script>-->
+		<script src="../js/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/sort.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/jquery.charfirst.pinyin.js" type="text/javascript" charset="utf-8"></script>
+
+		<script type="text/javascript" charset="utf-8">
+			var pageSourceId;
+			mui.init();
+			mui.plusReady(function() {
+				var _self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator: 'none'
+				});
+				var htmlStr = '<div class="sort_list" data-id="{1}" data-number="{2}" data-name="{3}" >' +
+					'<div class="num_name">' +
+					'{3}' +
+					'</div>' +
+					'</div>';
+				plus.contacts.getAddressBook(plus.constructor.ADDRESSBOOK_PHONE, function(addressbook) {
+					addressbook.find(["displayName", "phoneNumbers"], function(contacts) {
+						console.log(JSON.stringify(contacts));
+						var contactsStr = "";
+					    for (var i = contacts.length - 1; i >= 0; i--) {  
+					        var targetNode = contacts[i].displayName;  
+					        for (var j = 0; j < i; j++) {  
+					            if(targetNode == contacts[j].displayName){  
+					                contacts.splice(i,1);  
+					                break;  
+					            }  
+					        }
+					    }  
+						for(var i = 0; i < contacts.length; i++) {
+//							console.log( i+' = '+contacts[i].displayName +' = ' +contacts[i].phoneNumbers[0].value);
+//							if ( contacts[i].phoneNumbers[0] == undefined) {
+//								return;
+//							}
+							contactsStr += htmlStr.format(contacts[i].id, contacts[i].phoneNumbers[0].value , contacts[i].displayName);
+						}
+						$("#contactsList").html(contactsStr);
+						initsort();
+					}, function() {
+						app.toast("获取联系人失败", "center");
+					}, {
+						multiple: true
+					});
+				}, function(e) {
+					app.toast("获取联系人失败,请查看是否开启通讯录权限", "center");
+				});
+				console.log('aa');
+				mui('body').on('tap', '.sort_list', function() {
+					var id = this.getAttribute('data-id');
+					var number = this.getAttribute('data-number');
+					var name = this.getAttribute('data-name');
+					var page;
+					if ( _self.page == 'emptyVan-anji' ) {
+						page = 'emptyVan-anji.html';
+					} else {
+						page = 'emptyVan-ys.html';
+					}
+					number = number.replace(/\s/g, '');       // 获取的手机号格式为 1111 2222 333  需要清空格
+					mui.fire(plus.webview.getWebviewById(page),'contacts-info',{
+						mobile: ''+number,
+						name: name
+					});
+					mui.back();
+				});
+
+			});
+
+			function initsort() {
+				var Initials = $('.initials');
+				var LetterBox = $('#letter');
+				Initials.find('ul').append('<li>A</li><li>B</li><li>C</li><li>D</li><li>E</li><li>F</li><li>G</li><li>H</li><li>I</li><li>J</li><li>K</li><li>L</li><li>M</li><li>N</li><li>O</li><li>P</li><li>Q</li><li>R</li><li>S</li><li>T</li><li>U</li><li>V</li><li>W</li><li>X</li><li>Y</li><li>Z</li>');
+				initials();
+
+				$(".initials ul li").click(function() {
+					var _this = $(this);
+					var LetterHtml = _this.html();
+					LetterBox.html(LetterHtml).fadeIn();
+					Initials.css('background', 'rgba(145,145,145,0.7)');
+
+					setTimeout(function() {
+						Initials.css('background', 'rgba(145,145,145,0.4)');
+						LetterBox.fadeOut();
+					}, 800);
+
+					var _index = _this.index()
+					if(_index == 0) {
+						$('html,body').animate({
+							scrollTop: '0px'
+						}, 300); //点击第一个滚到顶部
+					} else {
+						var letter = _this.text();
+						if($('#' + letter).length > 0) {
+							var LetterTop = $('#' + letter).position().top;
+							$('html,body').animate({
+								scrollTop: LetterTop - 45 + 'px'
+							}, 300);
+						}
+					}
+				})
+
+				var windowHeight = $(window).height();
+				var InitHeight = windowHeight - 45;
+				Initials.height(InitHeight);
+				var LiHeight = InitHeight / 28;
+				Initials.find('li').height(LiHeight);
+			}
+		</script>
+	</body>
+
+</html>

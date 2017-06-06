@@ -1,0 +1,568 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/emptyVan2.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">快件存箱</h1>
+		</header>
+		<div class="mui-content">
+			<div style="padding: 10px 10px;background: #12B7F5;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a class="mui-control-item mui-active"  href="#item1">小箱(0)</a>
+					<a class="mui-control-item" href="#item1">中箱(0)</a>
+					<a class="mui-control-item" href="#item1">大箱(0)</a>
+					<a class="mui-control-item" href="#item1">超大箱(0)</a>
+				</div>
+			</div>
+			<div>
+				<div id="item1" class="mui-control-content mui-active">
+					<ul class="mui-table-view">
+						<li class="view-cell">
+							<div class="mui-pull-left">快递柜编号</div>
+							<div class="box"></div>
+							<div class="mui-pull-right box-no"></div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">快递订单号</div>
+							<div class="mui-pull-right">
+								<input type="text" class="code" placeholder="可扫码获取"/>
+								<span class="scan mui-icon iconfont icon-erweima"></span>
+							</div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">收件人手机号</div>
+							<div class="mui-pull-right">
+								<input type="number" class="mobile"  placeholder="输入手机号" />
+								<span class="scan mui-icon iconfont icon-bodadianhau"></span>
+								<span class="scan mui-icon iconfont icon-dianhuaben"></span>
+							</div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">收件人姓名</div>
+							<div class="mui-pull-right">
+								<input type="text" class="fetchName" placeholder="输入收件人姓名"/>
+							</div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">收件数量</div>
+							<div class="mui-pull-right">
+								<span class="mui-icon iconfont icon-jianhao"></span>
+								<input type="number" class="amount" value='1'/>
+								<span class="mui-icon iconfont icon-jiahao"></span>
+							</div>
+						</li>
+						<li class="view-cell last">
+							<div class="mui-pull-left">备注留言</div>
+							<div class="mui-pull-right">
+								<textarea class="remark" placeholder="有什么交代给收件人的"></textarea>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<button type="button" class="mui-btn confirm">提交</button>
+		<div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/base_param.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var minus = app.$c('icon-jianhao'); // 减号
+			var add = app.$c('icon-jiahao');	// 加号
+			var num = app.$c('amount');			// 数量
+			var boxNo = app.$c('box-no');       // 箱子编号
+			var mobile = app.$c('mobile');		// 取件人手机号
+			var fetchName = app.$c('fetchName');			// 取件人的姓名
+			var orderId = app.$c('code');       // 快递单号
+			var remark = app.$c('remark');      // 备注
+			var box = app.$c('box'); 			// 显示安吉的几号柜子
+			var params = {};					// 快递单的全局参数
+			var islandId;						// 岛体id
+			var islandCode;						// 岛体code
+			var boxtypeid;						// 箱子类型，小or大or超大
+			var isScan;							// 是否继续存物
+			var scanLandCode;					// 扫码的岛体code
+			var sarkCode;						// 几号柜子
+			var boxId;							// 箱子编号
+			var isHave;							// 箱子是否空余
+			var timeOut = false;				// 请求开箱超时
+			var sendResult = false;				// 请求开箱结果
+			var isErrorExpress = false;			// 快递单号是否错误
+			var isSubOrder = false;				// 是否提交过订单
+			var tab = document.querySelectorAll('#segmentedControl a');
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator: 'none'
+				});
+				app.$c('mui-title').innerHTML = _self.islandName;
+				islandId = _self.islandId;
+				islandCode = _self.islandCode;
+				boxtypeid = _self.typeId;	
+				mui('#segmentedControl a').each(function(index) {
+					this.classList.remove('mui-active');
+				})
+//				tab[_self.typeId].classList.add('mui-active');
+				if (islandId == '') {
+					app.toast('数据异常，请稍后再试', 'center');
+					setTimeout( function() { mui.back(); }, 2000);
+				} else {
+					loadBoxType();                          	// load
+					loadBoxNoByType(boxtypeid);					// 加载可用箱子编号
+				}
+				
+				add.addEventListener('tap', function() {
+					num.value++;
+					if ( num.value > 99 ) {
+						num.value = 99;
+						app.toast('不能多于99件', 'center');
+					}
+				});
+				minus.addEventListener('tap', function() {
+					num.value--;
+					if ( num.value <= 0 ) {
+						num.value = 1;
+						app.toast('最少1件', 'center');
+					}
+				});
+				app.$c('icon-erweima').addEventListener('tap', function() {
+					app.oPage('scan-order.html', { 
+						page: 'emptyVan-anji',
+						type: 'expressId' 
+					});
+				});
+				app.$c('icon-dianhuaben').addEventListener('tap', function() {
+					app.oPage('contacts-list.html',{
+						page: 'emptyVan-anji'
+					});
+				});
+				app.$c('icon-bodadianhau').addEventListener('tap', function() {
+					if ( mobile.value == '' ) {
+						app.toast('请输入取件人号码', 'center');
+					} else {
+						plus.device.dial(mobile.value);
+					}
+				})
+				mui('#segmentedControl').on('tap', 'a', function() {
+					var boxTypeId = this.getAttribute('data-boxtypeid');
+					loadBoxNoByType(boxTypeId);
+				});
+				window.addEventListener('contacts-info', function(e) {
+					mobile.value = e.detail.mobile;
+					fetchName.value = e.detail.name;
+				});
+				window.addEventListener('scanLandCode', function(e) {
+					console.log(e.detail.code);
+					if ( e.detail.type == 'expressId') {
+						orderId.value = e.detail.code;
+						orderId.focus();
+					} else if ( e.detail.type == 'equal') {
+						var code = islandCode + sarkCode;
+						if ( e.detail.code ==  code) {
+							app.local.set("curSarkCode", sarkCode);
+							doSubmitTrade();
+						} else {
+							app.toast('扫码错误，请扫描'+ islandCode +'的二维码','center');
+						}
+					}
+				});
+				/**
+				 * 是否再次开箱 *
+				 */
+//				window.addEventListener('isScan', function(e) {
+//					if ( e.deatil.isScan ) {
+//						isScan = true;
+//					}
+//					loadBoxType();
+//					loadBoxNoByType(boxtypeid);
+//					num.value = 1;
+//					boxNo.value = '';
+//					mobile.vlaue = '';
+//					orderId.value = '';
+//					remark.value = '';
+//					isSubOrder = false;
+//				})
+				/**
+				 * 箱子可用数量 *
+				 */
+				function loadBoxType() {
+					app.order.findIslandBoxInfoForExpress("1", islandId, function(data) {
+						console.log(JSON.stringify(data));
+						if ( data.success ) {
+							var list = data.data.boxEntityList;
+							var boxBig = '小';
+							for(var i in list) {
+//								console.log(boxtypeid+','+list[i].boxtypeid);
+								if ( boxtypeid == list[i].boxtypeid ) {
+									tab[i].classList.add('mui-active');
+								}
+								tab[i].setAttribute('data-boxtypeid',list[i].boxtypeid);
+								if ( i == 0) {
+									boxBig = '小';
+								} else if ( i == 1 ) {
+									boxBig = '中';
+								} else if ( i == 2 ) {
+									boxBig = '大';
+								} else {
+									boxBig = '超大';
+								}
+								tab[i].innerHTML = boxBig +'箱('+ list[i].boxCOUNT + ')';
+							}
+						} else {
+							app.toast(data.message, 'center');
+						}
+					});
+				}
+				/**
+				 *	获取一个箱子编号
+				 */
+				function loadBoxNoByType(boxtypeid) {
+					app.order.findBaseBoxListByIslandIdAndBoxType( islandId, boxtypeid, function(data) {
+						console.log(islandId+','+boxtypeid+',' +JSON.stringify(data));
+						if(data.success) {
+							boxNo.innerHTML = '';      // 清空原有编号
+							var boxList = data.data.boxEntityList;
+							if( boxList.length > 0){
+								isHave = true;
+								boxNo.innerHTML = boxList[boxList.length - 1].BOX_NO;
+								boxId = boxList[boxList.length - 1].ID;
+								getSarkCode("isBoxInfo", boxList[boxList.length - 1].ID);
+							}else if( boxList.length == 0 ) {
+								boxNo.innerHTML = '没有箱子啦~';
+								//将boxID置为空
+								boxId = "";
+								isHave = false;
+							}
+						}else {
+							app.toast(data.message, 2000);
+						}
+					});
+				}
+				
+				orderId.addEventListener('blur', function() {
+					checkExpressNo();
+				});
+				/**
+				 * 验证快递单号（本公司和using状态）
+				 */
+				function checkExpressNo() {
+					if( orderId.value == "") {
+						app.toast("请输入快递单号", 'center');
+						return;
+					}
+					app.order.checkExpressNo( orderId.value, function(data) {
+						console.log(JSON.stringify(data));
+						if(data.success) {
+							isErrorExpress = false;
+						} else {
+							isErrorExpress = true;
+							//判断是否为同一个用户 （1 自己的订单 0 本公司别的快递员的订单）
+							if(data.sameUsertag == 0) {
+								app.toast("快递单号已被使用，请更换");
+								orderId.value = '';
+							} else if(data.tradeInfo != null) {
+								//这里将会进行取消之前订单的操作
+								if(data.tradeInfo.OVETIME_TAG == 1) {
+									//已结超时，不能取消订单
+									app.toast("快递单号已被使用且无法取消之前订单，请更换");
+									orderId.value = '';
+								} else {
+									tradeId = data.tradeInfo.TRADE_ID;
+									app.local.set("cancelTradeId", tradeId);
+									isCancel = true;
+									var btnArray = ['取消', '确定'];
+									mui.confirm('该快递单号已被使用，您可以取消之前的订单或者更换快递单号"', '提示', btnArray, function(e) {
+										if ( e.index == 1 ) {  
+											app.oPage('scan-order.html', { 
+												page: 'emptyVan-anji',
+												type: 'expressId' 
+											});
+										}
+									});
+								}
+							}
+						}
+					});
+				}
+				function excludeSpecial(value) {
+					// 去掉转义字符
+					value = value.replace(/[\'\"\\\/\b\f\n\r\t]/g, '');
+					//去掉特殊字符
+					value = value.replace(/[&\|\\\`~!@#$%^*:;""''./\\<\>\{\}·！@#￥%……&*\（\）\【\】：；“”‘’。、\(\)\-]/g, '');
+					return value;
+				}
+				/**
+				 * 查询所在编号的柜体
+				 */
+				function getSarkCode(dec, boxId) {
+					console.log('getSarkCode');
+					app.order.getSarkCodeByBoxId(boxId, function(data) {
+						console.log(JSON.stringify(data));
+						if(data.success) {
+							sarkCode = data.data.sarkCode;
+							if(dec == "isTrade") {
+								// 提交订单
+								isCancel = false;
+								var msg = "确定提交，请扫描" + sarkCode + "号箱柜的二维码";
+								var btnArray = ['取消', '确定'];
+								mui.confirm(msg, '提示', btnArray, cbConfirm);
+							} else {
+								// 查询柜子信息
+								box.innerHTML = sarkCode+'号柜';
+							}
+						} else {
+							app.toast(data.message, "");
+						}
+					});
+				}
+				app.$c('confirm').addEventListener('tap',function() {
+					app.local.set("curBoxId", boxNo.innerHTML);		// 保存当前箱子编号
+					params.islandId = islandId; 					// 岛体ID
+					params.boxId = boxId;　　　　 					// 箱子ID
+					params.creater = app.local.get("userId") || ""; // 创建人ID
+					params.tradeType = "company";					// 订单类型
+					params.fetchName = fetchName.value;					// 收件人姓名
+					params.fetchPhone = mobile.value.replace(/\s/ig, '').replace(/[^\d]/g, ''); 	//取物人手机，去除勿打的空格，且只能为纯数字
+					params.expressNo = excludeSpecial(orderId.value.replace(/\s/ig, '')); //快递单号，去除特殊字符
+					params.expressNum = num.value;					// 快件数量
+					params.fetchMark = remark.value;				// 备注
+					params.longitude = app.local.get('lng');		// 经度
+					params.latitude = app.local.get('lat');			// 纬度
+					if( isSubOrder ) {
+						app.toast("请勿重复提交", 'center');
+						return;
+					} else if( params.creater == "" ) {
+						app.toast("数据异常", 'center');
+						return;
+					} else if( params.expressNo == "" ) {
+						app.toast("请输入快递单号", 'center');
+						return;
+					} else if( params.expressNo.length > 30 ) {
+						app.toast("快递单号错误", 'center');
+						return;
+					} else if(/[\u4e00-\u9fa5]/.test(params.expressNo)) {
+						app.toast("单号不能有中文", 'center');
+						return;
+					} else if( params.fetchPhone == "" ) {
+						app.toast("请输入取物人的手机号", 'center');
+						return;
+					} else if( params.fetchPhone.length != 11 || params.fetchPhone.substr(0, 1) != 1 ) {
+						app.toast("请输入正确的手机号", 'center');
+						return;
+					} else if( params.fetchName.length > 15) {
+						app.toast("取物人姓名不能多于15个字", 'center');
+						return;
+					} else if( params.fetchMark.length > 10) {
+						app.toast("备注信息不能多于10个字", 'center');
+						return;
+					} else if( params.expressNum == "") {
+						app.toast("快递数量不能为空", 'center');
+						return;
+					} else if(isErrorExpress) {
+						orderId.focus();
+					} else {
+						isScan = app.local.get('isScan') || false;
+						if(isScan) {
+							//继续存物的无需扫描
+							doSubmitTrade();
+						} else {
+							isCancel = false;
+							var msg = "确定提交，请扫描" + sarkCode + "号箱柜的二维码";
+							var btnArray = ['取消', '确定'];
+							mui.confirm(msg, '提示', btnArray, cbConfirm);
+						}
+					}
+				});
+				/**
+				 * 打开 箱子编号 扫码页
+				 */
+				function cbConfirm(e) {
+					if ( e.index == 1 ) {
+						if ( !isCancel ) {    
+							app.oPage('scan-order.html', { 
+								page: 'emptyVan-anji',
+								type: 'equal'
+							});
+						}
+					}
+				}
+				/**
+				 * 订单提交
+				 */
+				function doSubmitTrade() {
+					plus.nativeUI.showWaiting("正在开箱，请稍后");
+					console.log(JSON.stringify(params));
+					app.order.submitLockOrder( params, function(data) {
+						console.log(JSON.stringify(data));
+						if(data.success) {
+							isSubOrder = true;
+							tradeId = data.data.tradeid;
+							//保存当前订单的ID
+							app.local.set("curTradeId", tradeId);
+							sendOpenCommand("depositor", tradeId, islandCode, sarkCode, params.boxId);
+						} else {
+							plus.nativeUI.closeWaiting();
+							app.toast(data.message, 2000);
+						}
+					});
+				}
+				/**
+				 * 发送开箱指令
+				 * @param {Object} litigant 当事人类型
+				 * @param {Object} tradeId 订单编号
+				 * @param {Object} islandCode 岛体代码
+				 * @param {Object} boxId 箱子编号
+				 */
+				function sendOpenCommand(litigant, tradeId, islandCode, sarkCode, boxId) {
+					console.log(litigant+','+tradeId+','+islandCode+','+sarkCode+','+boxId);
+					if(tradeId == "" || islandCode == "" || sarkCode == "" || boxId == "") {
+						app.toast("数据异常", 'center');
+						return;
+					}
+					// 访问地址
+					var url = "";
+					// 操作类型（已作废）
+					var openType = "";
+					// 重试开箱类型（取物/存物）
+					var actiontypecode = "";
+					if(litigant == "fetcher") {
+						// 发送取物开箱指令
+						//openType ="openandfetch";
+						url = SERVER_ADDRESS + "openBoxByConditionFetch";
+					} else if(litigant == "depositor") {
+						//发送存物开箱指令
+						//openType ="openandsave";
+						url = SERVER_ADDRESS + "openBoxByConditionStorage";
+					} else if(litigant == "retrysave") {
+						// 再次存物开箱的指令
+						actiontypecode = "openandsave"
+						url = SERVER_ADDRESS + "retryOpenbox";
+					} else if(litigant == "retryfetch") {
+						// 再次取物开箱的指令
+						actiontypecode = "openandfetch"
+						url = SERVER_ADDRESS + "retryOpenbox";
+					}
+	
+					//发送开箱指令ajax请求
+					console.log(tradeId+','+sarkCode+','+islandCode+','+boxId);
+					mui.post(url, {
+						"userId": app.local.get("userId"),
+						"tradeId": tradeId,
+						"sarkCode": sarkCode,
+						"islandCode": islandCode,
+						"boxId": boxId,
+						"actiontypecode": actiontypecode
+					}, function(data) {
+						console.log(JSON.stringify(data));
+						if(data.success) {
+							// 默认为未获取开箱结果（不论成功失败都要修改为true，等待为false）
+							sendResult = false;
+							timeOut = false;
+	
+							// 获取开箱结果
+							getOpenBoxResult(litigant, tradeId, sarkCode, islandCode, boxId, openType);
+							// 一直等待超过规定时间的设置
+							outTime = setTimeout(function() {
+								timeOut = true;
+							}, app.local.get("instructionTime"));
+						} else {
+							plus.nativeUI.closeWaiting();
+							app.toast(data.message, 'center');
+						}
+	
+					}, 'json');
+				}
+				/**
+				 * 接受箱子打开是否结果（成功和失败都调用回调函数，等待的回调自己直到成功失败或者超时，超时当做成功处理。（在再次开箱页面处理）只有结果失败才可以再次开箱，如果返回成功但是箱子未打开联系管理员）
+				 * @param {Object} tradeId 订单编号
+				 * @param {Object} sarkCode 柜体代码
+				 * @param {Object} islandCode 岛体代码
+				 * @param {Object} boxId 箱子编号
+				 * @param {Object} openType 操作类型
+				 * @param {Function} callback 回调函数
+				 */
+				function getOpenBoxResult(litigant, tradeId, sarkCode, islandCode, boxId, openType) {
+					mui.post("http://101.64.235.90/ajzhy/rest/getOpenBoxResult", {
+						'tradeId': tradeId,
+						'sarkCode': sarkCode,
+						'islandCode': islandCode,
+						"openType": openType,
+						'boxId': boxId
+					}, function(data) {
+						// 开箱成功
+						console.log(JSON.stringify(data));
+						if(Number(data.data.resultFlag) == 1) {
+							//清除定时器
+							clearTimeout(outTime);
+							//已经获取过结果不再获取
+							if(!sendResult) {
+								sendResult = true;
+								data.data.success = true;
+							}
+						} else if(Number(data.data.resultFlag) == 0) {
+							//清除定时器
+							clearTimeout(outTime);
+							plus.nativeUI.closeWaiting();
+							// 开箱失败
+							if(!sendResult) {
+								sendResult = true;
+								data.data.success = false;
+							}
+						} else {
+							// 已超时返回成功
+							if(timeOut) {
+								//重试开箱
+								if(litigant == "retrysave" || litigant == "retryfetch") {
+									//重试开箱
+									sendResult = true;
+									data.data.success = true;
+									data.data.message = "开箱成功";
+								} else {
+									sendResult = true;
+									data.data.success = false;
+									data.data.message = "开箱失败";
+								}
+								//清除定时器
+								clearTimeout(outTime);
+							} else {
+								// 未超时返回等待，调用自身
+								setTimeout(function() {
+									plus.nativeUI.closeWaiting();
+									getOpenBoxResult(litigant, tradeId, sarkCode, islandCode, boxId, openType);
+								}, 1000);
+							}
+						}
+						if(sendResult) {
+							app.local.set("openBoxResult", "" + data.success || true);
+							console.log(app.local.get("openBoxResult"));
+							console.log(typeof app.local.get("openBoxResult"));
+							app.oPage("deliver-confirm-anji.html");
+						}
+					},'json');
+				}
+				/**
+				 * 返回刷新 *
+				 */
+				mui.oldback = mui.back;
+				mui.back = function(e) {
+					plus.webview.getWebviewById('emptyVan.html').reload();
+					mui.oldback();
+				}
+			})
+		</script>
+	</body>
+
+</html>

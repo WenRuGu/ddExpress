@@ -1,0 +1,339 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/pull.css" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style type="text/css">
+			.mui-bar{
+				z-index: 99;
+			}
+			.mui-scroll-wrapper{
+				top: 45px;
+			}
+			.mui-scroll{
+				min-height: 80%;
+			}
+			ul li{
+				width: 94%;
+				height: 88px;
+				margin-top: 0.2rem;
+				margin-left: 3%;
+				background: #fff;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+			}
+			ul li div{
+				position: relative;
+				width: 100%;
+				height: 44px;
+				display: -webkit-flex;
+			    display: flex;
+			    
+			    -webkit-box-direction: normal;
+			    -webkit-box-orient: horizontal;
+			    -webkit-flex-direction: row;
+			    flex-direction: row;
+			}
+			ul li div.courier{
+				padding: 0 10px;
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				background: #12B7F5;
+			}
+			ul li div.courier span, ul li div:nth-child(2) a{
+				-webkit-box-flex: 1.0;
+				-webkit-flex-grow: 1;
+				flex-grow: 1;
+			}
+			ul li div.courier span{
+				display: block;
+				max-width: 60%;
+				height: 44px;
+				line-height: 44px;
+				font-size: 0.28rem;
+				color: #fff;
+			}
+			ul li div.courier span:nth-child(2){
+				text-align: center;
+				font-size: 0.24rem;
+				padding: 0 5px;
+			}
+			ul li div.courier span:nth-child(3){
+				text-align: right;
+				color: #fff;
+				font-size: 0.2rem;
+			}
+			.courier .isLing{
+				display: inline;
+				color: #FF0011;
+			}
+			ul li div:nth-child(2) a{
+				position: relative;
+				color:#6e6e6e;
+				text-align: center;
+				height: 44px;
+				line-height: 44px;
+				font-size: 0.26rem;
+			}
+			ul li div:nth-child(2) a:after {
+				    position: absolute;
+				    right: 0;
+				    top: 7px;
+				    width: 1px;
+				    height: 30px;
+				    content: '';
+				    -webkit-transform: scaleX(.5);
+				    transform: scaleX(.5);
+				    background-color: #c8c7cc;
+			}
+			ul li div:nth-child(2) a:last-child:after{
+				width: 0;
+			}
+			ul li div:nth-child(2) a:active{
+				background:#eee;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">已发快件</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="box-ul">
+						<!--
+						<li>
+							<div class="courier">
+								<span class="mui-ellipsis">082安吉店大(老校区)(失联)</span>
+								<span class="mui-ellipsis">月光茉莉小区</span>
+								<span>500m</span>
+							</div>
+							<div class="box-num">
+								<a>
+									待取件(<span>12345</span>)
+								</a>
+								<a>
+									已过期(<span>12345</span>)
+								</a>
+							</div>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+		{{each data as item i}}
+			<li>
+				<div class="courier" data-id="{{item.terminalId}}" data-type="0" data-boxtypeid="{{item.typeid}}" data-status="{{item.islandStatus}}">
+					<span class="mui-ellipsis">{{item.terminalName}}<span class="isLine">{{ item.islandStatus| status}}</span></span>
+					<span class="mui-ellipsis">{{item.street}}</span>
+					<span>{{item.distance | km}}</span>
+				</div>
+				<div class="box-num">
+					<a data-id="{{item.terminalId}}" data-type="1" data-boxtypeid="{{item.typeid}}" data-status="{{item.islandStatus}}" class="order">待取件(<span>{{item.noTakeCount}}</span>)</a>
+					<a data-id="{{item.terminalId}}" data-type="2" data-boxtypeid="{{item.typeid}}" data-status="{{item.islandStatus}}" class="order">待处理(<span>{{item.expiredCount}}</span>)</a>
+					{{ if item.ys }}
+					<a data-id="{{item.terminalId}}" data-type="" data-boxtypeid="{{item.typeid}}" data-status="{{item.islandStatus}}" class="order">筛选后(<span>{{item.screeningCount}}</span>)</a>
+					{{ /if }}
+				</div>
+			</li>
+		{{/each}}
+		</script>
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var pull;
+			var pageNo = 1; 			// 启始页数
+			var pageSize = 10;			//一页数量
+			var pageCount = 1; 			//总页数
+			var box_ul = app.$c('box-ul');
+			var deceleration = mui.os.ios?0.0006:0.0003;
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				app.local.clear('keyword');
+				mui('.mui-scroll-wrapper').scroll({
+					deceleration:deceleration,
+					bounce: false
+				});
+				plus.nativeUI.showWaiting('正在加载',{
+					loading: {
+						display:'inline'
+					}
+				});
+				pull = mui('.mui-content .mui-scroll').pullToRefresh({
+					down: {
+						height: 50,
+						callback: function() {
+							var self = this;
+							pageNo = 1;
+							setTimeout(function() {
+								appData();
+								self.refresh(true);
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						auto: true,
+						height: 50,
+						callback: function() {
+							var self = this;
+							setTimeout(function() {
+								
+								appData();
+								self.endPullUpToRefresh();
+							}, 800);
+						}
+					}
+				});
+//				window.addEventListener('keywordChange1', function(event) { // 监听自定义事件
+//					pageNo = 1;
+//					appData();
+//				});
+//	
+//				window.addEventListener('shuaxipage', function(event) { 	// 监听自定义事件
+//					pageNo = 1;
+//					appData();
+//				});
+				mui('.mui-content').on('tap', '.order', function() {
+					var page;
+					var curIslandId = this.getAttribute('data-id');
+					var type = this.getAttribute('data-type');
+					var boxtypeid = this.getAttribute('data-boxtypeid');
+					var status = this.getAttribute('data-status');
+					if ( boxtypeid == '2' ) {
+						page = 'fast-good-details-ys.html';
+					} else {
+						page = 'fast-good-details-anji.html';
+					}
+					app.local.clear('isScan');
+					app.oPage(page, {
+						curIslandId: curIslandId,
+						tradeTag: type,
+						curIslandStatus: status
+					});
+				})
+				/**
+				 * 获得所有岛体的所有订单基本数量
+				 */
+				template.helper('km', function( km ) {
+						if(km == 0){
+							return "";
+						}else if(km < 1000){
+							 var dis = parseFloat(km);
+							return dis.toFixed(1)+"m";
+						}else{
+							return Number(km/1000).toFixed(1)+"km";
+						}
+				});
+				template.helper('status', function( status ) {
+					return status == 1 ? '':'(失联)';
+				});
+				function appData() {
+					var lng = app.local.get('lng') || '';
+					var lat = app.local.get('lat') || '';
+					var keyword = app.local.get('keyword') || '';
+					var Newdata = '{"data":[';
+					app.order.getTradeListByUserId(pageNo, pageSize, keyword, lng, lat, function(data) {
+						console.log(JSON.stringify(data));
+						if(data.success) {
+							if(pageNo == 1) {
+								box_ul.innerHTML = ''; //清空容器内数据
+							}
+							// 判断当前返回的请求是否是应该处理的请求
+							if(data.keyword && app.local.get("keyword") != null && app.local.get("keyword") != "" && app.local.get("keyword") != data.keyword) {
+								return;
+							}
+							var isLandInfoList = data.data.islandInfo;
+							if(isLandInfoList.length > 0) {
+	
+								pageNo++;
+								pageCount = data.data.totalPage;
+								for(var i in isLandInfoList) {
+									Newdata += "{";
+									Newdata += "\"islandStatus\":\"" + isLandInfoList[i].ISLAND_STATUS + "\",";
+									Newdata += "\"terminalId\":\"" + isLandInfoList[i].ISLAND_ID + "\",";
+									Newdata += "\"terminalName\":\"" + isLandInfoList[i].ISLAND_NAME + "\",";
+									Newdata += "\"distance\":\"" + isLandInfoList[i].distance + "\",";
+									Newdata += "\"street\":\"" + isLandInfoList[i].ADDRESS + "\",";
+									Newdata += "\"noTakeCount\":\"" + isLandInfoList[i].tradeCount.noTake + "\",";
+									Newdata += "\"expiredCount\":\"" + isLandInfoList[i].tradeCount.expired + "\",";
+									Newdata += "\"screeningCount\":\"" + isLandInfoList[i].tradeCount.screening + "\",";
+									Newdata += "\"typeid\":\"1\",";
+									Newdata += "\"ys\":false";
+									Newdata += "},";
+								}
+							}
+							app.order.newgetTradeListByUserId(app.local.get('token'), app.local.get('courierId'), keyword, lng, lat, function(data1) {
+								var last = JSON.stringify(data1);
+								console.log(last);
+								if(data1.code == "0") {
+									// 判断当前返回的请求是否是应该处理的请求
+									if(app.local.get("keyword") != null && app.local.get("keyword") != "") {
+										return;
+									}
+									for(var i in data1.data) {
+										Newdata += "{";
+										Newdata += "\"islandStatus\":\"" + data1.data[i].onlineFlag + "\",";
+										Newdata += "\"terminalId\":\"" + data1.data[i].terminalId + "\",";
+										Newdata += "\"terminalName\":\"" + data1.data[i].terminalName + "\",";
+										Newdata += "\"distance\":\"" + data1.data[i].distance + "\",";
+										Newdata += "\"street\":\"" + data1.data[i].street + "\",";
+										Newdata += "\"noTakeCount\":\"" + data1.data[i].waitSignCount + "\",";
+										Newdata += "\"expiredCount\":\"" + data1.data[i].waitSignCount + "\",";
+										Newdata += "\"screeningCount\":\"" + data1.data[i].waitSignCount + "\",";
+										Newdata += "\"typeid\":\"2\",";				// typeid == 2 为宇松
+										Newdata += "\"ys\":true";
+										Newdata += "},";		
+									}
+								} else {
+									app.toast(data1.message, "");
+								}
+	
+								Newdata = Newdata.substring(0, Newdata.length - 1);
+								Newdata += "]}";
+								console.log(Newdata);
+								
+								if ( Newdata.length <= 15 ) {
+									plus.nativeUI.closeWaiting();
+									app.toast("暂无订单记录", 'center');
+									pull.endPullUpToRefresh(true);
+								} else {
+									var Newdata1 = JSON.parse(Newdata);
+									Newdata1.data = app.jsonSort(Newdata1.data, 'distance', false);
+									if(Newdata1.data.length == 0) {
+										app.toast("暂无订单记录", 'center');
+									} else {
+										if ( Newdata1.data.length < 10 ) {
+											pull.endPullUpToRefresh(true);
+										}
+										var html = template( 'tmpl', Newdata1);
+										box_ul.innerHTML += html;
+									}
+									plus.nativeUI.closeWaiting();
+								}
+							});
+						} else {
+							app.toast(data.message, "center");
+						}
+					});
+				}
+			})
+		</script>
+	</body>
+
+</html>

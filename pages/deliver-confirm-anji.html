@@ -1,0 +1,275 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style type="text/css">
+			.btn {
+				background: #12B7F5;
+				width: 90%;
+				height: 45px;
+				float: left;
+				margin-top: 0.5rem;
+				margin-left:5%;
+				color: #fff;
+				font-size: 14px;
+				border: none;
+				-webkit-transition: none;
+				transition: none;
+			}
+			.btn:enabled:active{
+				background: dodgerblue;
+			}
+			.again{
+				display: none;
+			}
+			img{
+				width: 50%;
+				margin-left: 25%;
+				margin-top: 50px;
+				/*height: 188px;*/
+			}
+			p.first{
+				margin-top: 0.4rem;
+				margin-bottom: 0.1rem;
+				font-size: 0.32rem;
+				text-align: center;
+			}
+			p.last{
+				font-size: 0.3rem;
+				text-align: center;
+			}
+			.red{
+				color: red;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>主页</span></a>
+		    <h1 class="mui-title">存件完成</h1>
+		</header>
+		<div class="mui-content">
+			<img src="../images/ok.png"/>
+			<p class="first">您的包裹已整装待发</p>
+			<p class="last">要记得关箱门哦</p>
+			<button type="button" class="mui-btn btn again">重新开箱</button>
+			<button type="button" class="mui-btn btn continue">继续存物</button>
+			<button type="button" class="mui-btn btn cell">联系运维</button>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			var tradeId = app.local.get("curTradeId") || "";	// 订单编号
+			var islandCode = app.local.get("curSarkCode") || "";// 岛体代码   islandCode
+			var sarkCode = app.local.get("curSarkCode") || "";	// 柜体代码
+			var boxId = app.local.get("curBoxId") || "";		// 箱子编号
+			var timer;											// 定时器
+			var sendResult;										// 请求结果
+			var timeOut;										// 开箱是否超时
+																// 重试时间
+			var timeCount = app.local.get("instructionTime") / 1000; 
+			console.log('剩余时间'+timeCount);
+			var result = app.$c('last');
+			var again = app.$c('again');
+			mui.plusReady(function() {
+				var _self = plus.webview.currentWebview();
+				// 开箱不成功，再次开箱
+				if ( app.local.get('openBoxResult') != 'true') {
+					again.style.display = 'block';
+					timerCount();
+				}
+				mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
+				// 联系运维
+				app.$c('cell').addEventListener('tap', function() {
+					plus.device.dial(app.local.get("maintainPhone"), false);
+				});
+				// 继续存物
+				app.$c('continue').addEventListener('tap',function(){
+					app.local.set('isScan', true);
+					plus.webview.getWebviewById("emptyVan-anji.html").reload();
+	//				var sourcePage = plus.webview.getWebviewById("emptyVan-ys.html");
+	//				mui.fire(sourcePage, 'Initpage');
+					mui.oldback();
+				});
+				/**
+				 * 回到主页面
+				 */
+				mui.oldback = mui.back;
+				mui.back = function(e) {
+					app.local.clear("isScan");
+					plus.webview.close('emptyVan-anji.html');
+					plus.webview.close('emptyVan.html');
+					plus.webview.close(_self);
+				}
+				/**
+				 * 再次开箱指令
+				 */
+				function openBoxAgain() {
+					clearInterval(timer);
+					//发送重开指令
+					sendOpenCommand("retrysave", tradeId, islandCode, sarkCode, boxId, openBoxForAgain);
+				}
+				function sendOpenCommand(litigant, tradeId, islandCode, sarkCode, boxId) {
+					if(tradeId == "" || islandCode == "" || sarkCode == "" || boxId == "") {
+						app.toast("数据异常", 'center');
+						return;
+					}
+					// 访问地址
+					var url = "";
+					// 操作类型（已作废）
+					var openType = "";
+					// 重试开箱类型（取物/存物）
+					var actiontypecode = "";
+					if(litigant == "fetcher") {
+						// 发送取物开箱指令
+						//openType ="openandfetch";
+						url = SERVER_ADDRESS + "openBoxByConditionFetch";
+					} else if(litigant == "depositor") {
+						//发送存物开箱指令
+						//openType ="openandsave";
+						url = SERVER_ADDRESS + "openBoxByConditionStorage";
+					} else if(litigant == "retrysave") {
+						// 再次存物开箱的指令
+						actiontypecode = "openandsave"
+						url = SERVER_ADDRESS + "retryOpenbox";
+					} else if(litigant == "retryfetch") {
+						// 再次取物开箱的指令
+						actiontypecode = "openandfetch"
+						url = SERVER_ADDRESS + "retryOpenbox";
+					}
+					
+					
+					//发送开箱指令ajax请求
+					mui.post(url, {
+						"userId": app.datastore.get("userId"),
+						"tradeId": tradeId,
+						"sarkCode": sarkCode,
+						"islandCode": islandCode,
+						"boxId": boxId,
+						"actiontypecode": actiontypecode
+					}, function(data) {
+						console.log(JSON.stringify(data));
+						if(data.success) {
+							// 默认为未获取开箱结果（不论成功失败都要修改为true，等待为false）
+							sendResult = false;
+							timeOut = false;
+							// 获取开箱结果
+							getOpenBoxResult(litigant, tradeId, sarkCode, islandCode, boxId, openType);
+							// 一直等待超过规定时间的设置
+							outTime = setTimeout(function() {
+								timeOut = true;
+							}, app.datastore.get("instructionTime"));
+						} else {
+							app.toast(data.message, 'center');
+						}
+	
+					}, 'json');
+				}
+				
+				/**
+				 * 接受箱子打开是否结果（成功和失败都调用回调函数，等待的回调自己直到成功失败或者超时，超时当做成功处理。（在再次开箱页面处理）只有结果失败才可以再次开箱，如果返回成功但是箱子未打开联系管理员）
+				 * @param {Object} tradeId 订单编号
+				 * @param {Object} sarkCode 柜体代码
+				 * @param {Object} islandCode 岛体代码
+				 * @param {Object} boxId 箱子编号
+				 * @param {Object} openType 操作类型
+				 * @param {Function} callback 回调函数
+				 */
+				function getOpenBoxResult(litigant, tradeId,sarkCode,islandCode,boxId,openType){
+					mui.post("http://101.64.235.90/ajzhy/rest/getOpenBoxResult",{'tradeId':tradeId,'sarkCode':sarkCode,'islandCode':islandCode,"openType":openType,'boxId':boxId},function(data){
+					 	console.log(JSON.stringify(data))
+						if(Number(data.data.resultFlag)==1){
+							//清除定时器
+							clearTimeout(outTime);
+							//已经获取过结果不再获取
+							if (!sendResult) {
+								sendResult = true;
+								data.data.success=true;
+							}
+							mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
+						}else if(Number(data.data.resultFlag)==0){
+							//清除定时器
+							clearTimeout(outTime);
+							// 开箱失败
+							if(!sendResult){
+								    sendResult=true;
+									data.data.success=false;
+							    }
+						}else{
+							// 已超时返回成功
+							if(timeOut){
+								//重试开箱
+								if(litigant == "retrysave" || litigant == "retryfetch"){
+									sendResult=true;
+									data.data.success=true;
+									data.data.message="开箱成功";
+									mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
+								}else{
+									sendResult=true;
+									data.data.success=false;
+									data.data.message="开箱失败";
+								}
+								//清除定时器
+								clearTimeout(outTime);
+							}else{
+								// 未超时返回等待，调用自身
+								setTimeout(function(){
+									getOpenBoxResult(litigant, tradeId, sarkCode, islandCode,boxId,openType);
+								},1000)
+							}
+						}
+						if(sendResult){
+							app.toast(data.message, 'center');
+							result.innerHTML = "箱子未打开？请联系运维人员!";
+							result.style.color = '#3e3e3e';
+							again.style.display = 'none';
+						}
+					}, 'json');
+				}
+				/**
+				 * 开箱成功的回调函数
+				 */
+				function openBoxForAgain(data) {
+					app.toast(data.message, 'center');
+//					$("#successTag").text("箱子未打开？请联系运维人员!");
+					again.style.display = 'none';
+				}
+				/**
+				 * 定时器开始倒计时
+				 */
+				function timerCount() {
+					timer = setInterval(function() {
+						if(timeCount == 0) {
+							changeOpenAgain()
+						} else {
+							result.innerHTML = "箱子未打开？请<span class='red'> "+ timeCount +" </span>秒内点击重试开箱!";
+							timeCount--;
+						}
+					}, 1000);
+				}
+	
+				/**
+				 * 时间超过之后的处理
+				 * @param {Object} data
+				 */
+				function changeOpenAgain() {
+					clearInterval(timer);
+					again.style.display = 'none';
+					result.innerHTML = "箱子未打开？请联系运维人员!";
+					result.style.color = '#3e3e3e';
+				}
+			});
+			
+		</script>
+	</body>
+
+</html>

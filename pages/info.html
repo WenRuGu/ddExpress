@@ -1,0 +1,210 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/portrait.css"/>
+		<style type="text/css">
+			.mui-table-view li:nth-child(1){
+				display: -webkit-flex;
+				display: flex;
+				
+				-webkit-box-direction: normal;
+			    -webkit-box-orient: horizontal;
+				-webkit-flex-direction: row;
+			    flex-direction: row;
+			    flex-wrap: nowrap;
+			}
+			.mui-table-view li:nth-child(1) div{
+				height: 60px;
+				line-height: 60px;
+				-webkit-box-flex: 1.0;
+				-webkit-flex-grow: 1;
+				flex-grow: 1;
+			}
+			.mui-table-view li:nth-child(1) img{
+				width: 60px;
+				height: 60px;
+				-webkit-border-radius: 50%;
+				border-radius: 50%;
+				-webkit-box-flex: 0;
+				-webkit-flex-grow: 0;
+				flex-grow: 0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">个人资料</h1>
+		</header>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<div class="head">
+						头像
+					</div>
+					<img class="user-pic" src="../images/attention_shezhi@3x.png" data-preview-src="" data-preview-group="1"/>
+				</li>
+				<li class="mui-table-view-cell">
+					<span class="mui-pull-left">用户名</span>
+					<span class="mui-pull-right realName"></span>
+				</li>
+				<li class="mui-table-view-cell">
+					<span class="mui-pull-left">手机号</span>
+					<span class="mui-pull-right mobile"></span>
+				</li>
+				<!--<li class="mui-table-view-cell">
+					<span class="mui-pull-left">快递公司</span>
+					<span class="mui-pull-right">天天快递</span>
+				</li>-->
+			</ul>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/mui.zoom.js"></script>
+		<script src="../js/mui.previewimage.js"></script>
+		<script src="../js/app.js"></script>
+		
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var userPic = app.$c('user-pic');
+			var mobile = app.$c('mobile');
+			var realName = app.$c('realName');
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator:'none'
+				});
+				userPic.src = app.local.get('userPic') || '../images/attention_shezhi@3x.png';
+				mui.previewImage();				// 预览头像 初始化
+				realName.innerHTML = app.local.get('newRealName');
+				app.$c('mobile').innerHTML = app.local.get('userMobile');
+				app.$c("head").addEventListener("tap", function(e) {
+					if(mui.os.plus){
+						var a = [{
+							title: "拍照"
+						}, {
+							title: "从手机相册选择"
+						}];
+						plus.nativeUI.actionSheet({
+							title: "修改头像",
+							cancel: "取消",
+							buttons: a
+						}, function(b) {
+							switch (b.index) {
+								case 0:
+									break;
+								case 1:
+									getImage();
+									break;
+								case 2:
+									galleryImg();
+									break;
+								default:
+									break
+							}
+						})	
+					}
+					
+				});
+
+				/**
+				 * 我的页面 刷新 头像 *
+				 */
+				function update_userPic() {
+					mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
+				}
+				function getImage() {
+					var c = plus.camera.getCamera();
+					c.captureImage(function(e) {
+						plus.io.resolveLocalFileSystemURL(e, function(entry) {
+							var s = entry.toLocalURL() + "?version=" + new Date().getTime();
+							userPic.src = s;
+							app.local.set('userPic', ''+s);
+							update_userPic();
+							app.toast('修改成功','center');
+//							plus.webview.getWebviewById('pages/setting.html').reload();
+//							document.getElementById("head-img").src = s;
+//							document.getElementById("head-img1").src = s;
+							//变更大图预览的src
+							//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
+//							document.querySelector("#__mui-imageview__group .mui-slider-item img").src = s + "?version=" + new Date().getTime();;;
+						}, function(e) {
+							console.log("读取拍照文件错误：" + e.message);
+						});
+					}, function(s) {
+						console.log("error" + s);
+					}, {
+						filename: "_doc/head.jpg"
+					})
+				}
+				function galleryImg() {
+					plus.gallery.pick(function(a) {
+						plus.io.resolveLocalFileSystemURL(a, function(entry) {
+							plus.io.resolveLocalFileSystemURL("_doc/", function(root) {
+								root.getFile("head.jpg", {}, function(file) {
+									//文件已存在
+									file.remove(function() {
+										console.log("file remove success");
+										entry.copyTo(root, 'head.jpg', function(e) {
+												var e = e.fullPath + "?version=" + new Date().getTime();
+												userPic.src = e;
+												app.local.set('userPic', ''+e);
+												update_userPic();
+												app.toast('修改成功','center');
+//												plus.webview.getWebviewById('pages/setting.html').reload();
+//												document.getElementById("head-img").src = e;
+//												document.getElementById("head-img1").src = e;
+												//变更大图预览的src
+												//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
+//												document.querySelector("#__mui-imageview__group .mui-slider-item img").src = e + "?version=" + new Date().getTime();;
+//												compressImage(e);
+											},
+											function(e) {
+												console.log('copy image fail:' + e.message);
+											});
+									}, function() {
+										console.log("delete image fail:" + e.message);
+									});
+								}, function() {
+									//文件不存在
+//									entry.copyTo(root, 'head.jpg', function(e) {
+//											var path = e.fullPath + "?version=" + new Date().getTime();
+//											document.getElementById("head-img").src = path;
+//											document.getElementById("head-img1").src = path;
+//											//变更大图预览的src
+//											//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
+//											document.querySelector("#__mui-imageview__group .mui-slider-item img").src = path;
+//										},
+//										function(e) {
+//											console.log('copy image fail:' + e.message);
+//										});
+								});
+							}, function(e) {
+								console.log("get _www folder fail");
+							})
+						}, function(e) {
+							console.log("读取拍照文件错误：" + e.message);
+						});
+					}, function(a) {}, {
+						filter: "image"
+					})
+				};
+				mui.oldback = mui.back;
+				mui.back = function(e) {
+					// 不通知刷新头像的话，有空白闪屏。 原因，可能使用了本地头像
+					mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
+					mui.oldback();
+				}
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" type="text/css" href="../css/pull.css"/>
+		<style>
+			.mui-bar{
+				z-index: 99;
+			}
+			.mui-scroll-wrapper{
+				top: 44px;
+			}
+			.mui-scroll{
+				min-height: 80%;
+			}
+			.mui-table-view-cell{
+				padding: 0;
+				width: 94%;
+				margin-top: 0.2rem;
+				margin-left: 3%;
+				background: #fff;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+			}
+			.mui-table-view-cell:after{
+				height: 0;
+			}
+			.mui-table-view-cell>a:not(.mui-btn), .box-num{
+				margin:0;
+				padding: 0 0.5rem 0 10px;
+				display: -webkit-flex;
+			    display: flex;
+			    
+			    -webkit-box-direction: normal;
+			    -webkit-box-orient: horizontal;
+			    -webkit-flex-direction: row;
+			    flex-direction: row;
+			}
+			.mui-navigate-right:after, .mui-push-right:after{
+				right: 0;
+				font-size: 0.5rem;
+			}
+			.mui-table-view-cell>a:not(.mui-btn).mui-active{
+				background-color: #1E90FF;
+			}
+			.mui-table-view-cell.mui-collapse.mui-active{
+				margin-top: 0.2rem;
+			}
+			.mui-table-view-cell.mui-collapse .mui-collapse-content{
+				padding: 0;
+				margin: 0;
+			}
+			.courier{
+				border-top-left-radius: 6px;
+				border-top-right-radius: 6px;
+				background: #12B7F5;
+			}
+			.courier span{
+				-webkit-box-flex: 1.0;
+				-webkit-flex-grow: 1;
+				flex-grow: 1;
+			}
+			.courier span{
+				display: block;
+				height: 44px;
+				line-height: 44px;
+				color: #fff;
+			}
+			.courier .isLine{
+				display: inline;
+				color: #FF0011;
+			}
+			.courier>span:nth-child(1) {
+				font-size: 0.28rem;
+				text-align: left;
+				float: left;
+			}
+			.courier>span:nth-child(2){
+				font-size: 0.24rem;
+				text-align: center;
+				padding: 0 5px;
+			}
+			.courier>span:nth-child(3){
+				float: right;
+				font-size: 0.2rem;
+				text-align: right;
+			}
+			.box-num a{
+				float: left;
+				position: relative;
+				display: block;
+				color:#6e6e6e;
+				text-align: center;
+				width: 25%;
+				height: 44px;
+				line-height: 44px;
+				font-size: 12px;
+			}
+			.box-num a:after{
+				position: absolute;
+			    right: 0;
+			    top: 20%;
+			    width: 1px;
+			    height: 60%;
+			    content: '';
+			    -webkit-transform: scaleX(.5);
+			    transform: scaleX(.5);
+			    background-color: #c8c7cc
+			}
+			.box-num a:last-child:after{
+				width: 0;
+			}
+			.box-num a:active{
+				background:#eee;
+			}
+			.box-num div{
+				width: 100%;
+				height: 44px;
+				line-height: 44px;
+				font-size: 0.3rem;
+				text-align: center;
+				color:#6e6e6e;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">查约空箱</h1>
+		</header>
+		<div class="mui-content">
+		    <div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="box">
+						<!--<li class="mui-table-view-cell mui-collapse">
+							<a class="courier mui-navigate-right" href="#">
+								<span class="mui-ellipsis">082安吉店大(老校区)aaaaaa<span class="isLine">(失联)</span></span>
+								<span class="mui-ellipsis">月光茉莉小区</span>
+								<span>500m</span>
+							</a>
+							<div class="box-num mui-collapse-content">
+								<a>小箱(<span>999</span>)</a>
+								<a>中箱(<span>999</span>)</a>
+								<a>大箱(<span>999</span>)</a>
+								<a>超大箱(<span>999</span>)</a>
+							</div>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/baiduMap.js"></script>
+		<script src="../js/gps.js"></script>
+		<script src="../js/convertor.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/base_param.js"></script>
+		<script src="../js/app.js"></script>	
+		<script src="../js/template.js"></script>	
+		<script id="tmpl" type="text/html">
+			{{each data as item i}}
+	        <li class="mui-table-view-cell mui-collapse" data-id='{{item.id}}' data-boxName='{{item.name}}' data-boxTypeId='{{item.typeid}}' data-islandCode='{{item.code}}'>
+				<a class="courier mui-navigate-right" href="#">
+					<span class="mui-ellipsis">{{item.name}}<span class="isLine">{{item.status | status}}</span></span>
+					<span class="mui-ellipsis">{{item.address}}</span>
+					<span>{{item.distance | km}}</span>
+				</a>
+				<div class="box-num mui-collapse-content">
+				</div>
+			</li>
+			{{/each}}
+		</script>
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var pull;
+			var pageNo = 0;
+			var pageSize = 15;
+			var pageCount;
+			var box = app.$c('box');
+			var deceleration = mui.os.ios?0.003:0.0009;
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				plus.nativeUI.showWaiting('正在加载',{
+					loading: {
+						display:'inline'
+					}
+				});
+				mui('.mui-scroll-wrapper').scroll({
+					indicators: true,
+					deceleration:deceleration,
+					bounce: false
+				});
+				pull = mui('.mui-content .mui-scroll').pullToRefresh({
+					down: {
+						height: 75,
+						callback: function() {
+							var self = this;
+							pageNo = 0;
+							setTimeout(function() {
+								appData();
+								self.refresh(true);
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						auto: true,
+						height: 75,
+						contentnomore: '没有更多桩点了',
+						callback: function() {
+							var self = this;
+							appData();
+							setTimeout(function() {
+								self.endPullUpToRefresh();
+							}, 800);
+						}
+					}
+				});
+				mui('.box').on('tap', '.mui-table-view-cell', function() {
+					var isLandid = this.getAttribute('data-id');
+					var islandCode = this.getAttribute('data-islandCode');
+					var islandName = this.getAttribute('data-boxName');
+					var boxtypeid = this.getAttribute('data-boxTypeId');
+					var boxNum = this.querySelector('.box-num');
+//					console.log(islandName+','+boxtypeid);
+					var htmlStr = '<a data-typeId="{1}" data-boxTypeId={7} data-num="{3}" data-islandId="{4}" data-islandCode="{5}" data-boxName="{6}" href="#">{2}({3})</a>';
+					//                     箱子大小                      公司属                     箱子数                     岛体id(data-id)       岛体code				 岛体名称	
+					//{"boxCOUNT":16,"TYPE_NAME":"小","CODE":"00001","boxtypeid":"2c928b454bfc67b6014bfd1645c30017","ISLAND_NAME":"161天荒坪·大年初一"}
+					//0,214,2,214,朗里小区,00009D
+					//2c928b454bfc67b6014bfd1645c30017,8a8a8b8d5435ecd001549ea6905038d2,1,8a8a8b8d5435ecd001549ea6905038d2,166天荒坪·镇政府,AJI166
+					if ( boxtypeid == '2' ) {
+						var boxStr = '';
+						app.order.newfindIslandBoxInfoForExpress(app.local.get("token"), app.local.get("courierId"), islandCode, function(data) {
+//							console.log('数量'+JSON.stringify(data));
+							if(data.code == 0) {
+								boxStr += htmlStr.format("0", "小箱", data.data.small, isLandid, islandCode, islandName, boxtypeid);
+								boxStr += htmlStr.format("1", "中箱", data.data.medium, isLandid, islandCode, islandName, boxtypeid);
+								boxStr += htmlStr.format("2", "大箱", data.data.big, isLandid, islandCode, islandName, boxtypeid);
+								boxStr += htmlStr.format("3", "超大箱", "0", isLandid, islandCode, islandName, boxtypeid);
+							} else {
+								app.toast(data.message, "center");
+								boxStr = '<div>'+ data.message +'</div>';
+							}
+							boxNum.innerHTML = boxStr;
+						});
+					} else {
+						app.order.findIslandBoxInfoForExpress("1", isLandid, function(data) {
+							console.log(JSON.stringify(data));
+							if ( data.success ) {
+								var list = data.data.boxEntityList;
+								var boxStr = '';
+								for(var i = 0; i < list.length; i++) {
+									if(i == 0) {
+										boxStr += htmlStr.format(list[i].boxtypeid, list[i].TYPE_NAME, list[i].boxCOUNT, isLandid, islandCode, list[i].ISLAND_NAME, boxtypeid);
+									} else
+									if(i == list.length - 1) {
+										boxStr += htmlStr.format(list[i].boxtypeid, list[i].TYPE_NAME, list[i].boxCOUNT, isLandid, islandCode, list[i].ISLAND_NAME, boxtypeid);
+									} else {
+										boxStr += htmlStr.format(list[i].boxtypeid, list[i].TYPE_NAME, list[i].boxCOUNT, isLandid, islandCode, list[i].ISLAND_NAME, boxtypeid);
+									}
+								}
+							} else {
+								app.toast(data.message, 'center');
+								boxStr = '<div>'+ data.message +'</div>';
+							}
+							boxNum.innerHTML = boxStr;
+						})
+					}
+				});
+				template.helper('km', function( km ) {
+						if(km == 0){
+							return "";
+						}else if(km < 1000){
+							 var dis = parseFloat(km);
+							return dis.toFixed(1)+"m";
+						}else{
+							return Number(km/1000).toFixed(1)+"km";
+						}
+				});
+				template.helper('status', function( status ) {
+					return status == 1 ? '':'(失联)';
+				});
+				function appData() {
+					plus.geolocation.getCurrentPosition( function(r) {
+						var lat = r.coords.latitude;
+						var lng = r.coords.longitude;
+						
+						if ( mui.os.ios ) {
+							var arr2 = GPS.gcj_decrypt(lat,lng);
+							var ggPoing = new BMap.Point(arr2['lon'], arr2['lat']);
+							BMap.Convertor.translate(ggPoint, 2, function(point) {
+								var lat = point.lat; 
+								var lng = point.lng; 
+								if(lat == 0 && lng == 0) {
+									app.local.setlat(""); 
+									app.local.setlog(""); 
+								} else {
+									app.local.setlat('lat', lat); //纬度
+									app.local.setlog('lng', lng); //经度
+								}
+							});
+						} else {
+							app.local.set('lat', lat);
+							app.local.set('lng', lng);
+						}
+						plus.nativeUI.closeWaiting();
+						getIsLandList();
+					}, function(e) {
+						plus.nativeUI.alert('请允许程序访问您的地理位置');
+					}, {
+						provider:'amap'
+					})
+				}
+				function getIsLandList() {
+					var lat = app.local.get('lat') || '';
+					var lng = app.local.get('lng') || '';
+					var keyword = app.local.get('keyword') || '';
+					var Newdata = '{"data":[';
+					pageNo++;
+					// 全部桩点 105个
+					app.order.findIsLandListByPage(pageNo, pageSize, keyword, lng, lat, function(data) {
+//						console.log(JSON.stringify(data));
+						if ( data.success ) {
+							if(pageNo == 1) {
+								box.innerHTML = '';   //清空容器内数据
+							}
+							
+							pageCount = data.data.totalPage;
+							
+							app.local.set('islandTotalNum', data.data.total);
+							var isLandList = data.data.islandList;
+							for(var i in isLandList) {
+								Newdata += "{";
+								Newdata += "\"id\":\"" + isLandList[i].ID + "\",";
+								Newdata += "\"status\":\"" + isLandList[i].ISLAND_STATUS + "\",";
+								Newdata += "\"name\":\"" + isLandList[i].ISLAND_NAME + "\",";
+								Newdata += "\"address\":\"" + isLandList[i].ADDRESS + "\",";
+								Newdata += "\"distance\":" + isLandList[i].dis_ + ",";
+								Newdata += "\"code\":\"" + isLandList[i].CODE + "\",";
+								Newdata += "\"typeid\":\"1";
+								Newdata += "\"},";
+							}
+							app.order.newfindIsLandListByPage( app.local.get('token'), app.local.get('courierId'), (pageNo - 1) * pageSize, pageSize, keyword, lng, lat, function(data1) {
+//								console.log(JSON.stringify(data1));
+								if ( data1.code == 0 ) {
+//									pageNo++;
+									for(var i in data1.data) {
+//										console.log(JSON.stringify(data1.data[i]));
+										Newdata += "{";
+										Newdata += "\"id\":\"" + data1.data[i].id + "\",";
+										Newdata += "\"status\":\"" + data1.data[i].onlineFlag + "\",";
+										Newdata += "\"name\":\"" + data1.data[i].terminalName + "\",";
+										Newdata += "\"address\":\"" + data1.data[i].street + "\",";
+										Newdata += "\"distance\":" + data1.data[i].distance + ",";
+										Newdata += "\"code\":\"" + data1.data[i].terminalCode + "\",";
+										Newdata += "\"typeid\":\"2";
+										Newdata += "\"},";
+									}
+								} else {
+									app.toast(data1.message, 'center');
+								}
+								Newdata = Newdata.substring(0, Newdata.length - 1);
+								Newdata += "]}";
+								
+								if(Newdata.length > 2 && Newdata.length >= 20 ){
+									var Newdata1 = JSON.parse(Newdata);
+									Newdata1.data = app.jsonSort(Newdata1.data, 'distance', false);
+									var html = template( 'tmpl', Newdata1);
+									box.innerHTML += html;
+								} else {
+									app.toast('已经是最后一页了','center');
+									pull.endPullUpToRefresh(true);
+								}
+								var len = document.querySelectorAll('.box li');
+								console.log(len.length);
+							});
+						} else {
+							app.toast(data.message, 'center');
+						}
+					})
+				}
+				mui('.mui-scroll-wrapper').on('tap', '.box-num a',function() {
+					var num = this.getAttribute('data-num');
+					var typeId = this.getAttribute('data-typeId');		  	 // 箱子大小orboxtypeid
+					var boxtypeid = this.getAttribute('data-boxTypeId');  	 // 宇松or安吉
+					var islandId = this.getAttribute('data-islandId');
+					var islandCode = this.getAttribute('data-islandCode');
+					var islandName = this.getAttribute('data-boxName');
+					if ( app.local.get('expressSuccess') == 'true' ) {
+						plus.nativeUI.alert(app.local.get('expressSuccess'));
+					} else if ( num == 0 ) {
+						app.toast('该类型箱子已被用完啦，请选择其他类型的', 'center');
+					} else {
+						console.log('数据='+typeId+','+num+','+boxtypeid+','+islandId+','+islandName+','+islandCode);
+						var page;											
+						if ( boxtypeid == 2 ) {
+							page = 'emptyVan-ys.html';						// 宇松
+						} else {
+							page = 'emptyVan-anji.html';					// 安吉
+						}
+						app.oPage( page, {
+							islandName: islandName,
+							islandId: islandId,
+							typeId: typeId,
+							islandCode: islandCode
+						});
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

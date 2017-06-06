@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/feedback.css" />
+		<style>
+			#txt{
+				border: none;
+				height: 120px;
+				margin-bottom: 0;
+			}
+			.blue{
+				width: 90%;
+				height: 0.9rem;
+				position: fixed;
+				left: 5%;
+				bottom: 0.5rem;
+				border:none;
+				color: #fff;
+				background: #12B7F5;
+			}
+			.mui-btn,button{
+				-webkit-transition: none;
+				transition: none;
+			}
+			.blue:enabled:active{
+				background: dodgerblue;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">故障申报</h1>
+		</header>
+		<div class="mui-content">
+			<textarea id="txt" placeholder="请填写故障原因"></textarea>
+			<p style="text-indent: 15px;">图片(选填,提供问题截图,总大小10M以下)</p>
+			<div id='image-list' class="row image-list"></div>
+			<button type="button" id="submit" class="mui-btn blue">提交</button>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/feedback.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+		</script>
+	</body>
+
+</html>

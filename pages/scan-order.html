@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<style type="text/css">
+			#bcid {
+				width: 100%;
+				position: absolute;
+				top: 44px;
+				bottom: 44px;
+				text-align: center;
+			}
+			.tip {
+				color: #FFFFFF;
+				font-weight: bold;
+				text-shadow: 0px -1px #103E5C;
+			}
+			
+			footer {
+				width: 100%;
+				height: 44px;
+				position: absolute;
+				bottom: 0px;
+				line-height: 44px;
+				text-align: center;
+				font-weight: bold;
+				color: #FFF;
+			}
+			
+			.fbt {
+				width: 50%;
+				height: 100%;
+				background-color: #218dd5;
+				float: left;
+			}
+			
+			.fbt:active {
+				-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5);
+				box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5);
+			}
+		</style>
+	</head>
+
+	<body style="background-color: #000000;">
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">扫描二维码</h1>
+		</header>
+		<div id="bcid">
+			<!--<div style="height:40%"></div>
+			<p class="tip">...载入中...</p>-->
+		</div>
+		<footer>
+			<div class="fbt" onclick="back();">取　 消</div>
+			<div class="fbt" onclick="scanPicture();">从相册选择二维码</div>
+		</footer>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/app.js"></script>
+		<script type="text/javascript">
+			var _self;
+			var scan;
+			var scan_style = {
+					frameColor: "#12b7f5",
+					scanbarColor: "#12b7f5",
+					background: ""
+				}
+			mui.plusReady(function() {
+
+				// 获取窗口对象
+				_self = plus.webview.currentWebview();
+				// 开始扫描
+				plus.nativeUI.showWaiting('正在加载', {
+					loading: {
+						display: 'inline'
+					}
+				});
+				setTimeout(function() {
+					var filter = [plus.barcode.QR, plus.barcode.CODE128,plus.barcode.EAN13,plus.barcode.EAN8];
+					scan = new plus.barcode.Barcode('bcid', filter, scan_style);
+					scan.onmarked = onmarked;
+					scan.onerror = onerror;
+					scan.start({
+						conserve: true,
+						filename: "_doc/barcode/"
+					});
+					plus.nativeUI.closeWaiting();
+				}, 200);
+			})
+			function onerror(e){  
+                plus.nativeUI.alert('开启扫描失败,请稍后再试');
+            }
+			// 二维码扫描成功
+			function onmarked(type, result, file) {
+				switch(type) {
+					case plus.barcode.CODE128:
+						type = "CODE128";
+						break;
+					case plus.barcode.QR:
+						type = "QR";
+						break;
+					default:
+						type = "其它" + type;
+						break;
+				}
+				result = result.replace(/\n/g, '');
+				var page;
+				console.log(_self.page);
+				if ( _self.page == 'emptyVan-ys' ) {
+					page = 'emptyVan-ys.html';
+				} else if ( _self.page == 'emptyVan-anji'){
+					page = 'emptyVan-anji.html';
+				} else if ( _self.page == 'fast-good-details-ys' ) {
+					page = 'fast-good-details-ys.html';
+				} else if ( _self.page == 'fast-good-details-anji' ) {
+					page = 'fast-good-details-anji.html';
+				} else if ( _self.page == 'search' ) {
+					page = 'search.html';
+				}
+				console.log(result+','+page);
+				mui.fire(plus.webview.getWebviewById(page),'scanLandCode',{
+					type: _self.type,
+					code: result
+				});
+				back();
+			}
+			function back() {
+				mui.back();
+			}
+			// 从相册中选择二维码图片 
+			function scanPicture() {
+				plus.gallery.pick(function(path) {
+					plus.barcode.scan(path, onmarked, function(error) {
+						plus.nativeUI.alert("无法识别此图片");
+					});
+				}, function(err) {
+					plus.nativeUI.alert("Failed: " + err.message);
+				});
+			}
+		</script>
+	</body>
+
+</html>

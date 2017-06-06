@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/main.css" />
+	</head>
+	<body>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider" >
+				<div class="mui-slider-group mui-slider-loop">
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="../images/mall-default-3.jpg">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../images/mall-default-3.jpg">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../images/mall-default-3.jpg">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../images/mall-default-3.jpg">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="../images/mall-default-3.jpg">
+						</a>
+					</div>
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="../images/mall-default-3.jpg">
+						</a>
+					</div>
+				</div>
+				<div class="mui-slider-indicator">
+					<div class="mui-indicator mui-active"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+				</div>
+			</div>
+			<div class="search-box">
+				<div class="search">
+					请输入运单号查询
+					<div class="scan">
+						<span class="mui-icon iconfont icon-erweima"></span>
+					</div>
+				</div>
+			</div>
+			<div class="box">
+				<ul>
+					<li class="emptyVan">
+						<img src="../images/chayuekongxiang.png" />
+						<span>查约空箱</span>
+					</li>
+					<li class="normal">
+						<img src="../images/zaixiangzhengcahng.png" />
+						<span>在箱正常</span>
+					</li>
+					<li class="overtime">
+						<img src="../images/chaoqikuaijian.png" />
+						<span>超期快件</span>
+					</li>
+				</ul>
+			</div>
+			<div class="function">
+				<ul>
+					<li class="hasTaken">
+						<img src="../images/yiqukuaijian.png" />
+						<span>已取快件</span>
+					</li>
+					<li class="yuyue">
+						<img src="../images/wodeyuyue.png" />
+						<span>我的预约</span>
+					</li>
+					<li class="embraceParts">
+						<img src="../images/lanjian.png" />
+						<span>揽件</span>
+					</li>
+				</ul>
+				<ul>
+					<li class="combatGains">
+						<img src="../images/wodezhanji.png" />
+						<span>我的战绩</span>
+					</li>
+					<li class="coupon">
+						<img src="../images/wodequan.png" />
+						<span>我的券</span>
+					</li>
+					<li class="fault">
+						<img src="../images/guzhangshenbao.png" />
+						<span>故障申报</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/fontsize.js"></script>
+	<script src="../js/app.js"></script>
+	<script>
+		mui.init();
+			function $c(id){
+				return document.getElementsByClassName(id)[0];
+			}
+			var _self,
+				scan = $c('scan'),
+				search = $c('search'),
+				emptyVan = $c('emptyVan'),
+				normal = $c('normal'),
+				overtime = $c('overtime'),
+				hasTaken = $c('hasTaken'),
+				yuyue = $c('yuyue'),
+				embraceParts = $c('embraceParts'),
+				combatGains = $c('combatGains'),
+				coupon = $c('coupon'),
+				fault = $c('fault');
+			var slider = mui('#slider').slider({interval: 5000});
+			mui.plusReady(function(){
+				_self = plus.webview.currentWebview();
+				
+				scan.addEventListener('tap', function() {
+					
+				});
+				search.addEventListener('tap', function() {
+					app.oPage('search.html',{},'fade-in');
+				});
+				emptyVan.addEventListener('tap', function() {
+					app.oPage('emptyVan.html');
+				});
+				normal.addEventListener('tap', function() {		
+					app.oPage('isBox-normal.html');
+				});
+				overtime.addEventListener('tap', function() {	// 派件 超期
+					app.oPage('normal.html',{
+						title: '超期快件',
+						type: 'timeout',
+						status: '已超期',
+						remark: '快件已超期，等待处理'
+					});
+				});
+				hasTaken.addEventListener('tap', function() {	// 派件 已签收
+					app.oPage('normal.html',{
+						title: '已取快件',
+						type: 'taken',
+						status: '已完成',
+						remark:'快件已取走，交易完成'
+					});
+				});
+				yuyue.addEventListener('tap', function() {
+					app.oPage('send-list.html');				// 我的预约
+				});
+				embraceParts.addEventListener('tap', function() {
+					app.oPage('embraceParts.html',{
+						title: '揽件'
+					});
+				});
+				coupon.addEventListener('tap', function() {
+					app.oPage('coupon.html',{
+						title: '我的券'
+					});
+				});
+				fault.addEventListener('tap', function() {
+					app.oPage('fault.html');
+				});
+//				normal.addEventListener('tap', function() {
+//					page('normal.html','在箱正常');
+//					app.oPage('emptyVan.html',{
+//						title: '在箱正常'
+//					});
+//				});
+//				normal.addEventListener('tap', function() {
+//					page('normal.html','在箱正常');
+//					app.oPage('emptyVan.html',{
+//						title: '查约空箱'
+//					});
+//				});
+			});
+			
+		
+	</script>
+</html>

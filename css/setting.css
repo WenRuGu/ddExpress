@@ -1,0 +1,134 @@
+
+.mui-content{
+	height: 100%;
+	overflow: hidden;
+}
+.setting-top{
+	position: relative;
+	width: 100%;
+	height: 1.8rem;
+	margin-top: 0.2rem;
+	background: #fff;
+	padding:0.2rem 0.3rem;
+}
+.user-pic{	
+	float: left;
+	width:24%;
+	min-width:1.3rem;
+	height: 1.3rem;
+}
+.portrait{
+	width: 1.3rem;
+	height: 1.3rem;
+	border-radius: 50%;
+}
+.user-info{
+	float: left;
+	width: 76%;
+	padding: 0.2rem 0;
+}
+.user-info span{
+	color: #6e6e6e;
+	font-size: 0.28rem;
+}
+.user-info .realName{
+	display: inline-block;
+	width: 50%;
+	color: #333;
+	font-size: 0.34rem;
+}
+.user-info p{
+	height: 0.4rem;
+	margin-bottom: 5px;
+}
+.user-info.mui-navigate-right:after{
+	font-size: 0.5rem;
+}
+.mobile{
+	margin-left: 30px;
+}
+/* ======== setting-center ========= */
+.setting-center{
+	width: 100%;
+	height: 1.8rem;
+	margin: 0.3rem 0;
+	background: #fff;
+	display: -webkit-flex;
+    display: flex;
+    
+    -webkit-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+}
+.setting-center li{
+	text-align: center;
+	
+	-webkit-box-flex: 1.0;
+	-webkit-flex-grow: 1;
+	flex-grow: 1;
+}
+.setting-center li span:nth-child(1){
+	display: block;
+	width: 100%;
+	font-size: 0.44rem;
+	margin-top: 0.5rem;
+	margin-bottom: 0.1rem;
+}
+.setting-center li span:nth-child(2){
+	display: block;
+	width: 100%;
+	font-size: 0.28rem;
+	color: #6e6e6e;
+}
+.blue{
+	color:#488DC9;
+}
+.red{
+	color:#EC6066;
+}
+.yellow{
+	color:#FFBB2A;
+}
+
+/* ========== setting-bottom ========== */
+
+.setting-bottom{
+	min-height: 10rem;
+	background: #fff;
+}
+.setting-bottom ul li.mui-table-view-cell:after{
+	left: 1.1rem;
+}
+.setting-bottom ul li.mui-table-view-cell{
+	height: 0.9rem;
+	padding: 0;
+	text-indent: 1.1rem;
+}
+.mui-table-view-cell>a:not(.mui-btn){
+	height: 0.9rem;
+	line-height: 0.9rem;
+	margin: 0;
+	font-size: 0.34rem;
+	color: #3e3e3e;
+}
+.setting-bottom ul li:nth-child(1) a{
+	background: url(../images/qianbao@3x.png)no-repeat 0.28rem 0.2rem;
+	background-size: 0.48rem 0.48rem;
+}
+.setting-bottom ul li:nth-child(2) a{
+	background: url(../images/fujinqunliao@3x.png)no-repeat 0.28rem 0.2rem;
+	background-size: 0.48rem 0.48rem;
+}
+.setting-bottom ul li:nth-child(3) a{
+	background: url(../images/shezhi@3x.png)no-repeat 0.28rem 0.2rem;
+	background-size: 0.48rem 0.48rem;
+}
+.setting-bottom ul li:nth-child(4) a{
+	background: url(../images/attention_shezhi@3x.png)no-repeat 0.28rem 0.2rem;
+	background-size: 0.48rem 0.48rem;
+}
+
+
+
+

@@ -1,0 +1,470 @@
+{
+  "index.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "images/jilu_hui.png",
+      "images/kuaidi_hui.png",
+      "images/me_hui.png",
+      "images/zhuye_lan.png",
+      "pages/main.html",
+      "js/index.js",
+      "images/kuaidi_lan.png",
+      "images/zhuye_hui.png",
+      "images/me_lan.png",
+      "images/jilu_lan.png",
+      "css/style.css",
+      "css/main.css",
+      "js/sha1.js",
+      "js/common.js",
+      "js/md5.js",
+      "js/app.js",
+      "js/convertor.js",
+      "js/baiduMap.js",
+      "js/gps.js",
+      "fonts/iconfont.woff",
+      "css/iconfont.css"
+    ],
+    "refer": [
+      "pages/setting.html",
+      "pages/record.html",
+      "pages/main.html",
+      "pages/express.html",
+      "pages/login.html"
+    ]
+  },
+  "pages/setting.html": {
+    "resources": [
+      "css/setting.css",
+      "images/qianbao@3x.png",
+      "images/fujinqunliao@3x.png",
+      "css/mui.min.css",
+      "images/attention_shezhi@3x.png",
+      "images/shezhi@3x.png",
+      "js/app.js",
+      "js/common.js",
+      "images/mall-default-3.jpg",
+      "fonts/mui.ttf",
+      "js/fontsize.js",
+      "css/style.css",
+      "js/mui.min.js",
+      "js/mui.view.js",
+      "css/feedback.css"
+    ],
+    "refer": [
+      "pages/account.html",
+      "pages/my-setting.html",
+      "pages/contact.html",
+      "pages/normal.html",
+      "pages/embraceParts.html",
+      "pages/info.html"
+    ]
+  },
+  "pages/record.html": {
+    "resources": [
+      "css/record.css",
+      "css/normal.css",
+      "css/mui.min.css",
+      "js/fontsize.js",
+      "css/style.css",
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "css/pull.css",
+      "js/template.js",
+      "css/embraceParts.css",
+      "js/mui.js",
+      "fonts/mui.ttf",
+      "js/app.js"
+    ]
+  },
+  "pages/main.html": {
+    "resources": [
+      "images/zaixiangzhengcahng.png",
+      "images/wodeyuyue.png",
+      "images/chaoqikuaijian.png",
+      "images/yiqukuaijian.png",
+      "css/main.css",
+      "images/wodezhanji.png",
+      "images/lanjian.png",
+      "js/fontsize.js",
+      "css/style.css",
+      "images/guzhangshenbao.png",
+      "images/wodequan.png",
+      "images/chayuekongxiang.png",
+      "images/mall-default-3.jpg",
+      "css/mui.min.css",
+      "js/app.js",
+      "css/iconfont.css",
+      "fonts/iconfont.woff",
+      "js/mui.min.js"
+    ],
+    "refer": [
+      "pages/normal.html",
+      "pages/embraceParts.html",
+      "pages/emptyVan.html",
+      "pages/isBox-normal.html",
+      "pages/search.html",
+      "pages/send-list.html",
+      "pages/fault.html",
+      "pages/coupon.html"
+    ]
+  },
+  "pages/normal.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/template.js",
+      "css/normal.css",
+      "css/pull.css",
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "js/mui.min.js"
+    ]
+  },
+  "pages/embraceParts.html": {
+    "resources": [
+      "css/embraceParts.css",
+      "js/common.js",
+      "css/mui.min.css",
+      "js/template.js",
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "css/pull.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ]
+  },
+  "pages/account.html": {
+    "resources": [
+      "css/account.css",
+      "css/mui.min.css",
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "js/template.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ],
+    "refer": [
+      "pages/recharge.html"
+    ]
+  },
+  "pages/my-setting.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ],
+    "refer": [
+      "pages/login.html"
+    ]
+  },
+  "pages/contact.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ]
+  },
+  "pages/express.html": {
+    "resources": [
+      "js/fontsize.js",
+      "css/embraceParts.css",
+      "css/mui.min.css",
+      "images/mall-default-3.jpg",
+      "js/mui.js",
+      "css/style.css",
+      "css/pull.css",
+      "js/template.js",
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "fonts/mui.ttf",
+      "js/app.js"
+    ],
+    "refer": [
+      "pages/order-details-anji.html",
+      "pages/order-details-ys.html"
+    ]
+  },
+  "pages/emptyVan.html": {
+    "resources": [
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "css/mui.min.css",
+      "js/template.js",
+      "css/pull.css",
+      "js/jquery-1.7.2.min.js",
+      "js/base_param.js",
+      "js/app.js",
+      "js/baiduMap.js",
+      "js/mui.min.js",
+      "js/convertor.js",
+      "js/fontsize.js",
+      "js/gps.js"
+    ],
+    "refer": [
+      "pages/emptyVan2.html",
+      "pages/emptyVan-anji.html",
+      "pages/emptyVan-ys.html"
+    ]
+  },
+  "pages/login.html": {
+    "resources": [
+      "js/md5.js",
+      "css/mui.min.css",
+      "js/sha1.js",
+      "js/fontsize.js",
+      "css/style.css"
+    ]
+  },
+  "pages/isBox-normal.html": {
+    "resources": [
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "css/mui.min.css",
+      "js/template.js",
+      "css/pull.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ],
+    "refer": [
+      "pages/fast-good-details.html",
+      "pages/fast-good-details-anji.html",
+      "pages/fast-good-details-ys.html"
+    ]
+  },
+  "pages/emptyVan2.html": {
+    "resources": [
+      "css/emptyVan2.css",
+      "css/iconfont.css",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "pages/scan-order.html",
+      "pages/indexed-list.html"
+    ]
+  },
+  "pages/scan-order.html": {
+    "resources": [
+      "css/mui.min.css"
+    ]
+  },
+  "pages/indexed-list.html": {
+    "resources": [
+      "css/mui.min.css"
+    ]
+  },
+  "pages/emptyVan-anji.html": {
+    "resources": [
+      "css/emptyVan2.css",
+      "css/iconfont.css",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "pages/contacts-list.html",
+      "pages/scan-order.html",
+      "pages/deliver-confirm-anji.html"
+    ]
+  },
+  "pages/contacts-list.html": {
+    "resources": [
+      "css/dstyle.css",
+      "js/jquery.charfirst.pinyin.js",
+      "css/mui.min.css",
+      "js/jquery-1.7.2.min.js",
+      "js/sort.js"
+    ]
+  },
+  "pages/emptyVan-ys.html": {
+    "resources": [
+      "css/emptyVan2.css",
+      "css/iconfont.css",
+      "css/mui.min.css"
+    ],
+    "refer": [
+      "pages/scan-order.html",
+      "pages/contacts-list.html",
+      "pages/newboxconfirm.html"
+    ]
+  },
+  "pages/fast-good-details.html": {
+    "resources": [
+      "css/fast-good-details.css",
+      "images/open-box.png",
+      "images/fast-good-details-bottom.png",
+      "images/contact.png",
+      "css/mui.min.css",
+      "css/pull.css"
+    ]
+  },
+  "pages/search.html": {
+    "resources": [
+      "css/mui.min.css",
+      "css/iconfont.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ],
+    "refer": [
+      "pages/scan-order.html",
+      "pages/order-details-ys.html",
+      "pages/order-search.html",
+      "pages/order-search-list.html"
+    ]
+  },
+  "pages/fast-good-details-anji.html": {
+    "resources": [
+      "css/fast-good-details.css",
+      "images/open-box.png",
+      "images/fast-good-details-bottom.png",
+      "css/mui.min.css",
+      "images/contact.png",
+      "js/base_param.js"
+    ],
+    "refer": [
+      "pages/scan-order.html",
+      "pages/send-confirm-anji.html"
+    ]
+  },
+  "pages/fast-good-details-ys.html": {
+    "resources": [
+      "css/fast-good-details.css",
+      "images/open-box.png",
+      "images/fast-good-details-bottom.png",
+      "images/contact.png",
+      "css/mui.min.css",
+      "css/pull.css"
+    ],
+    "refer": [
+      "pages/scan-order.html",
+      "pages/order-details-ys.html"
+    ]
+  },
+  "pages/order-details-ys.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/base_param.js"
+    ]
+  },
+  "pages/send-list.html": {
+    "resources": [
+      "css/normal.css",
+      "css/mui.min.css",
+      "js/mui.pullToRefresh.js",
+      "js/mui.pullToRefresh.material.js",
+      "css/pull.css",
+      "js/template.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ]
+  },
+  "pages/info.html": {
+    "resources": [
+      "js/mui.imageViewer.js",
+      "js/mui.zoom.js",
+      "css/mui.min.css",
+      "js/popover.js",
+      "css/portrait.css",
+      "js/mui.previewimage.js",
+      "images/attention_shezhi@3x.png",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ]
+  },
+  "pages/recharge.html": {
+    "resources": [
+      "css/mui.min.css",
+      "images/zhifu.png",
+      "css/iconfont.css",
+      "images/weixin.png"
+    ],
+    "refer": [
+      "pages/recharge-details.html"
+    ]
+  },
+  "pages/recharge-details.html": {
+    "resources": [
+      "css/pull.css",
+      "css/mui.min.css",
+      "js/mui.pullToRefresh.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/mui.pullToRefresh.material.js",
+      "js/fontsize.js",
+      "js/template.js"
+    ]
+  },
+  "pages/fault.html": {
+    "resources": [
+      "css/feedback.css",
+      "css/mui.min.css",
+      "js/feedback.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ]
+  },
+  "pages/coupon.html": {
+    "resources": [
+      "images/coupon-top.png",
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "js/fontsize.js",
+      "js/app.js",
+      "js/template.js"
+    ]
+  },
+  "pages/order-details-anji.html": {
+    "resources": [
+      "js/base_param.js",
+      "css/mui.min.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js"
+    ]
+  },
+  "pages/deliver-confirm-anji.html": {
+    "resources": [
+      "css/mui.min.css",
+      "images/ok.png"
+    ]
+  },
+  "pages/order-search.html": {
+    "resources": [
+      "css/mui.min.css",
+      "js/base_param.js",
+      "js/jquery-1.7.2.min.js",
+      "js/base64.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js",
+      "js/md5.js"
+    ]
+  },
+  "pages/order-search-list.html": {
+    "resources": [
+      "js/base64.js",
+      "images/kd/shentong.png",
+      "css/mui.min.css",
+      "images/kd/normal.png",
+      "js/base_param.js",
+      "images/kd/YD.png",
+      "images/kd/ZTO.png",
+      "images/kd/SF.png",
+      "images/kd/HHTT.png"
+    ],
+    "refer": [
+      "pages/order-search.html"
+    ]
+  },
+  "pages/send-confirm-anji.html": {
+    "resources": [
+      "images/ok.png",
+      "css/mui.min.css"
+    ]
+  }
+}

@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style type="text/css">
+			.btn {
+				background: #12B7F5;
+				width: 90%;
+				height: 45px;
+				float: left;
+				margin-top: 0.5rem;
+				margin-left:5%;
+				color: #fff;
+				font-size: 14px;
+				border: none;
+				-webkit-transition: none;
+				transition: none;
+			}
+			.btn:enabled:active{
+				background: dodgerblue;
+			}
+			img{
+				width: 50%;
+				margin-left: 25%;
+				margin-top: 50px;
+				/*height: 188px;*/
+			}
+			p.first{
+				margin-top: 0.4rem;
+				margin-bottom: 0.1rem;
+				font-size: 0.32rem;
+				text-align: center;
+			}
+			p.last{
+				font-size: 0.3rem;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>主页</span></a>
+		    <h1 class="mui-title">标题</h1>
+		</header>
+		<div class="mui-content">
+		<img src="../images/ok.png"/>
+		<p class="first">您的包裹已整装待发</p>
+		<p class="last">要记得关箱门哦</p>
+			<button type="button" class="mui-btn btn continue">继续存物</button>
+			<button type="button" class="mui-btn btn cell">联系运维</button>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/app.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			mui.init();
+			
+			mui.plusReady(function() {
+				var _self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator:'none'
+				});
+				mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
+				/**
+				 * 联系运维
+				 */
+				app.$c('cell').addEventListener('tap', function() {
+					plus.device.dial(app.local.get("maintainPhone"), false);
+				}
+				
+				/**
+				 * 继续存物
+				 */
+				app.$c('continue').addEventListener('tap', function() {
+					app.local.set('isScan', true);
+					plus.webview.getWebviewById("emptyVan-ys.html").reload();
+					mui.oldback();
+				});	
+				/**
+				 * 回到主页面
+				 */
+				mui.oldback = mui.back;
+				mui.back = function() {
+					app.local.clear("isScan");
+					plus.webview.close('emptyVan-ys.html');
+					plus.webview.close('emptyVan.html');
+					plus.webview.close(_self);
+				}
+			});
+			
+		</script>
+	</body>
+
+</html>

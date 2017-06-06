@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+		<style type="text/css">
+			nav{
+				background: #fff;
+			}
+			nav a {
+				position: relative;
+			}
+			a img{
+				position: absolute;
+				top: 8px;
+				left: 50%;
+				margin-left: -11px;
+				width: 22px;
+				height: 22px;
+			}
+			nav a span{
+				display: block;
+				margin-top: 28px;
+				font-size: 12px!important;
+			}
+			.mui-bar-tab .mui-tab-item.mui-active{
+				color: #929292;
+			}
+			nav.mui-bar {
+				background-color: #fff!important;
+			}
+			.active{
+				color: #12B7F5;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-icon iconfont icon-qiandao mui-pull-left"></a>
+		    <h1 class="mui-title">主页</h1>
+		</header>
+		<nav class="mui-bar mui-bar-tab">
+			<a id="defaultTab" class="mui-tab-item mui-active" href="pages/main.html">
+				<img src="images/zhuye_lan.png"/>
+				<span class="mui-tab-label">主页</span>
+			</a>
+			<a class="mui-tab-item" href="pages/express.html">
+				<img src="images/kuaidi_hui.png"/>
+				<span class="mui-tab-label">滴滴快递</span>
+			</a>
+			<a class="mui-tab-item" href="pages/record.html">
+				<img src="images/jilu_hui.png"/>
+				<span class="mui-tab-label">投递记录</span>
+			</a>
+			<a class="mui-tab-item" href="pages/setting.html">
+				<img src="images/me_hui.png"/>
+				<span class="mui-tab-label">我的模块</span>
+			</a>
+		</nav>
+		<script src="js/mui.min.js"></script>
+		<script src="js/baiduMap.js"></script>
+		<script src="js/gps.js"></script>
+		<script src="js/convertor.js"></script>
+		<script src="js/md5.js"></script>
+		<script src="js/sha1.js"></script>
+		<script src="js/app.js" type="text/javascript"></script>
+		<script src="js/index.js"></script>
+	</body>
+
+</html>

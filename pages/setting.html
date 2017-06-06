@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" href="../css/setting.css" />
+	</head>
+	<body>
+		<div class="mui-content">
+			<div class="setting-top">
+				<div class="user-pic">
+					<img class="portrait" src="../images/attention_shezhi@3x.png"/>
+				</div>
+				<div class="user-info mui-navigate-right">
+					<p>
+						<span class="realName mui-ellipsis"></span>
+						<!--<span class="star">星星</span>-->
+					</p>
+					<span class="express"></span>
+					<!--<span class="amount">999999999单</span>-->
+					<span class="mobile"></span>
+				</div>
+			</div>
+			<ul class="setting-center">
+				<li>
+					<span class="blue">22</span>
+					<span>待收件</span>
+				</li>
+				<li>
+					<span class="red">33</span>
+					<span>超期件</span>
+				</li>
+				<li>
+					<span class="yellow">123</span>
+					<span>已取件</span>
+				</li>
+			</ul>
+			<div class="setting-bottom">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right account">
+							我的账户
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right contact">
+							联系我们
+						</a>
+					</li>
+					<li class="mui-table-view-cell">
+						<a class="mui-navigate-right my-setting">
+							设置
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+	</body>
+	<script src="../js/mui.min.js"></script>
+	<script src="../js/fontsize.js"></script>
+	<script src="../js/common.js"></script>
+	<script src="../js/app.js"></script>
+	<script>
+		mui.init();
+		function $q(ele, doc) {
+			return document.querySelector(ele);
+		}
+		var _self;
+		var portrait = app.$c('portrait');
+		mui.plusReady(function() {
+			_self = plus.webview.currentWebview();
+			_self.setStyle({
+				scrollIndicator: 'none'
+			});
+			
+			function order_count() {
+				app.$c('express').innerHTML = app.local.get('userCompany');
+				app.$c('realName').innerHTML = app.local.get('newRealName');
+//				app.toast(app.local.get('newRealName'));
+				app.$c('mobile').innerHTML = app.local.get('userMobile');
+				portrait.src = app.local.get('userPic') || '../images/attention_shezhi@3x.png';
+				app.info.order( function(data) {
+					console.log('setting = '+JSON.stringify(data));
+					if ( data.code == 0 ) {
+						app.$c('blue').innerHTML = data.data.waitTake;  // 待取件数量
+						app.$c('red').innerHTML = data.data.timeout;	// 超时数量
+						app.$c('yellow').innerHTML = data.data.deliver;	// 今日派件数量
+					}
+				});
+			}
+			order_count();
+			window.addEventListener('login-setting', function(e) {
+				order_count();
+			});
+			window.addEventListener('update-userPic', function(e) {
+				var pic = app.local.get('userPic') || '../images/attention_shezhi@3x.png';
+//				if ( pic == '' ||  )app.local.get('userPic')
+				portrait.src = '../images/attention_shezhi@3x.png';
+				setTimeout(function() {
+					portrait.src = pic;
+				},60);
+			});
+			// 个人信息
+			app.$c('setting-top').addEventListener('tap', function() {
+				app.oPage('info.html');
+			});
+			// 待收件
+			$q('.setting-center li:nth-child(1)').addEventListener('tap',function() {
+				app.oPage('embraceParts.html');
+			});
+			// 超期件
+			$q('.setting-center li:nth-child(2)').addEventListener('tap',function() {
+				app.oPage('normal.html',{
+					title: '超期快件',
+					type: 'timeout',
+					status: '已超期',
+					remark: '快件已超期，等待处理'
+				});
+			});
+			// 已取件
+			$q('.setting-center li:nth-child(3)').addEventListener('tap',function() {
+				app.oPage('normal.html',{
+					title: '已取快件',
+					type: 'taken',
+					status: '已完成',
+					remark:'快件已取走，交易完成'
+				});
+			});
+			// 我的账户
+			app.$c('account').addEventListener('tap', function() {
+				app.oPage('account.html');
+			});
+			// 联系我们
+			app.$c('contact').addEventListener('tap', function() {
+				app.oPage('contact.html');
+			});
+			// 设置
+			app.$c('my-setting').addEventListener('tap', function() {
+				app.oPage('my-setting.html');
+			});
+		})
+	</script>
+</html>

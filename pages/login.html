@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style>
+			body,.mui-content{
+				background: #fff;
+			}
+			.login {
+				background: #12B7F5;
+				width: 90%;
+				height: 45px;
+				float: left;
+				margin-top: 1rem;
+				margin-left:5%;
+				color: #fff;
+				font-size: 14px;
+				border: none;
+				-webkit-transition: none;
+				transition: none;
+			}
+			.login:enabled:active{
+				background: dodgerblue;
+			}
+			.mobile-login{
+				margin-top: 20px;
+				width: 90%;
+				margin-left:5%;
+				border: 1px solid #d8d8d8;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+			}
+			.mobile-login .mobile{
+				width: 65%;
+				height: 1.1rem;
+				float: left;
+			}
+			.code{
+				position: relative;
+				width: 35%;
+				height: 1.1rem;
+				line-height: 1.1rem;
+				font-size: 0.3rem;
+				text-align: center;
+				float: left;
+				color: #ff0011;
+			}
+			.code:after{
+				position: absolute;
+			    top: 15%;
+			    left: 0;
+			    width: 1px;
+			    height: 70%;
+			    content: '';
+			    -webkit-transform: scaleX(.5);
+			    transform: scaleX(.5);
+			    background-color: #c8c7cc;
+			}
+			.mobile-login .checkcode{
+				border-top: 1px solid #d8d8d8;
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+			input[type=text],input[type=number]{
+				height: 1.1rem;
+				margin-bottom: 0;
+				font-size: 0.32rem;
+				border: none;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+				padding: 0;
+				text-indent: 10px;
+			}
+			.bot-p{
+				float: left;
+				display: block;
+				width: 100%;
+				height: 40px;
+				margin-top: 20px;
+				font-size: 0.32rem;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <h1 class="mui-title">用户登录</h1>
+		</header>
+		<div class="mui-content">
+			<div class="login-box">
+				<div class="mobile-login">
+					<input type="number" class="mobile" placeholder="请输入手机号" />
+					<div class="code">
+						获取验证码
+					</div>
+					<input type="text" class="checkcode" placeholder="请输入验证码"/>
+				</div>
+			</div>
+			<button type="button" data-loading-text="登录中" class="mui-btn login">登录</button>
+			<p class="bot-p">*请确保该手机号已创建快递员账号</p>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/md5.js"></script>
+		<script src="../js/sha1.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var code_num = 60;
+			var mobile = app.$c('mobile');
+			var checkcode = app.$c('checkcode');
+			var code = app.$c('code');
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator: 'none'
+				});
+				
+				/*
+				 * 旧系统登录
+				 * */
+				function oldLogin() {
+					console.log('aa');
+					app.userlogin.oldlogin( mobile.value, checkcode.value, function(data) {
+						console.log(JSON.stringify(data)+','+data);
+						mui('.login').button('reset');
+						if(data.success) {
+							mui.toast(data.message);
+							var userInfo = data.data.userInfo;
+							//保存用户基本信息
+							app.local.set("userId", userInfo.id)
+							app.local.set("realName", userInfo.realName);
+							app.local.set("userName", userInfo.userName);
+							app.local.set("userMobile", userInfo.mobilePhone);
+							app.local.set("userCompany", data.data.companyName);
+							app.local.set("userCompanyId", data.data.companyId);
+							app.local.set("sessionid", data.data.sessionid);
+
+							//随机授权码
+							app.local.set("randomDeviceToken", userInfo.mobile_dev_num);
+							app.local.set('loginFlag', 'true');
+							plus.webview.getWebviewById('pages/record.html').reload();	// 重新登录刷新页面
+							plus.webview.getWebviewById('pages/express.html').reload();
+							plus.webview.getWebviewById('pages/setting.html').reload();
+							mui.fire(plus.webview.getLaunchWebview(),'login-sec',{});   // 主页页面切换
+							plus.webview.close('my-setting.html');
+							plus.webview.close(_self);
+						} else {
+							app.toast(data.message, "center");
+						}
+					}, function(e) {
+						mui('.login').button('reset');
+						console.log(JSON.stringify(e));
+					});
+				}
+				/*
+				 * 新系统登录
+				 * */
+				app.$c('login').addEventListener('tap', function() {
+					if(!mobile.value) {
+						app.toast("请输入手机号", 'center');
+						return;
+					} else if (mobile.value.length != 11) {
+						app.toast("请输入11位的手机号码", 'center');
+						return;
+					} else if (!checkcode.value) {
+						app.toast('请输入验证码', 'center');
+						return;
+					}
+					mui('.login').button('loading');
+					var myDate = new Date().Format("yyyy/MM/dd");
+					var psw_code = hex_md5(myDate + mobile.value + "9FA6EB4SDFSFDSDFD075A98F84SDFSDFSDFSDFF896CF0DSDFSDFSDFSDF451");
+					psw_code = psw_code.toUpperCase();
+//					var psw_code = hex_md5(hex_md5(mobile.value) + hex_sha1(mobile.value) + mobile.value);
+					console.log(mobile.value+'，'+psw_code);
+					app.userlogin.newlogin( mobile.value, psw_code,function(data) {
+						console.log(JSON.stringify(data));
+						if (data.code == 0) {
+							mui.fire(plus.webview.getLaunchWebview(),'page');
+							app.local.set('token', data.data.token);  // 验证token
+							app.local.set('courierId', data.data.id); // 快递员id
+							oldLogin();
+						} else if (data.code == 3) {
+							mui('.login').button('reset');
+							app.toast(data.message);
+						} else {
+							mui('.login').button('reset');
+							app.toast(data.message);
+						}
+					}, function(e, type) {
+						mui('.login').button('reset');
+						app.toast('登录超时，请稍后再试');
+					});
+				});
+				/*
+				 *	获取日期格式处理   // 暂不处理，必须要
+				 * */
+				Date.prototype.Format = function (fmt) { //author: meizz 
+				    var o = {
+				        "M+": this.getMonth() + 1,       //月份 
+				        "d+": this.getDate(), 			 //日 
+				        "h+": this.getHours(), 			 //小时 
+				        "m+": this.getMinutes(), 		 //分 
+				        "s+": this.getSeconds(), 		 //秒 
+				        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+				        "S": this.getMilliseconds() 	 //毫秒 
+				    };
+				    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+				    for (var k in o)
+				    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+				    return fmt;
+				}
+				/*
+				 * 60秒再次获取验证码
+				 * */
+				function getCode() {
+					if ( code_num == 1 ) {
+						code_num = 60;
+						code.innerHTML = '获取验证码';
+					} else {
+						code_num--;
+						code.innerHTML = code_num + '秒后再次获取';
+						setTimeout(function() {
+							getCode();
+						}, 1000);
+					}
+				}
+				/*
+				 * 发送验证码
+				 * */
+				app.$c('code').addEventListener('tap', function() {
+					console.log(mobile.value);
+					if ( !mobile.value ) {
+						app.toast('请输入手机号', 'center');
+						return;
+					} else if ( mobile.value.length != 11 ) { 
+						app.toast('请输入正确的手机号', 'center');
+						return;
+					} else {
+						if ( code_num == 60 ) {
+							app.toast('正在获取', 'center');
+							app.userlogin.getcheckcode( mobile.value, function(data) {
+								console.log(JSON.stringify(data));
+								if ( data.success ) {
+									getCode();
+								} else {
+									app.toast(data.message, 'center');
+								}
+							}, function(e) {
+								console.log(JSON.stringify(e));
+							});
+						}
+					}
+				});
+				app.quit();
+			})
+		</script>
+	</body>
+
+</html>

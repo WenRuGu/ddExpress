@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" type="text/css" href="../css/pull.css"/>
+		<style>
+			.mui-scroll-wrapper{
+				top: 44px;
+			}
+			.mui-table-view{
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				background: #fff;
+			}
+			.mui-table-view li{
+				position: relative;
+				width: 100%;
+				height: 1.26rem;
+				padding:0 0.3rem;
+			}
+			li:after{
+				content: '';
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right:0;
+				height: 1px;
+				background-color: #c8c7cc;
+				-webkit-transform: scaleY(0.5);
+				transform: scaleY(0.5);
+			}
+			li:last-child:after{
+				height:0;
+			}
+			.detail{
+				float: left;
+				width: 65%;
+				height: 1.26rem;
+			}
+			.mui-ellipsis{
+				font-size: 0.3rem;
+				color: #333;
+				margin-top: 0.2rem;
+			}
+			.time{
+				font-size: 0.26rem;
+				color:#888;
+			}
+			.money{
+				width: 35%;
+				float: left;
+				height: 1.26rem;
+				line-height: 1.26rem;
+				font-size: 0.4rem;
+				text-align: right;
+				color: #333;
+			}
+			.blue{
+				color: #38f;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">充值明细</h1>
+		</header>
+		<div class="mui-content">
+			 <div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+			      		<!--<li>
+							<div class="detail">
+								<p class="mui-ellipsis">换电换电消费换电消费</p>
+								<p class="time">2017-03-05 14:23:12</p>
+							</div>
+							<span class="money">-100000.00</span>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+			{{ each data as item i }}
+				<li>
+					<div class="detail">
+						<p class="mui-ellipsis">{{item.bizType}}</p>
+						<p class="time">{{item.createTime}}</p>
+					</div>
+					<span class="money">{{item.money}}</span>
+				</li>
+			{{ /each }}
+		</script>
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var pull;	
+			var pageNo = 0;								// 第几页
+			var pageSize = 10;							// 一页数量
+			var balanceBox = app.$c('mui-table-view');	// 数据容器
+			var deceleration = mui.os.ios?0.0006:0.0003;// 滚动速度
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				title = _self.title;
+				type = _self.type;
+				remark = _self.remark;
+				mui('.mui-scroll-wrapper').scroll({
+					indicators: true,
+					deceleration:deceleration,
+					bounce: false
+				});
+				plus.nativeUI.showWaiting('正在加载',{
+					loading: {
+						display:'inline'
+					}
+				});
+				pull = mui('.mui-content .mui-scroll').pullToRefresh({
+					down: {
+						height: 75,
+						callback: function() {
+							var self = this;
+							pageNo = 0;
+							setTimeout(function() {
+								appData();
+								self.refresh(true);
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						auto: true,
+						height: 75,
+						contentnomore: '没有更多充值历史了',
+						callback: function() {
+							var self = this;
+							setTimeout(function() {
+								appData();
+								self.endPullUpToRefresh();
+							}, 800);
+						}
+					}
+				});
+				function appData() {
+					app.account.rechargeDetails( pageNo* pageSize, pageSize, app.local.get('token'), app.local.get('courierId'),function(data) {
+						console.log(JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						if ( data.code == 0 ) {
+							if ( pageNo == 0 ) {
+								balanceBox.innerHTML = '';
+							}
+							pageNo++;
+							if ( data.data.length < 10 ) {
+								pull.endPullUpToRefresh(true);
+							}
+							var html = template( 'tmpl', data);
+							balanceBox.innerHTML += html;
+							
+						} else {
+							app.toast(data.message,'center');
+						}
+					});
+				}
+			})
+		</script>
+	</body>
+
+</html>

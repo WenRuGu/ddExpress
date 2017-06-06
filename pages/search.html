@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<style type="text/css">
+			.mui-content{
+				background: #fff;
+				padding-bottom: 0.3rem!important;
+			}
+			.search {
+				background-color: #12B7F5;
+				width: 90%;
+				height: 40px;
+				margin-top: 0.6rem;
+				margin-left:5%;
+				color: #fff;
+				font-size: 14px;
+				border: none;
+				-webkit-transition: none;
+				transition: none;
+			}
+			.search:enabled:active{
+				background-color: dodgerblue;
+			}
+			.search-box{
+				width: 90%;
+				height: 40px;				
+				margin-left: 5%;
+				margin-top: 0.3rem;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+				background: #f5f5f5;
+			}
+			.search-box .orderId{
+				float: left;
+				width: 90%;
+				height: 40px;
+				border: none;
+				background: #f5f5f5;
+				text-indent: 10px;
+				font-size: 0.3rem;
+			}
+			.scan{
+				width: 10%;
+				height: 40px;
+				line-height: 40px;
+				color:#999;
+			}
+			input[type=text]{
+				padding: 0;
+				margin-bottom: 0;
+			}
+			p{
+				display: block;
+				width: 80%;
+				text-align: center;
+				margin-left: 10%;
+				font-size: 0.26rem;
+				margin-top: 0.3rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">运单查询</h1>
+		</header>
+		<div class="mui-content">
+			<div class="search-box">
+				<input type="text" class="orderId" placeholder="请输入运单号"/>
+				<span class="mui-icon iconfont icon-erweima scan"></span>
+			</div>
+		</div>
+		<button type="button" data-loading-text="登录中" class="mui-btn search">搜索</button>
+		<p>注意事项：请输入完整的快递单号，进行查询。</p>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/app.js"></script>
+		
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var orderId = app.$c('orderId');
+			var mobile = app.$c('mobile');
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator: 'none'
+				});
+				app.$c('scan').addEventListener('tap',function() {
+					app.oPage('scan-order.html',{
+						page: 'search'
+					});
+				});
+				window.addEventListener('scanLandCode', function(e) {
+					orderId.value = e.detail.code;
+				});
+				app.$c('search').addEventListener('tap', function(){
+					if ( orderId.value == '' ) {
+						app.toast('请填写一个查询条件','center');
+						return;
+					}
+					var status = app.network();
+					if ( status ) {
+						app.oPage('order-search-list.html',{
+							orderNo: orderId.value
+						});
+					} else {
+						app.toast('网络不给力，请稍后再试');
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

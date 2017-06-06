@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<style>
+			.mui-scroll-wrapper{
+				top: 44px;
+			}
+			.mui-scroll{
+				height:100%;
+			}
+			.coupon-ul{
+				position: relative;
+				margin-top: 15px;
+				margin: 0.3rem 0.4rem 0;
+			}
+			ul.coupon-ul li{
+				margin-top: 15px;
+				background:#fff url(../images/coupon-top.png)no-repeat 0 0;
+				background-size: 100% ;
+				overflow: hidden;
+				padding: 0.4rem 0.34rem!important;
+				border-radius: 4px;
+			}
+			.mui-table-view-cell>a:not(.mui-btn){
+				margin: -0.4rem -0.34rem;
+			}
+			.coupon-ul .mui-table-view-cell:after{
+				height: 0;
+			}
+			.coupom-info{
+				width: 70%;
+				min-height: 0.88rem;
+				float: left;
+			}
+			.coupom-info span:nth-child(1){
+				display: block;
+				font-size:0.34rem;
+			}
+			.coupom-info span:nth-child(2){
+				display: block;
+				margin-top:0.06rem;
+				font-size:0.26rem;
+				color:#6e6e6e;
+			}
+			.discount{
+				width: 30%;
+				float: left;
+			}
+			.discount span{
+				display: block;
+				float: left;
+				height: 0.88rem;
+				color:#12B7F5;
+			}
+			.discount span:nth-child(1){
+				font-size: 0.8rem;
+				line-height: 0.88rem;
+				font-weight: 100;
+			}
+			.discount span:nth-child(2){
+				font-size: 0.4rem;
+				line-height: 1.1rem;
+				font-weight: 100;
+			}
+			.mui-backdrop{
+				background-color: rgba(0,0,0,0);
+			}
+			.mui-popover .mui-popover-arrow.mui-bottom{
+				left: 36.5px!important;
+			}
+			.mui-popover{
+				width: 100px;
+			}
+			.sel li{
+				float: left;
+				width: 50px;
+				height: 36px;
+				line-height: 36px;
+				padding: 0;
+				text-align: center;
+			}
+			.sel .mui-table-view-cell:after{
+				position: absolute;
+			    right: 0!important;
+			    top: 0;
+			    left: 49px;
+			    width: 1px;
+			    height: 100%;
+			    content: '';
+			    -webkit-transform: scaleX(.5);
+			    transform: scaleX(.5);
+			    background-color: #3e3e3e;
+			}
+			.sel .mui-table-view-cell:last-child:after{
+				width:0;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">我的券</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="coupon-ul">
+						<li class="mui-table-view-cell">
+							<a href="#middlePopover">
+								<div class="coupom-info">
+									<span>
+										折扣券·滴滴快递
+									</span>
+									<span>
+										有效期至2017-03-17
+									</span>
+								</div>
+								<div class="discount">
+									<span>8</span>
+									<span>.5折</span>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a href="#middlePopover">
+								<div class="coupom-info">
+									<span>
+										折扣券·滴滴快递
+									</span>
+									<span>
+										有效期至2017-03-17
+									</span>
+								</div>
+								<div class="discount">
+									<span>8</span>
+									<span>.5折</span>
+								</div>
+							</a>
+						</li>
+						<li class="mui-table-view-cell">
+							<a href="#middlePopover">
+							<div class="coupom-info">
+								<span>
+									折扣券·滴滴快递
+								</span>
+								<span>
+									有效期至2017-03-17
+								</span>
+							</div>
+							<div class="discount">
+								<span>8</span>
+								<span>.5折</span>
+							</div>
+							</a>
+						</li>
+					</ul>
+					<!--<div class="all"></div>-->
+				</div>
+			</div>
+		</div>
+		<div id="middlePopover" class="mui-popover">
+			<div class="mui-popover-arrow"></div>
+			<ul class="sel">
+				<li class="mui-table-view-cell use">使用</li>
+				<li class="mui-table-view-cell cancel">取消</li>
+			</ul>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+			{{ each data as item i }}  
+			<li class="mui-table-view-cell">
+				<div class="coupom-info">
+					<span>
+						折扣券·滴滴快递
+					</span>
+					<span>
+						有效期至2017-03-17
+					</span>
+				</div>
+				<div class="discount">
+					<span>8</span>
+					<span>.5折</span>
+				</div>
+			</li>
+			{{ /each}}
+		</script>
+		<script type="text/javascript">
+			mui.init();
+			var box = app.$c('coupon-ul');
+			var all = app.$c('all');
+			var _self;
+			mui('.coupon-ul').on('tap', '.mui-table-view-cell',function(){
+//				all.style.display = 'block';
+			});
+			app.$c('cancel').addEventListener('tap',function(){
+				mui('#middlePopover').popover('hide');
+			});
+			app.$c('use').addEventListener('tap', function(){
+				mui('#middlePopover').popover('hide');
+			}); 
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				
+			});
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" type="text/css" href="../css/pull.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/embraceParts.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">揽件</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+						<!--<li class="view-cell">
+							<div class="info-box">
+								<div class="customer-pic">
+									<img src="../images/mall-default-3.jpg"/>
+								</div>
+								<div class="customer-info">
+									<span class="nickname">一叶知秋</span>
+									<span class="express-price">28元</span>
+									<span class="express-time">今天 12:30~4:30</span>
+									<button type="button" class="mui-btn mui-btn-primary single">抢单</button>
+								</div>
+							</div>
+							<div class="address">
+								<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+								<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
+							</div>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/common.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+			{{ each data as item i }}
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<div class="customer-pic">
+							<img src="../images/mall-default-3.jpg"/>
+						</div>
+						<div class="customer-info">
+							<span class="nickname">{{item.sender}}</span>
+							<span class="express-price">{{item.charge}}元</span>
+							<button type="button" class="mui-btn mui-btn-primary single" data-orderId='{{item.orderNo}}'>抢单</button>
+						</div>
+					</li>
+					<li class="mui-table-view-cell">
+						<p>揽件地址：<span class="mui-ellipsis">{{item.senderAddress}}</span></p>
+						<p>收货地址：<span class="mui-ellipsis">{{item.receiverAddress}}</span></p>
+					</li>
+				</ul>
+			{{ /each}}
+		</script>
+		<script type="text/javascript">
+			mui.init();
+			
+			var _self;
+			var pull;
+			var pageNo = 0;
+			var pageSize = 10;
+			var expressBox = app.$c('mui-table-view');	// 数据容器
+			var deceleration = mui.os.ios?0.0006:0.0003;// 滚动速度
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				mui('.mui-scroll-wrapper').scroll({
+					indicators: true,
+					deceleration:deceleration,
+					bounce: false
+				});
+				pull = mui('.mui-content .mui-scroll').pullToRefresh({
+					down: {
+						height: 75,
+						callback: function() {
+							var self = this;
+							pageNo = 1;
+							setTimeout(function() {
+								appData();
+								self.refresh(true);
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						auto: true,
+						height: 75,
+						contentnomore: '没有更多信息了',
+						callback: function() {
+							var self = this;
+							setTimeout(function() {
+								appData();
+								self.endPullUpToRefresh();
+							}, 800);
+						}
+					}
+				});
+				function appData() {
+					app.order.sendOrderList(pageNo,pageSize, app.local.get('token'), app.local.get('courierId'), 'wait_take', function(data) {
+						console.log(JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						if ( data.code == 0 ) {
+							if ( pageNo == 1 ) {
+								expressBox.innerHTML = '';
+							}
+							pageNo++;
+							if ( data.data.length < 10 ) {
+								pull.endPullUpToRefresh(true);
+							}
+							var html = template( 'tmpl', data);
+							expressBox.innerHTML += html;
+						} else {
+							app.toast(data.message,'center');
+						}
+					});
+				}
+				/**
+				 * 抢单 *
+				 */
+				mui('body').on('tap','.single', function() {
+					var orderId = this.getAttribute('data-orderId');
+					console.log(orderId);
+					app.order.sendOrderTake( app.local.get('token'),app.local.get('courierId'), orderId, function(data){
+						console.log(JSON.stringify(data));
+						if ( data.code == 0 ) {
+							app.toast('抢单成功');
+							// 通知 express.html刷新
+							mui.fire(plus.webview.getWebviewById('pages/express.html'),'login-express');
+						} else {
+							app.toast(data.message);
+						}
+					})
+				})
+			})
+		</script>
+	</body>
+
+</html>

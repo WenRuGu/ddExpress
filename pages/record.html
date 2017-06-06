@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="../css/mui.min.css">
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" href="../css/normal.css" />
+		<link rel="stylesheet" type="text/css" href="../css/pull.css"/>
+		<!--<link rel="stylesheet" href="../css/embraceParts.css" />-->
+		<style>
+			.mui-table-view{
+				background: #f5f5f5;
+			}
+			.mui-slider.mui-fullscreen{
+				top: 41px;
+				background: #f5f5f5;
+			}
+			.nav {
+				height: 40px;
+				line-height: 40px;
+				width: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				background: #fff;
+				z-index: 9999;
+			}
+			.nav-list {
+				position: absolute;
+				top: 0;
+				left: 0;
+				display: flex;
+				width: 100%;
+				height: 100%;
+				list-style: none;
+				padding:0;
+				margin: 0;
+			}
+			.nav-list>li {
+				flex: 1;
+				height: 100%;
+				font-size: 15px;
+				color: #888;
+				text-align: center;
+			}
+			.list-blue{
+				color: #12B7F5 !important;
+			}
+			.nav .nav-active {
+				position: absolute;
+				bottom: 0;
+				height: 3px;
+				width: 17%;
+				transform: translate3d( 23%,0,0);
+				border-bottom: 3px solid #12B7F5;
+				box-sizing: border-box;
+				transition: all 0.2s ease-in-out;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="nav">
+				<ul class="nav-list">
+					<li data-index='0' class="list-blue">全部</li>
+					<li data-index='1' class="">在箱正常</li>
+					<li data-index='2' class="">在箱超期</li>
+					<li data-index='3' class="">已取快件</li>
+				</ul>
+				<div class="nav-active"></div>
+			</div>
+			<div class="mui-slider mui-fullscreen" style="height: auto;">
+				<div class="mui-slider-group">
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view" >
+									<!--<li class="mui-table-view-cell">
+							          	<a class="top-a" href="#">
+											<span class="address mui-ellipsis">安吉新住院欧</span>
+											<span class="box"> 2-9号箱(大箱)</span>
+											<span class="status">未取件</span>
+										</a>
+										<div class="mui-collapse-content view-cell">
+											<p>运单号：<span class="awb-no">123456789</span></p>
+											<p>
+												<span>取件码：</span><span class="fetchCode">123456789</span>
+												<span>手机号码：</span><span class="mobile">123456789</span>
+											</p>
+											<p>存物时间：<span class="deposit">123456789</span></p>
+											<p>取物时间：<span class="fetch">123456789</span></p>
+											<p>备注：<span class="remark">123456789</span></p>
+										</div>
+									</li>-->
+					            </ul>
+							</div>
+						</div>
+					</div>
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view" >
+									
+					            </ul>
+							</div>
+						</div>
+					</div>
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view" >
+								
+					            </ul>
+							</div>
+						</div>
+					</div>
+					<div class="mui-slider-item">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<ul class="mui-table-view" >
+									
+					            </ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="../js/mui.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+			{{ each data as item i }}
+				<li class="mui-table-view-cell">
+		          	<a class="top-a" href="#">
+						<span class="address mui-ellipsis">{{item.terminalName}}</span>
+						<span class="box"> {{item.boxNum}}号 ({{item.boxType | boxType}})</span>
+						<span class="status">{{item.status | status}}</span>
+					</a>
+					<div class="mui-collapse-content view-cell">
+						<p>运单号：<span class="awb-no">{{item.orderNo}}</span></p>
+						<!--<span>取件码：<span class="fetchCode {{item.id}}"></span></span>
+						<p>
+							<span>联系人：<span class="contacts">未填写</span>
+							<span>手机号码：</span><span class="mobile">123456789</span>
+						</p>-->
+						<p>存物时间：<span class="deposit">{{item.createTime}}</span></p>
+						<p>取物时间：<span class="fetch">{{item.takeTime}}</span></p>
+						<p>备注：<span class="remark">{{item.status | remark}}</span></p>
+					</div>
+				</li>
+			{{ /each }}
+		</script>
+		<script>
+			mui.init();
+			
+			var ul = document.getElementsByClassName('mui-table-view');
+			var nav_list = app.$c('nav-list');
+			var slide = app.$c('mui-slider');
+			var nav_li = nav_list.querySelectorAll('li');
+			var slider = mui('.mui-slider').slider();
+			var s_group = document.querySelector('.mui-slider>div');
+			var w = document.documentElement.clientWidth || window.screen.width;
+			var expressBox = document.getElementsByClassName('mui-table-view');
+			
+			var _self;
+			var sindex = 0;
+			var startX = 0;
+			var endX = 0;
+			var pull_flag = true;
+			var version = true;
+			var deceleration = mui.os.ios?0.0003:0.0006;
+			var pull = [];
+			var pageNo = [0,0,0,0];
+			var pageSize = 10;
+			mui('.mui-scroll-wrapper').scroll({
+				bounce: false,
+				deceleration:deceleration
+			});
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator:'none'
+				})
+				function slide_flag() {											// 避免滑动太快
+					slider.stopped = true;               						// slider禁止滑动
+					slide.removeEventListener('swiperight', swiperight, false); // 自定义右滑禁止滑动
+					slide.removeEventListener('swipeleft', swipeleft, false);
+					slide.removeEventListener('dragend', chdrag,false);			// 自定义拖拽结束禁止右话
+					setTimeout(function() {
+						slider.stopped = false;
+						slide.addEventListener('swiperight', swiperight, false);
+						slide.addEventListener('swipeleft', swipeleft, false);
+						slide.addEventListener('dragend', chdrag,false);
+					}, 350);
+				}
+				mui('.nav-list').on('tap','li', tap_slide, false);
+				function tap_slide() {											// 点击 切换事件
+					sindex = this.getAttribute('data-index');
+					mui('.nav-list li').each(function() {
+						this.className = '';
+					});
+					this.className = 'list-blue';
+					if ( version ) {
+						slide_flag();
+						slider.gotoItem( sindex );
+					} else {
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+					}
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+				};
+				slide.addEventListener('slide', function(e) {					// 以最后的 slide 事件为准，调整div显示
+					if ( version ) {
+						drag_true();
+						mui('.nav-list li').each(function(){
+							this.className = '';
+						});
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+						mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+						mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+						nav_li[sindex].className = 'list-blue';
+					}
+				});
+				slide.addEventListener('swipeleft', swipeleft, false); 			// 监听左右 滑动
+				slide.addEventListener('swiperight', swiperight ,false);
+				function swipeleft(e) {
+					e.stopPropagation();
+					sindex++;
+					if (sindex >= 3 ) {
+						sindex = 3;
+					} 
+					mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+//					console.log('左滑'+sindex);
+					if ( version ) {
+						drag_false();
+						slider.gotoItem(sindex);
+						slide_flag();
+					} else {
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+					}
+					nav_li[sindex].className = 'list-blue';
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+				};
+				function swiperight(e) {
+					e.stopPropagation();
+					sindex--;
+					if (sindex <= 0 ) {
+						sindex = 0;
+					} 
+					mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+//					console.log('右滑'+sindex);
+					if ( version ) {
+						drag_false();
+						slider.gotoItem(sindex);
+						slide_flag();
+					} else {
+						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+					}
+					nav_li[sindex].className = 'list-blue';
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+				};
+				if ( version ) {											// version <= 5 禁止动画
+					slide.addEventListener('touchstart',chstart,false);
+			        slide.addEventListener('touchmove',chmove,false);
+			        slide.addEventListener('touchend',chend,false);
+			        slide.addEventListener('dragend', chdrag,false);
+				}
+		        function drag_true(){
+					slide.addEventListener("dragend", chdrag, false);
+		        }
+		        function drag_false(){
+					slide.removeEventListener("dragend", chdrag, false);
+		        }
+		        function chdrag(e) {	// 覆盖原本的拖拽事件， 控制sindex
+		        	e.stopPropagation();
+		        	if (pull_flag){
+		        		return;
+		        	}
+		        	if ( (startX - endX)/360 >= 0.5) {  // ++
+		        		sindex++;
+		        		if (sindex >= 3 ) {
+							sindex = 3;
+						} 
+						slider.gotoItem(sindex);
+		        	}
+		        	if ( (startX - endX)/360 <= -0.5 ) {
+		        		sindex--;
+		        		if (sindex <= 0 ) {
+							sindex = 0;
+						} 
+		        		slider.gotoItem(sindex);
+		        	}
+		        	mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+		        	nav_li[sindex].className = 'list-blue';
+		        	s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+					s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+		        	mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+		        	mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					pull_flag = true;
+					slide_flag();
+		        };
+		        function chstart(ev){
+		        	pull_flag = false;
+		        	ev.preventDefault;
+		            var touch = ev.touches[0];
+		            startX = touch.pageX;
+		        }
+		        function chmove(ev){
+		        	ev.preventDefault;
+		            var touch = ev.touches[0];		
+		            endX = touch.pageX;
+		        }
+		        function chend(){    							// 避免切换时，点击页面，卡住
+		        	slider.gotoItem(sindex);
+		        }
+		        
+		        mui.each(document.querySelectorAll( '.mui-slider-group .mui-scroll' ), function(index, pullRefreshEl) {
+		        	
+					pull[index] = mui(pullRefreshEl).pullToRefresh({
+						down: {
+							height: 75,
+							callback: function() {
+								var self = this;
+								self.refresh(true);
+								pageNo[index] = 0;
+								setTimeout(function() {
+									if ( index == 0 ) {
+										
+									} else {
+										appData(index);
+									}
+									self.endPullDownToRefresh();
+								}, 600);
+							}
+						},
+						up: {
+							auto: true,
+							height: 75,
+							contentnomore: '没有更多记录了',
+							callback: function() {
+								var self = this;
+								setTimeout(function() {
+									if ( index == 0 ) {
+										
+									} else {
+										appData(index);
+									}
+									self.endPullUpToRefresh();
+								}, 600);
+							}
+						}
+					});
+				});
+				template.helper('boxType', function( boxType ) {
+					if ( boxType == 1 ) {
+						return '小箱';
+					} else if ( boxType == 2 ) {
+						return '中箱';
+					} else if ( boxType == 3 ) {
+						return '大箱';
+					}
+				});
+				template.helper('status', function( status ) {
+					if ( status == 1 ) {
+						return '待取件';
+					} else if ( status == 2 ) {
+						return '已超期';
+					} else if ( status == 3 ) {
+						return '已完成';
+					}
+				});
+				template.helper('remark', function( remark ) {
+					if ( remark == 1 ) {
+						return '正常，您可以取件或者等待用户取件';
+					} else if ( remark == 2 ) {
+						return '快件已超期，等待处理';
+					} else if ( remark == 3 ) {
+						return '快件已取走，交易完成';
+					}
+				});
+				function appData(index) {
+					if ( index == 1 ) {
+						type = 'wait_take';
+					} else if ( index == 2 ) {
+						type = 'timeout';
+					} else if ( index == 3 ) {
+						type = 'taken';
+					}
+					var token = app.local.get('token');
+					if ( token == undefined || token == '' || token == null ) {
+						return;
+					} else {
+						console.log(type+' = ' + index+','+ pageNo[index] + ',' + pageSize);
+						app.order.newallhistory( pageNo[index] * pageSize, pageSize, app.local.get('token'),app.local.get('courierId'), type, function(data) {
+							console.log( index+'，记录='+JSON.stringify(data));
+							if ( data.code == 0 ) {
+								if ( pageNo[index] == 0 ) {
+									expressBox[index].innerHTML = '';
+								}
+								pageNo[index]++;
+	//							console.log(index+'=  '+pageNo[index]);
+								if ( data.data.length < 10 ) {
+									pull[index].endPullUpToRefresh(true);
+								}
+								for ( var i in data.data) {
+									data.data[i].status = index;
+									
+									// 暂时根据 status 来区分 状态和备注
+									// 可以根据 takeTime 来区分 已取和在箱 ，     超期？
+								}
+								var html = template( 'tmpl', data);
+								expressBox[index].innerHTML += html;
+							} else {
+								app.toast(data.message, 'center');
+							}
+						});
+					}
+				}
+				window.addEventListener('login-record', function(e) {
+					pageNo = [0,0,0,0];
+					for ( var i = 0; i < 4; i++ ) {
+						pull[i].pullUpLoading();
+					}
+					slider.gotoItem(0);
+					mui('.nav-list li').each(function(){
+						this.className = '';
+					});
+		        	nav_li[sindex].className = 'list-blue';
+				});
+			});
+		</script>
+	</body>
+</html>

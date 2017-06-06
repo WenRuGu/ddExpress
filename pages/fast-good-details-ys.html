@@ -1,0 +1,367 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/style.css" />
+		<link rel="stylesheet" type="text/css" href="../css/pull.css"/>
+		<link rel="stylesheet" href="../css/fast-good-details.css" />
+		
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">快件详情</h1>
+		    <a class="mui-icon mui-icon-phone mui-pull-right"><span>运维</span></a>
+		</header>
+		<div class="mui-content">
+		    <div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<div class="mui-card">
+						<ul class="mui-table-view">
+							<!--<li class="mui-table-view-cell mui-collapse">
+					          	<a class="mui-navigate-right" href="#">
+									<span class="address"></span>
+									<span class="isMsg blue">(已发短信)</span>
+									<p>运单编号：<span class="awb-no">123456789</span></p>
+								</a>
+								<div class="mui-collapse-content">
+									<p>取件码：<span class="fetchCode blue psw"></span><span class="mui-pull-right sms">点击发送短信</span></p>
+									<p>
+										<span>联系人：<span class="contacts">123456789</span>
+										<span style="margin-left: 30px;">手机号码：<span class="mobile">123456789</span></span>
+									</p>
+									<p>存物时间：<span class="deposit">123456789</span></p>
+									<p>过期时间：<span class="fetch">123456789</span></p>
+									<p>备注：<span class="remark yellow">123456789</span></p>
+								</div>
+							</li>
+							<li class="last-li">
+								<div class="mui-table-view-cell contact">
+									联系收件人
+								</div>
+								<div class="mui-table-view-cell open-box">
+									开箱
+								</div>
+							</li>-->
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/mui.pullToRefresh.js"></script>
+		<script src="../js/mui.pullToRefresh.material.js"></script>
+		<script src="../js/template.js"></script>
+		<script src="../js/app.js"></script>
+		<script id="tmpl" type="text/html">
+		{{each data as item i}}
+			<div class="mui-card">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-collapse">
+			          	<a class="mui-navigate-right" href="#">
+							<span class="address mui-icon mui-icon-location">{{item.title}}</span>
+							<span class="isMsg blue {{item.id | sms}}" data-receiverMobile='{{item.receiverMobile}}' data-title='{{item.title}}' data-id='{{item.id}}'></span>
+							<p>运单编号：<span class='blue'>{{item.orderNo}}</span></p>
+						</a>
+						<div class="mui-collapse-content">
+							<p>取件码：<span class="fetchCode blue {{item.id | psw}}"></span><span class="mui-pull-right sms" data-receiverMobile='{{item.receiverMobile}}' data-title='{{item.title}}' data-id='{{item.id}}'>点击发送短信</span></p>
+							<div class="details" data-id='{{item.id}}'>
+								<p>
+									<span>联系人：<span class="contacts">未填写</span>
+									<span style="margin-left: 30px;">手机号码：<span class="mobile">{{item.receiverMobile}}</span></span>
+								</p>
+								<p>存物时间：<span class="deposit">{{item.createTime}}</span></p>
+								<p>过期时间：<span class="fetch"></span></p>
+								<p>备注：<span class="remark yellow">{{item.islandStatus | status}}</span></p>
+							</div>
+						</div>
+					</li>
+					<li class="last-li">
+						<div class="mui-table-view-cell contact">
+							联系收件人
+						</div>
+						<div class="mui-table-view-cell open-box" data-status='{{item.islandStatus}}'  data='{{item.id}}|{{item.boxNum}}|{{item.terminalCode}}|{{item.terminalName}}'>
+							<!--{{item.islandStatus | status2}}-->
+							开箱
+						</div>
+					</li>
+				</ul>
+			</div>
+		{{/each}}
+		</script>	
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var pull;				
+			var pageNo = 1;			// 当前页
+			var pageSize = 10;		// 一页数量
+			var pageCount;			// 总页数
+			var renTime;			// 续费时间（单位毫秒）
+			var fetchTime;			// 快递时间
+			var freeTime;			// 免费时间
+			var myDate = new Date().getTime();	// 获取当前时间(从1970.1.1开始的毫秒数)
+			var maintainPhone;		// 运维人员号码
+			var islandStatus;		// 当前岛体是否失联标志
+			var islandId;			// 当前岛体ID
+			var tradeTag;			//	??
+			var userId;				// 用户ID
+			var tradeIdArr = [];	// 订单id数组
+			var scroll_box = app.$c('mui-scroll');
+			var deceleration = mui.os.ios?0.0006:0.0003;
+			var token = app.local.get('token') || '';
+			var courierId = app.local.get('courierId') || '';
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				mui('.mui-scroll-wrapper').scroll({
+					deceleration:deceleration,
+					bounce: false
+				});
+				
+//				renTime = app.local.get("renTime") * 60 * 1000;		// 普通用户续费时间
+//				fetchTime = app.local.get("fetchTime") * 60 * 1000;	// 快递取件时间
+//				freeTime = app.local.get("freeTime") * 60 * 1000;	// 免费存放时间
+				maintainPhone = app.local.get("maintainPhone");		// 运维人员电话
+				islandStatus = _self.curIslandStatus;						
+				islandId = _self.curIslandId;								
+				tradeTag = _self.tradeTag;								
+				userId = app.local.get('token') || '';
+				console.log(islandStatus+','+islandId);
+				if ( userId == '') {
+					app.toast('数据异常，请稍后再试','center');
+					setTimeout(function() {
+						mui.back();
+					}, 1500);
+					return;
+				}
+//				window.addEventListener('pagereturn', function(event) { //监听自定义事件
+//					pageNo = 1;
+//					getTradeListByTag();
+//				});
+				pull = mui('.mui-content .mui-scroll').pullToRefresh({
+					down: {
+						height: 50,
+						callback: function() {
+							var self = this;
+							setTimeout(function() {
+								appData();
+								self.refresh(true);
+								self.endPullDownToRefresh();
+							}, 1000);
+						}
+					},
+					up: {
+						auto: true,
+						height: 50,
+						callback: function() {
+							var self = this;
+							appData();
+							setTimeout(function() {
+								self.endPullUpToRefresh();
+							}, 800);
+						}
+					}
+				});
+				template.helper('sms', function( sms ) {
+					return 'sms'+sms;
+				});
+				template.helper('psw', function( psw ) {
+					return 'psw'+psw;
+				});
+				template.helper('status', function( remark ) {
+					return remark == 2 ? '岛体失联，请咨询运维人员':'正常，您可以取件或者等待用户取件';
+				});
+				template.helper('status2', function( status2 ) {
+					return status2 == 2 ? '咨询':'开箱';
+				});
+				function appData() {
+					console.log((pageNo - 1) * pageSize+','+pageSize+','+token+','+courierId+','+islandId);
+					app.order.newhistory((pageNo - 1) * pageSize, pageSize, token, courierId, islandId, "wait_take", function(data) {
+						console.log(JSON.stringify(data));
+						if(data.code == 0) {
+							// 订单id数组
+							var tradeIdArr = [];
+							if(pageNo == 1) {
+								scroll_box.innerHTML = ''; //清空容器内数据
+							}
+							pageNo++;
+							if(data.data.length == 0) {
+								app.toast("没有更多订单", 'center');
+								pull.endPullUpToRefresh(true);
+							} else {											// 没有 remark
+								for(var i in data.data) {						
+									/*-------订单基础信息--------*/				// 添加部分订单信息
+									var useStatus = "0";						// box启用状态(0则正常使用,1则停用,2异常3维护)
+//									var tradeStatus = "";						// 交易状态，开箱必要参数
+									data.data[i].useType = "4";					// 箱子的存取物状态（4.存物完成）宇松协议 并没有用到
+									tradeIdArr.push(data.data[i].id);			// 保存订单id
+									var islandCode = data.data[i].terminalCode; // 岛体序号
+									data.data[i].islandStatus = islandStatus;	// 岛体是否失联
+//									var isLooked = "1";							// 快递员是否看过密码标志 1.看过 0.未看过
+									data.data[i].title = data.data[i].terminalName + "  " + data.data[i].boxNum + "号箱"; // 标题，以及短信内容
+								}
+								console.log(JSON.stringify(data.data));
+								
+								var html = template('tmpl', data);
+								scroll_box.innerHTML += html;
+								console.log(tradeIdArr);
+								for(var i = 0; i < tradeIdArr.length; i++) {
+									app.order.newfindTradeMessageListByTradeIds(token, tradeIdArr[i], function(ndata) {
+										console.log(JSON.stringify(ndata));
+										if(ndata.code == 0) {
+											var orderid = ndata.data.orderId;
+											fetchpwd = ndata.data.authCode;
+											var psw = app.$c('psw'+orderid);
+											psw.innerHTML= fetchpwd;
+											var sms = app.$c('sms'+orderid);
+											var status = ndata.data.status;
+											if(status == "未发") {
+												sms.innerHTML = '(未发送)';
+												sms.style.color = 'red';
+											} else if(status == "失败") {
+												sms.innerHTML = '(发送失败)';
+												sms.style.color = 'red';
+											} else if(status == "成功") {
+												sms.innerHTML = '(发送成功)';
+											}
+										} else {
+											app.toast(app.message, "center");
+										}
+									});
+								}
+							}
+						} else {
+							app.toast(app.message, "center");
+						}
+					});
+				}
+				/**
+				 * 联系运维 *
+				 */
+				mui('body').on('tap', '.mui-icon-phone', function() {
+					plus.device.dial(app.local.get('maintainPhone'));
+				});
+				/**
+				 * 订单详情 *
+				 */
+				mui('body').on('tap', '.details', function() {
+					var tradeId = this.getAttribute('data-id');
+					app.oPage('order-details-ys.html',{
+						tradeId: tradeId
+					});
+				})
+				/**
+				 *	发送短信 *
+				 */
+				mui('body').on('tap', '.sms', function() {
+//					var tradeId = this.getAttribute('data-id');
+					var phone = this.getAttribute('data-receiverMobile');
+					var title = this.getAttribute('data-title');
+					var psw = this.parentNode.parentNode.querySelector('.fetchCode').innerHTML;
+					var btnArray = ['取消', '确定'];
+					mui.confirm('将密码通过短信告知客户', '提示', btnArray, function(e) {
+						if(e.index == 1) {
+							console.log(phone+','+psw+','+title);
+							//发送短信通知
+							openSMS(phone, title, psw);
+						}
+					})
+				});
+				/**
+				 * 拨打电话 *
+				 */
+				mui('body').on('tap', '.contact', function() {
+					var phoneNum = this.getAttribute('data-phoneNum');
+					var btnArray = ['取消', '确定'];
+					mui.confirm('是否需要拨打电话？', '提示', btnArray, function(e) {
+						if(e.index == 1) {
+							plus.device.dial(phoneNum, false);
+						}
+					})
+				});
+				/**
+				 * 发送短信
+				 * @param {Object} phoneNum
+				 */
+				function openSMS(phoneNum, title, pwd) {
+					var smsContent = app.local.get("userCompany") + "提醒您，在" + title + "的取物开箱密码为：" + pwd + "，收到请回复，谢谢！";
+					if(plus.os.name == "android") {
+						window.open("sms:" + phoneNum + "?body=" + smsContent);
+					} else if(plus.os.name == "iOS") {
+						var msg = plus.messaging.createMessage(plus.messaging.TYPE_SMS);
+						msg.to = [phoneNum];
+						msg.body = smsContent;
+						plus.messaging.sendMessage(msg);
+					}
+				}
+				/**
+				 * 扫码开箱 *
+				 */
+				mui('body').on('tap', '.open-box', function() {
+					var status_island = this.getAttribute('data-status');
+					if ( status_island == '2' ) {
+						app.toast('请联系运维人员','center');
+						return;
+					}
+					var data = this.getAttribute('data');
+//					console.log(data);
+					var data1 = data.split("|");
+					app.local.set("curTradeId", data1[0]);
+					app.local.set("curBoxId", data1[1]);
+					app.local.set("curIslandCode", data1[2]);
+					app.local.set("curSarkCode", data1[2]);
+					app.local.set("curIslandName", data1[3]);
+					var title = "请扫描" + data1[3] + "号箱柜的二维码";
+					var msg = "开箱之后，该订单将结束";
+
+					var btnArray = ['取消', '开箱'];
+					mui.confirm(msg, title, btnArray, function(e) {
+						if(e.index == 1) {
+							app.oPage('scan-order.html',{
+								page: 'fast-good-details-ys'
+							});
+						}
+					});
+				})
+				/**
+				 * 监听扫码返回code *
+				 */
+				window.addEventListener('scanLandCode', function(e) {
+					var scanCode = e.detail.code;
+					var sarkCode = app.local.get("curSarkCode");
+					if (scanCode == sarkCode) {
+						app.order.newdeliverordertake(token, courierId, app.local.get('curTradeId'), function(data) {
+							console.log(JSON.stringify(data));
+							if (data.code == 0) {
+//								app.local.set("openBoxResult", "" + data.success || true);
+								app.oPage('send-confirm-ys.html');
+							} else if (data.code == 2) {
+								app.toast("终端柜体不在线,错误码：2", 'center');
+							} else {
+								app.toast(app.message, "center");
+							}
+						});
+					} else {
+						app.toast("柜体编号错误,请扫描" + sarkCode + "号柜", 'center');
+						setTimeout(function() {
+							app.oPage('scan-order.html');
+						}, 1500);
+					}
+				});
+				/**
+				 *	返回通知刷新  *
+				 */
+				mui.oldback = mui.back;
+				mui.back = function(e) {
+					plus.webview.getWebviewById('isBox-normal.html').reload();
+					mui.oldback();
+				}
+			})
+		</script>
+	</body>
+</html>

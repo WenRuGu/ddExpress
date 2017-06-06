@@ -1,0 +1,366 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/emptyVan2.css"/>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
+		    <h1 class="mui-title">快件存箱</h1>
+		</header>
+		<div class="mui-content">
+			<div style="padding: 10px 10px;background: #12B7F5;">
+				<div id="segmentedControl" class="mui-segmented-control">
+					<a class="mui-control-item mui-active" data-boxtypeid='1' href="#item1">小箱(0)</a>
+					<a class="mui-control-item" data-boxtypeid='2' href="#item1">中箱(0)</a>
+					<a class="mui-control-item" data-boxtypeid='3' href="#item1">大箱(0)</a>
+					<a class="mui-control-item" data-boxtypeid='4' href="#item1">超大箱(0)</a>
+				</div>
+			</div>
+			<div>
+				<div id="item1" class="mui-control-content mui-active">
+					<ul class="mui-table-view">
+						<li class="view-cell">
+							<div class="mui-pull-left">快递柜编号</div>
+							<div class="box-no"></div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">快递订单号</div>
+							<div class="mui-pull-right">
+								<input type="text" class="code" placeholder="可扫码获取"/>
+								<span class="scan mui-icon iconfont icon-erweima"></span>
+							</div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">收件人手机号</div>
+							<div class="mui-pull-right">
+								<input type="number" class="mobile"  placeholder="输入手机号" />
+								<span class="scan mui-icon iconfont icon-bodadianhau"></span>
+								<span class="scan mui-icon iconfont icon-dianhuaben"></span>
+							</div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">收件人姓名</div>
+							<div class="mui-pull-right">
+								<input type="text" class="fetchName" placeholder="输入收件人姓名"/>
+							</div>
+						</li>
+						<li class="view-cell">
+							<div class="mui-pull-left">收件数量</div>
+							<div class="mui-pull-right">
+								<span class="mui-icon iconfont icon-jianhao"></span>
+								<input type="number" class="amount" value='1'/>
+								<span class="mui-icon iconfont icon-jiahao"></span>
+							</div>
+						</li>
+						<li class="view-cell last">
+							<div class="mui-pull-left">备注留言</div>
+							<div class="mui-pull-right">
+								<textarea class="remark" placeholder="有什么交代给收件人的"></textarea>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<button type="button" class="mui-btn confirm">提交</button>
+		<div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/fontsize.js"></script>
+		<script src="../js/base_param.js"></script>
+		<script src="../js/app.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var _self;
+			var minus = app.$c('icon-jianhao'); // 减号
+			var add = app.$c('icon-jiahao');	// 加号
+			var num = app.$c('amount');			// 数量
+			var boxNo = app.$c('box-no');       // 箱子编号
+			var mobile = app.$c('mobile');		// 取件人手机号
+			var orderId = app.$c('code');       // 快递单号
+			var remark = app.$c('remark');      // 备注
+			var fetchName = app.$c('fetchName');			// 收件人名字
+			var fetchPhone;                     // 暂时存储的验证手机号
+			var expressNo; 						// 暂时存储的快递单号
+			var islandId;						// 岛体id
+			var islandCode;						// 岛体code
+			var boxtypeid;						// 箱子类型，小or大or超大
+			var isScan = false;					// 是否继续存物
+			var scanLandCode;					// 扫码的岛体code
+			var boxId;							// 空箱子编号
+			var isErrorExpress = false;			// 快递单号是否错误
+			var isSubOrder = false;				// 是否提交过订单
+			var tab = document.querySelectorAll('#segmentedControl a');
+			mui.plusReady(function() {
+				_self = plus.webview.currentWebview();
+				_self.setStyle({
+					scrollIndicator: 'none'
+				});
+				app.$c('mui-title').innerHTML = _self.islandName;
+				islandId = _self.islandId;
+				islandCode = _self.islandCode;
+				boxtypeid = parseInt(_self.typeId) + 1;	// +1 请求空箱子编号 类型为 1,2,3,4  前面获取的为 0,1,2,3
+				
+				mui('#segmentedControl a').each(function(index) {
+					this.classList.remove('mui-active');
+				})
+				tab[_self.typeId].classList.add('mui-active');
+				if (islandId == '') {
+					app.toast('数据异常，请稍后再试', 'center');
+					setTimeout( function() { mui.back(); }, 2000);
+				} else {
+					loadBoxType();                          	// load
+					loadBoxNoByType(boxtypeid);					// 加载可用箱子编号
+				}
+				
+				add.addEventListener('tap', function() {
+					num.value++;
+					if ( num.value > 99 ) {
+						num.value = 99;
+						app.toast('不能多于99件', 'center');
+					}
+				});
+				minus.addEventListener('tap', function() {
+					num.value--;
+					if ( num.value <= 0 ) {
+						num.value = 1;
+						app.toast('最少1件', 'center');
+					}
+				});
+				app.$c('icon-erweima').addEventListener('tap', function() {
+					app.oPage('scan-order.html', {
+						page: 'emptyVan-ys',
+						type: 'expressId'
+					});
+				});
+				app.$c('icon-dianhuaben').addEventListener('tap', function() {
+					app.oPage('contacts-list.html',{
+						page: 'emptyVan-ys'
+					});
+				})
+				app.$c('icon-bodadianhau').addEventListener('tap', function() {
+					if ( mobile.value == '' ) {
+						app.toast('请输入取件人号码', 'center');
+					} else {
+						plus.device.dial(mobile.value);
+					}
+				})
+				mui('#segmentedControl').on('tap', 'a', function() {
+					var boxTypeId = this.getAttribute('data-boxtypeid');
+					loadBoxNoByType(boxTypeId);
+				});
+				window.addEventListener('contacts-info', function(e) {
+					mobile.value = e.detail.mobile;
+					fetchName.value = e.detail.name;
+				});
+				window.addEventListener('scanLandCode', function(e) {
+					console.log(e.detail.code);
+					if ( e.detail.type == 'expressId') {
+						orderId.value = e.detail.code;
+						orderId.focus();
+					} else if ( e.detail.type == 'equal') {
+						if ( e.detail.code ==  islandCode) {
+							scanLandCode = e.detail.code;
+							doSubmitTrade();
+						} else {
+							app.toast('扫码错误，请扫描'+ islandCode +'的二维码','center');
+						}
+					}
+				});
+				/**
+				 * 监听继续存物   *
+				 */
+//				window.addEventListener('isScan', function(e) {
+//					if ( e.deatil.isScan ) {
+//						isScan = true;
+//					}
+//					loadBoxType();
+//					loadBoxNoByType(boxtypeid);
+//					num.value = 1;
+//					boxNo.value = '';
+//					mobile.vlaue = '';
+//					orderId.value = '';
+//					remark.value = '';
+//					isSubOrder = false;
+//				})
+				
+				/**
+				 * 箱子可用数量 *
+				 */
+				function loadBoxType() {
+					console.log(app.local.get('token'));
+					app.order.newfindIslandBoxInfoForExpress( app.local.get('token'), app.local.get('courierId'), islandCode, function(data) {
+						if ( data.code == 0 ) {
+							console.log(JSON.stringify(data));
+							tab[0].innerHTML = '小箱('+ data.data.small + ')';
+							tab[1].innerHTML = '中箱('+ data.data.medium + ')';
+							tab[2].innerHTML = '大箱('+ data.data.big + ')';
+						} else {
+							app.toast(data.message, 'center');
+						}
+					});
+				}
+				/**
+				 *	获取一个箱子编号
+				 */
+				function loadBoxNoByType(boxtypeid) {
+					app.order.getBoxNum( app.local.get('token'),  app.local.get('courierId'), islandCode, boxtypeid, function(data) {
+						console.log(boxtypeid+',' +JSON.stringify(data));
+						if(data.code == 0) {
+							boxNo.innerHTML = '';      // 清空原有编号
+							var boxList = data.data;
+							if( boxList.length > 0){
+								boxNo.innerHTML = boxList[boxList.length - 1];
+								boxId = boxList[boxList.length - 1];
+							}else if( boxList.length == 0 ) {
+								boxNo.innerHTML = '没有箱子啦~';
+								//将boxID置为空
+								boxId = "";
+							}
+						}else {
+							app.toast(data.message, 2000);
+						}
+					});
+				}
+				orderId.addEventListener('blur', function() {
+					checkExpressNo();
+				});
+				/**
+				 * 验证快递单号（本公司和using状态）
+				 */
+				function checkExpressNo() {
+					if( orderId.value == "") {
+						app.toast("请输入快递单号", 'center');
+						return;
+					}
+					app.order.checkExpressNo( orderId.value, function(data) {
+						console.log(JSON.stringify(data));
+						if(data.success) {
+							isErrorExpress = false;
+						} else {
+							isErrorExpress = true;
+							//判断是否为同一个用户 （1 自己的订单 0 本公司别的快递员的订单）
+							if(data.sameUsertag == 0) {
+								app.toast("快递单号已被使用，请更换");
+							} else if(data.tradeInfo != null) {
+								//这里将会进行取消之前订单的操作
+								if(data.tradeInfo.OVETIME_TAG == 1) {
+									//已结超时，不能取消订单
+									app.toast("快递单号已被使用且无法取消之前订单，请更换");
+								} else {
+									tradeId = data.tradeInfo.TRADE_ID;
+									app.local.set("cancelTradeId", tradeId);
+									isCancel = true;
+									var btnArray = ['取消', '确定'];
+									mui.confirm('该快递单号已被使用，您可以取消之前的订单或者更换快递单号"', '提示', btnArray, cbConfirm);
+								}
+							}
+						}
+					});
+				}
+				function excludeSpecial(value) {
+					// 去掉转义字符
+					value = value.replace(/[\'\"\\\/\b\f\n\r\t]/g, '');
+					//去掉特殊字符
+					value = value.replace(/[&\|\\\`~!@#$%^*:;""''./\\<\>\{\}·！@#￥%……&*\（\）\【\】：；“”‘’。、\(\)\-]/g, '');
+					return value;
+				}
+				app.$c('confirm').addEventListener('tap',function() {
+					//保存当前箱子编号
+					app.local.set("curBoxId", boxNo.innerHTML);
+					fetchPhone = mobile.value.replace(/\s/ig, ''); //取物人手机，去除勿打的空格，且只能为纯数字
+					expressNo = excludeSpecial(orderId.value.replace(/\s/ig, '')); //快递单号，去除特殊字符
+					if(isSubOrder) {
+						app.toast("请勿重复提交", 'center');
+						return;
+					} else if( orderId.value == "") {
+						app.toast("请输入快递单号", 'center');
+						return;
+					} else if( orderId.value.length > 30) {
+						app.toast("快递单号错误", 'center');
+						return;
+					} else if(/[\u4e00-\u9fa5]/.test(orderId.value)) {
+						app.toast("单号不能有中文", 'center');
+						return;
+					} else if( fetchPhone == "") {
+						app.toast("请输入取物人的手机号", 'center');
+						return;
+					} else if(fetchPhone.length != 11 || fetchPhone.substr(0, 1) != 1) {
+						app.toast("请输入正确的手机号", 'center');
+						return;
+					} else if( fetchName.value.length > 15) {
+						app.toast("取物人姓名不能多于15个字", 'center');
+						return;
+					} else if( remark.value.length > 10) {    //  留言并没有什么用,只是作为展示
+						app.toast("备注信息不能多于10个字", 'center');
+						return;
+					} else if( num.value == "") {
+						app.toast("快递数量不能为空", 'center');
+						return;
+					} else if(isErrorExpress) {
+						orderId.focus();
+					} else {
+						isScan = app.local.get('isScan') || false;
+						if( isScan ) {						 // 开完箱子页，点击继续存物
+							// 继续存物的无需扫描
+							doSubmitTrade();
+						} else {
+							isCancel = false;
+							var msg = "确定提交，请扫描" + islandCode + "号箱柜的二维码";
+							var btnArray = ['取消', '确定'];
+							mui.confirm(msg, '提示', btnArray, cbConfirm);
+						}
+					}
+				});
+				/**
+				 * 打开 箱子编号 扫码页
+				 */
+				function cbConfirm(e) {
+					if ( e.index == 1 ) {
+						if ( !isCancel ) {    
+							app.oPage('scan-order.html', { 
+								page: 'emptyVan-ys',
+								type: 'equal'
+							});
+						}
+					}
+				}
+				/**
+				 * 订单提交
+				 */
+				function doSubmitTrade() {
+					plus.nativeUI.showWaiting("正在开箱，请稍后");
+					app.order.submitOrder( app.local.get('token'),app.local.get('courierId'), expressNo, fetchPhone, boxId, boxtypeid, scanLandCode, function(data) {
+						console.log(JSON.stringify(data));
+						plus.nativeUI.closeWaiting();
+						if(data.code == 0) {
+							isSubOrder = true;
+							tradeId = data.data.orderId;
+							//保存当前订单的ID
+							app.local.set("curTradeId", tradeId);
+							app.oPage("deliver-confirm-ys.html");
+						} else {
+							app.toast(data.message, 'center');
+						}
+					});
+				}
+				/**
+				 * 返回刷新 *
+				 */
+				mui.oldback = mui.back;
+				mui.back = function(e) {
+					plus.webview.getWebviewById('emptyVan.html').reload();
+					mui.oldback();
+				}
+			})
+		</script>
+	</body>
+
+</html>
