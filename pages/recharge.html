@@ -189,11 +189,11 @@
 			mui.init();
 			var localstorage = window.localStorage;  
 			var paynum = 1;
-			var weixin = document.getElementById('weixin');
-		 	var zhifu = document.getElementById('zhifu');
-		 	var recharge = document.getElementsByClassName('recharge')[0];
-		 	var money = document.getElementsByClassName('money-ipt')[0];
-		 	var money_box = document.getElementsByClassName('money')[0];
+			var weixin = app.$id('weixin');
+		 	var zhifu = app.$id('zhifu');
+		 	var recharge = app.$c('recharge');
+		 	var money = app.$c('money-ipt');
+		 	var money_box = app.$c('money');
 		 	
 		 	var _self;
 		 	var rech_ip = localstorage.getItem('ip');
@@ -202,10 +202,7 @@
 			 	_self = plus.webview.currentWebview();
 			 	_self.setStyle({
 			 		scrollIndicator:'none'
-			 	})
-//			 	mui('.mui-scroll-wrapper').scroll({
-//					deceleration: 0.0005 
-//				});
+			 	});
 				app.$c('details').addEventListener('tap', function() {
 					app.oPage('recharge-details.html');
 				})
@@ -365,7 +362,6 @@
 					} else {
 						charge_money = money.value;
 					}
-					
 					if ( paynum == 1 ) {
 						pay('/api/v1/basic/customer_deposit_order/create_weixin', charge_money, 'wxpay');
 					} else if ( paynum == 2) {

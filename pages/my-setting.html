@@ -114,7 +114,7 @@
 								if ( data.success ) {
 									app.toast(data.message, 'center');
 									app.local.set('loginFlag','false');
-									
+									app.local.set('token','');
 //									mui.fire(plus.webview.getWebviewById('pages/express.html'),'again-login-express');
 //									mui.fire(plus.webview.getWebviewById('pages/record.html'),'again-login-record');
 									app.oLogin('login.html');
@@ -170,6 +170,12 @@
 							}
 						},'版本更新',["更新","忽略"]);
 //					}
+				}
+				mui.oldback = mui.back;
+				mui.back = function(e) {
+					// 不通知刷新头像的话，有空白闪屏。 原因，可能使用了本地头像
+					mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
+					mui.oldback();
 				}
 			})
 //			console.log(compareVersion('1.0.0','8.1.4'));

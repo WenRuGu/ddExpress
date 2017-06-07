@@ -16,7 +16,7 @@
 		<div class="mui-content">
 			<div class="setting-top">
 				<div class="user-pic">
-					<img class="portrait" src="../images/attention_shezhi@3x.png"/>
+					<img class="portrait" src="../images/tx.png"/>
 				</div>
 				<div class="user-info mui-navigate-right">
 					<p>
@@ -86,9 +86,9 @@
 				app.$c('realName').innerHTML = app.local.get('newRealName');
 //				app.toast(app.local.get('newRealName'));
 				app.$c('mobile').innerHTML = app.local.get('userMobile');
-				portrait.src = app.local.get('userPic') || '../images/attention_shezhi@3x.png';
+				portrait.src = app.local.get('userPic') || '../images/tx.png';
 				app.info.order( function(data) {
-					console.log('setting = '+JSON.stringify(data));
+//					console.log('setting = '+JSON.stringify(data));
 					if ( data.code == 0 ) {
 						app.$c('blue').innerHTML = data.data.waitTake;  // 待取件数量
 						app.$c('red').innerHTML = data.data.timeout;	// 超时数量
@@ -101,9 +101,10 @@
 				order_count();
 			});
 			window.addEventListener('update-userPic', function(e) {
-				var pic = app.local.get('userPic') || '../images/attention_shezhi@3x.png';
-//				if ( pic == '' ||  )app.local.get('userPic')
-				portrait.src = '../images/attention_shezhi@3x.png';
+				// 监听 更换头像，并且，用的本地图片，info页返回时，页面会有空白时间。
+				var pic = app.local.get('userPic') || '../images/tx.png';
+				portrait.src = '../images/tx.png';
+				console.log(pic);
 				setTimeout(function() {
 					portrait.src = pic;
 				},60);

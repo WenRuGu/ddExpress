@@ -41,7 +41,13 @@
 			mui.init();
 			mui.plusReady(function() {
 				
-			})
+				mui.oldback = mui.back;
+				mui.back = function(e) {
+					// 不通知刷新头像的话，有空白闪屏。 原因，可能使用了本地头像
+					mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
+					mui.oldback();
+				}
+			});
 		</script>
 	</body>
 

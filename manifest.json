@@ -251,7 +251,8 @@
 					"css/style.css",
 					"js/mui.min.js",
 					"js/mui.view.js",
-					"css/feedback.css"
+					"css/feedback.css",
+					"images/tx.png"
 				],
 				"refer": [
 					"pages/account.html",
@@ -609,7 +610,8 @@
 					"images/attention_shezhi@3x.png",
 					"js/app.js",
 					"js/mui.min.js",
-					"js/fontsize.js"
+					"js/fontsize.js",
+					"images/tx.png"
 				],
 				"refer": [],
 				"priority": 0

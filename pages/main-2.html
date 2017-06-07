@@ -12,7 +12,10 @@
 		<link rel="stylesheet" href="../css/style.css" />
 		<link rel="stylesheet" href="../css/main.css" />
 		<style>
-			
+			.mui-content{
+				margin-top: 50px;
+				margin-bottom: 50px;
+			}
 		</style>
 	</head>
 	<body>
@@ -134,11 +137,16 @@
 				coupon = $c('coupon'),
 				fault = $c('fault');
 			var slider = mui('#slider').slider({interval: 5000});
+			var h = document.documentElement.clientHeight;
+			var body = document.getElementsByTagName('body')[0];
+//			body.style.height = (h-100) + 'px';
+			app.$c('mui-content').style.height = (h - 100) + 'px';
+			console.log(h);
 			mui.plusReady(function(){
 				_self = plus.webview.currentWebview();
 				_self.setStyle({
 					scrollIndicator:'none'
-				});
+				})
 				scan.addEventListener('tap', function() {
 					
 				});

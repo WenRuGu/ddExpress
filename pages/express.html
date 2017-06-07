@@ -595,7 +595,9 @@
 								}
 							});
 						} else {
-							app.toast(data.message, 1500);
+							if ( app.local.get('token') != '' ) {
+								app.toast(data.message, 'center');
+							}
 						}
 					});
 				}

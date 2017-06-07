@@ -234,7 +234,7 @@ function tab(targetTab,that){
 	that.style.color = '#12B7F5';
 	if ( targetTab == 'pages/main.html' ) {
 		tabImg.src = 'images/zhuye_lan.png';
-		qiandao.style.display = 'block';
+//		qiandao.style.display = 'block';
 	} else if ( targetTab == 'pages/express.html' ) {
 		tabImg.src = 'images/kuaidi_lan.png';
 	} else if ( targetTab == 'pages/record.html' ) {

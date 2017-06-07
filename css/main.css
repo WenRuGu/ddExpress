@@ -1,4 +1,8 @@
 
+.mui-content{
+	/*position: relative;*/
+	height: 100%;
+}
 .mui-slider{
 	height: 3.55rem;
 }
@@ -52,13 +56,13 @@
 }
 .box{
 	width:100%;
-	min-height: 1.9rem;
-	margin-top: 0.14rem;
+	height: 1.96rem;
+	margin: 0.14rem 0;
 	background: #fff;
 }
 .box ul {
 	width: 100%;
-	height: 2rem;
+	height: 1.96rem;
     display: -webkit-flex;
     display: flex;
     
@@ -80,8 +84,8 @@
 	font-size: 0.28rem;
 }
 .function{
-	position: fixed;
-	bottom: 0;
+	/*position: absolute;
+	bottom: 0;*/
 	width: 100%;
 	height: 4rem;
 	background: #fff;
@@ -119,7 +123,7 @@
 	width: 100%;
 	text-align: center;
 	position: absolute;
-	top: 60px;
+	top: 1.2rem;
 }
 .box li:nth-child(1) img {
 	position: absolute;
@@ -127,7 +131,7 @@
 	width: 0.52rem;
 	height: 0.46rem;
 	margin-left:-0.26rem;
-	top: 28px;
+	top: 0.56rem;
 }
 .box li:nth-child(2) img {
 	position: absolute;
@@ -135,7 +139,7 @@
 	width: 0.48rem;
 	height: 0.55rem;
 	margin-left:-0.24rem;
-	top: 25px;
+	top: 0.5rem;
 }
 .box li:nth-child(3) img {
 	position: absolute;
@@ -143,7 +147,7 @@
 	width: 0.5rem;
 	height: 0.5rem;
 	margin-left:-0.25rem;
-	top: 25px;
+	top: 0.5rem;
 }
 
 /* ============= bottom img ============== */
@@ -182,7 +186,7 @@
 	width: 100%;
 	text-align: center;
 	position: absolute;
-	top: 58px;
+	top: 1.16rem;
 }
 .function ul li img{
 	position: absolute;
@@ -192,37 +196,37 @@
 	width: 0.48rem;
 	height: 0.48rem;
 	margin-left:-0.24rem;
-	top: 27px;
+	top: 0.54rem;
 }
 .yuyue img{
 	width: 0.52rem;
 	height: 0.48rem;
 	margin-left:-0.26rem;
-	top: 25px;
+	top: 0.5rem;
 }
 .embraceParts img{
 	width: 0.58rem;
 	height: 0.48rem;
 	margin-left:-0.29rem;
-	top: 27px;
+	top: 0.54rem;
 }
 .combatGains img{
 	width: 0.48rem;
 	height: 0.48rem;
 	margin-left:-0.24rem;
-	top: 27px;
+	top: 0.54rem;
 }
 .coupon img{
 	width: 0.58rem;
 	height: 0.42rem;
 	margin-left:-0.29rem;
-	top: 27px;
+	top: 0.54rem;
 }
 .fault img{
 	width: 0.46rem;
 	height: 0.46rem;
 	margin-left:-0.24rem;
-	top: 26px;
+	top: 0.52rem;
 }
 
 

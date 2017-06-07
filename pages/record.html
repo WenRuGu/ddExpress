@@ -434,7 +434,9 @@
 								var html = template( 'tmpl', data);
 								expressBox[index].innerHTML += html;
 							} else {
-								app.toast(data.message, 'center');
+								if ( app.local.get('token') != '' ) {
+									app.toast(data.message, 'center');
+								}
 							}
 						});
 					}
