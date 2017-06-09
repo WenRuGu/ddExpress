@@ -23,6 +23,17 @@ Date.prototype.format = function(format){
     }
     return format;
 }
+/**
+ * String 类里面扩展出来的format方法
+ * 参数个数不限
+ */
+String.prototype.format = function(){   // 无错可用
+    var args = arguments;
+    var pattern = new RegExp("{([1-" + arguments.length + "])}", "g");
+    return this.replace(pattern, function(match, index){
+        return args[index - 1];
+    });
+}
 var app = {
 	$c: function(id, doc) {
 		var d = doc ? doc : document;
@@ -110,11 +121,11 @@ var app = {
 			})
 		}
 	},
-	isJson: function(obj) {
+	isJson: function(obj) {	// 是否json
 		var isjson = typeof(obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && !obj.length;
 		return isjson;
 	},
-	network: function() {
+	network: function() {		// 网络状况
 		var network = plus.networkinfo.getCurrentType();
 		if ( network <= 1 ) {   // 0状态未知 1未连接
 			return false;
@@ -156,11 +167,12 @@ var app = {
 				}
 				setTimeout(function() {
 					backButtonPress = 0;
-				}, 1000);
+				}, 2000);
 				return false;
 			};
 		}
 	},
+	// 数组排序   
 	jsonSort: function( array, filed, reverse) {
 		if (array.length < 2 || !filed || typeof array[0] !== "object") return array;
 
@@ -182,6 +194,30 @@ var app = {
 		}
 		return array;
 	},
+	/**
+	 * 判断版本号大小，相等返回undefined，n大于o  return true;
+	 * oldVer and newVer
+	 * */
+	compareVersion:	function( ov, nv ){  
+		if ( !ov || !nv || ov=="" || nv=="" ){
+			return false;
+		}
+		var b=false,
+		ova = ov.split(".",4),
+		nva = nv.split(".",4);
+		for ( var i=0; i<ova.length&&i<nva.length; i++ ) {
+			var so=ova[i],no=parseInt(so),sn=nva[i],nn=parseInt(sn);
+			if ( nn>no || sn.length>so.length  ) {
+				return true;
+			} else if ( nn<no ) {
+				return false;
+			}
+		}
+		if ( nva.length>ova.length && 0 == nv.indexOf(ov) ) {
+			return true;
+		}
+	},
+
 	userlogin: {
 		'newlogin': function(mobile, password, obj) {
 			var url = host + '/api/v1/courier/login2';

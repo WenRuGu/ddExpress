@@ -87,6 +87,7 @@
 					again.style.display = 'block';
 					timerCount();
 				}
+				mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 				mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
 				// 联系运维
 				app.$c('cell').addEventListener('tap', function() {
@@ -227,6 +228,7 @@
 								},1000)
 							}
 						}
+						mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 						if(sendResult){
 							app.toast(data.message, 'center');
 							result.innerHTML = "箱子未打开？请联系运维人员!";

@@ -8,8 +8,8 @@ var subpages = [
 		'pages/setting.html'
 	];
 var subpage_style = {
-	top: '45px',
-	bottom: '51px'
+	top: '44px',
+	bottom: '50px'
 };
 
 var aniShow = {};
@@ -56,11 +56,11 @@ mui.plusReady(function() {
 			console.log(JSON.stringify(data));
 			if ( data.success ) {
 				var userInfo = data.data.userInfo;
-				app.local.set("userId", userInfo.id);
+				app.local.set("userId", userInfo.id);					// 安吉userId
 				app.local.set("realName", userInfo.realName);
 				app.local.set("userName", userInfo.userName);
-				app.local.set("userMobile", userInfo.mobilePhone);
-				app.local.set("userCompany", data.data.companyName);
+				app.local.set("userMobile", userInfo.mobilePhone);		// 手机号
+				app.local.set("userCompany", data.data.companyName);	// 公司名
 				app.local.set("userCompanyId", data.data.companyId);
 				app.local.set("sessionid", data.data.sessionid);
 				var myDate = new Date().Format("yyyy/MM/dd");
@@ -69,8 +69,8 @@ mui.plusReady(function() {
 				app.userlogin.newlogin(userInfo.mobilePhone, newpassword, function(ndata) {
 					console.log('登录 = '+JSON.stringify(ndata));
 					if(ndata.code == 0) {
-						app.local.set("token", ndata.data.token);
-						app.local.set("courierId", ndata.data.id);
+						app.local.set("token", ndata.data.token);		// 验证token
+						app.local.set("courierId", ndata.data.id);		// 快递员id
 						info();
 					} else {
 						app.toast("请绑定设备");

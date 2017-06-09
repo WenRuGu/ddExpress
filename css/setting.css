@@ -95,7 +95,7 @@
 
 .setting-bottom{
 	min-height: 10rem;
-	background: #fff;
+	/*background: #fff;*/
 }
 .setting-bottom ul li.mui-table-view-cell:after{
 	left: 1.1rem;

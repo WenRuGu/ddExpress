@@ -226,6 +226,7 @@
 					again.style.display = 'block';
 					timerCount();
 				}
+				mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 				mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
 				mui.fire(plus.webview.getWebviewById('pages/express.html'),'express-record');
 				if( tradeId == "" ) {
@@ -524,6 +525,7 @@
 							} else {
 								// 返回成功，重新加载新的可开箱子
 								findAvailOpenBoxList();
+								mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 								mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
 								mui.fire(plus.webview.getWebviewById('pages/express.html'),'express-record');
 							}

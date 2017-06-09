@@ -84,7 +84,6 @@
 			function order_count() {
 				app.$c('express').innerHTML = app.local.get('userCompany');
 				app.$c('realName').innerHTML = app.local.get('newRealName');
-//				app.toast(app.local.get('newRealName'));
 				app.$c('mobile').innerHTML = app.local.get('userMobile');
 				portrait.src = app.local.get('userPic') || '../images/tx.png';
 				app.info.order( function(data) {
@@ -95,16 +94,16 @@
 						app.$c('yellow').innerHTML = data.data.deliver;	// 今日派件数量
 					}
 				});
-			}
+			} 
 			order_count();
-			window.addEventListener('login-setting', function(e) {
+			window.addEventListener('login-setting', function(e) {  	// 登录，预约，派件，在箱刷新
 				order_count();
 			});
 			window.addEventListener('update-userPic', function(e) {
 				// 监听 更换头像，并且，用的本地图片，info页返回时，页面会有空白时间。
 				var pic = app.local.get('userPic') || '../images/tx.png';
 				portrait.src = '../images/tx.png';
-				console.log(pic);
+//				console.log(pic);
 				setTimeout(function() {
 					portrait.src = pic;
 				},60);
@@ -115,7 +114,9 @@
 			});
 			// 待收件
 			$q('.setting-center li:nth-child(1)').addEventListener('tap',function() {
-				app.oPage('embraceParts.html');
+				app.oPage('embraceParts.html',{
+					type: 'setting'
+				});
 			});
 			// 超期件
 			$q('.setting-center li:nth-child(2)').addEventListener('tap',function() {
@@ -123,7 +124,8 @@
 					title: '超期快件',
 					type: 'timeout',
 					status: '已超期',
-					remark: '快件已超期，等待处理'
+					remark: '快件已超期，等待处理',
+					isSetting:'true'
 				});
 			});
 			// 已取件
@@ -132,7 +134,8 @@
 					title: '已取快件',
 					type: 'taken',
 					status: '已完成',
-					remark:'快件已取走，交易完成'
+					remark:'快件已取走，交易完成',
+					isSetting:'true'
 				});
 			});
 			// 我的账户

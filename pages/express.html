@@ -634,6 +634,8 @@
 						plus.nativeUI.closeWaiting();
 						if ( data.code == 0 ) {
 							app.toast('抢单成功', 'center');
+							// 通知setting 刷新订单数量
+							mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 							// 成功后刷新列表
 							setTimeout(function() {
 								pull[0].pullDownLoading();

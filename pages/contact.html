@@ -37,10 +37,18 @@
 		<textarea class="txt" placeholder="请详细描述你的问题和意见..."></textarea>
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/fontsize.js"></script>
+		<script src="../js/app.js"></script>
 		<script type="text/javascript">
 			mui.init();
+			var remark = app.$c('txt');
 			mui.plusReady(function() {
 				
+				app.$c('finish').addEventListener('tap', function(e) {
+					if ( remark.value == '' ) {
+						app.toast('反馈的问题或意见不为空');
+						return;
+					}
+				});
 				mui.oldback = mui.back;
 				mui.back = function(e) {
 					// 不通知刷新头像的话，有空白闪屏。 原因，可能使用了本地头像
