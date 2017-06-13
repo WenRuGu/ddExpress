@@ -1,8 +1,15 @@
 
+/**
+ * author: WenRuGu
+ * email: 15715702346@163.com
+ * */
+
 var host = 'http://kd.yusong.com.cn:8080';
 /*var host = 'http://192.9.198.3:8100';*/
 var oldhost = 'http://101.64.235.90/ajzhy/rest/';
-
+/**
+ * 显示日期格式处理
+ * */
 Date.prototype.format = function(format){
     var o = {
         "M+": this.getMonth() + 1,
@@ -217,7 +224,21 @@ var app = {
 			return true;
 		}
 	},
-
+	/**
+	 * 日期格式处理
+	 * formatDate( time（毫秒）, "yyyy-MM-dd hh:mm")
+	 * */
+	formatDate: function (date, pattern){
+	    var date = new Date(date);
+	    if (date == undefined) {
+	        date = new Date();
+	    }
+	    if (pattern == undefined) {
+	        pattern = "yyyy-MM-dd hh:mm:ss";
+	    }
+	    var data =  date.format(pattern);
+	    return data;
+	},
 	userlogin: {
 		'newlogin': function(mobile, password, obj) {
 			var url = host + '/api/v1/courier/login2';

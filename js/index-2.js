@@ -251,7 +251,7 @@ function tab(targetTab,that){
 		mui.extend(aniShow,temp);
 		plus.webview.show(targetTab,"fade-in",300);
 	}
-//	plus.webview.hide(activeTab); 小米手机会出现bug
+	plus.webview.hide(activeTab);
 	activeTab = targetTab;
 }
 

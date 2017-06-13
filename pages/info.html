@@ -121,21 +121,34 @@
 				function update_userPic() {
 					mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
 				}
+				function compressImage(src){
+					plus.nativeUI.showWaiting();
+					plus.zip.compressImage({
+						src: '_doc/head.jpg',
+						dst:"_downloads/cm.jpg",
+						quality: 30,
+						format: 'jpg',
+						overwrite: true,
+						width:'60%'
+					},function(i){
+						console.log(JSON.stringify(i));
+						plus.nativeUI.closeWaiting();
+						i.target = i.target + "?version=" + new Date().getTime();
+						userPic.src = i.target;
+						app.local.set('userPic', ''+ i.target);
+						update_userPic();
+						app.toast('修改成功','center');
+						console.log("压缩图片成功："+JSON.stringify(i));
+					},function(e){
+						plus.nativeUI.closeWaiting();
+					});
+				}
 				function getImage() {
 					var c = plus.camera.getCamera();
 					c.captureImage(function(e) {
 						plus.io.resolveLocalFileSystemURL(e, function(entry) {
 							var s = entry.toLocalURL() + "?version=" + new Date().getTime();
-							userPic.src = s;
-							app.local.set('userPic', ''+s);
-							update_userPic();
-							app.toast('修改成功','center');
-//							plus.webview.getWebviewById('pages/setting.html').reload();
-//							document.getElementById("head-img").src = s;
-//							document.getElementById("head-img1").src = s;
-							//变更大图预览的src
-							//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
-//							document.querySelector("#__mui-imageview__group .mui-slider-item img").src = s + "?version=" + new Date().getTime();;;
+							compressImage(s);
 						}, function(e) {
 							console.log("读取拍照文件错误：" + e.message);
 						});
@@ -155,17 +168,7 @@
 										console.log("file remove success");
 										entry.copyTo(root, 'head.jpg', function(e) {
 												var e = e.fullPath + "?version=" + new Date().getTime();
-												userPic.src = e;
-												app.local.set('userPic', ''+e);
-												update_userPic();
-												app.toast('修改成功','center');
-//												plus.webview.getWebviewById('pages/setting.html').reload();
-//												document.getElementById("head-img").src = e;
-//												document.getElementById("head-img1").src = e;
-												//变更大图预览的src
-												//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
-//												document.querySelector("#__mui-imageview__group .mui-slider-item img").src = e + "?version=" + new Date().getTime();;
-//												compressImage(e);
+												compressImage(e);
 											},
 											function(e) {
 												console.log('copy image fail:' + e.message);

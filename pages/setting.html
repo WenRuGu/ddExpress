@@ -69,7 +69,9 @@
 	<script src="../js/common.js"></script>
 	<script src="../js/app.js"></script>
 	<script>
-		mui.init();
+		mui.init({
+			swipeBack:false
+		});
 		function $q(ele, doc) {
 			return document.querySelector(ele);
 		}
@@ -100,13 +102,9 @@
 				order_count();
 			});
 			window.addEventListener('update-userPic', function(e) {
-				// 监听 更换头像，并且，用的本地图片，info页返回时，页面会有空白时间。
 				var pic = app.local.get('userPic') || '../images/tx.png';
-				portrait.src = '../images/tx.png';
-//				console.log(pic);
-				setTimeout(function() {
-					portrait.src = pic;
-				},60);
+				console.log(pic);
+				portrait.src = pic;
 			});
 			// 个人信息
 			app.$c('setting-top').addEventListener('tap', function() {
@@ -114,9 +112,7 @@
 			});
 			// 待收件
 			$q('.setting-center li:nth-child(1)').addEventListener('tap',function() {
-				app.oPage('embraceParts.html',{
-					type: 'setting'
-				});
+				app.oPage('embraceParts.html');
 			});
 			// 超期件
 			$q('.setting-center li:nth-child(2)').addEventListener('tap',function() {
@@ -124,8 +120,7 @@
 					title: '超期快件',
 					type: 'timeout',
 					status: '已超期',
-					remark: '快件已超期，等待处理',
-					isSetting:'true'
+					remark: '快件已超期，等待处理'
 				});
 			});
 			// 已取件
@@ -134,8 +129,7 @@
 					title: '已取快件',
 					type: 'taken',
 					status: '已完成',
-					remark:'快件已取走，交易完成',
-					isSetting:'true'
+					remark:'快件已取走，交易完成'
 				});
 			});
 			// 我的账户

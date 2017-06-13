@@ -147,13 +147,6 @@
 						}
 					})
 				});
-				mui.oldback = mui.back;
-				mui.back = function(e) {
-					if ( _self.type == 'setting' ) {
-						mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
-					}
-					mui.oldback();
-				}
 			})
 		</script>
 	</body>

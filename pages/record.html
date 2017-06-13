@@ -162,7 +162,9 @@
 			{{ /each }}
 		</script>
 		<script>
-			mui.init();
+			mui.init({
+			swipeBack:false
+		});
 			
 			var ul = document.getElementsByClassName('mui-table-view');
 			var nav_list = app.$c('nav-list');
