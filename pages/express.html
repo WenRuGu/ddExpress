@@ -132,23 +132,6 @@
 											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
 											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
 										</div>
-									</li>
-									<li class="view-cell">
-										<div class="info-box">
-											<div class="customer-pic">
-												<img src="../images/mall-default-3.jpg"/>
-											</div>
-											<div class="customer-info">
-												<span class="nickname">一叶知秋</span>
-												<span class="express-price">28元</span>
-												<span class="express-time">今天 12:30~4:30</span>
-												<button type="button" class="mui-btn mui-btn-primary single">抢单</button>
-											</div>
-										</div>
-										<div class="address">
-											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
-											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
-										</div>
 									</li>-->
 					            </ul>
 							</div>
@@ -159,7 +142,7 @@
 							<div class="mui-scroll">
 								<ul class="mui-table-view second" >
 									<li class="view-cell">
-										<div class="info-box">
+										<!--<div class="info-box">
 											<div class="customer-pic">
 												<img src="../images/mall-default-3.jpg"/>
 											</div>
@@ -173,7 +156,7 @@
 										<div class="address">
 											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
 											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
-										</div>
+										</div>-->
 									</li>
 					            </ul>
 							</div>
@@ -183,24 +166,6 @@
 						<div class="mui-scroll-wrapper">
 							<div class="mui-scroll">
 								<ul class="mui-table-view second" >
-									<li class="view-cell">
-										<div class="info-box">
-											<div class="customer-pic">
-												<img src="../images/mall-default-3.jpg"/>
-											</div>
-											<div class="customer-info">
-												<span class="nickname">一叶知秋</span>
-												<span class="express-price">28元</span>
-												<span class="express-time">今天 12:30~4:30</span>
-												<button type="button" class="mui-btn mui-btn-primary single">抢单</button>
-											</div>
-										</div>
-										<div class="address">
-											<p><span class="mui-pull-left">揽件地址：</span><span class="mui-ellipsis">asdasdsadsdasdsd浙江省杭州市余杭区良渚镇七贤路1号</span></p>
-											<p><span class="mui-pull-left">收货地址：</span><span class="mui-ellipsis">浙江省杭州市余杭区良渚镇七贤路1号</span></p>
-										</div>
-									</li>
-									
 					            </ul>
 							</div>
 						</div>
@@ -211,7 +176,7 @@
 								<ul class="mui-table-view four">
 									<!--<li class="mui-table-view-cell">
 								        <a class="mui-navigate-right">
-								        	<span>暗示健康的拉动阿萨德</span>
+								        	<span>055康佳小区</span>
 								        	<span>0-5</span>
 								        	<span>2017-05-24 14:14:14</span>
 								        </a>
@@ -321,22 +286,22 @@
 						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
 						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
 					}
-					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 				};
-				slide.addEventListener('slide', function(e) {					// 以最后的 slide 事件为准，调整div显示
-					if ( version ) {
-						drag_true();
-						mui('.nav-list li').each(function(){
-							this.className = '';
-						});
-						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
-						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
-						mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-						mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-						nav_li[sindex].className = 'list-blue';
-					}
-				});
+//				slide.addEventListener('slide', function(e) {					// 以最后的 slide 事件为准，调整div显示
+//					if ( version ) {
+//						drag_true();
+//						mui('.nav-list li').each(function(){
+//							this.className = '';
+//						});
+//						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+//						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+//						mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+//						mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+//						nav_li[sindex].className = 'list-blue';
+//					}
+//				});
 				slide.addEventListener('swipeleft', swipeleft, false); 			// 监听左右 滑动
 				slide.addEventListener('swiperight', swiperight ,false);
 				function swipeleft(e) {
@@ -358,8 +323,8 @@
 						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
 					}
 					nav_li[sindex].className = 'list-blue';
-					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 				};
 				function swiperight(e) {
 					e.stopPropagation();
@@ -380,8 +345,8 @@
 						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
 					}
 					nav_li[sindex].className = 'list-blue';
-					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 				};
 				if ( version ) {											// version <= 5 禁止动画
 					slide.addEventListener('touchstart',chstart,false);
@@ -421,8 +386,8 @@
 		        	nav_li[sindex].className = 'list-blue';
 		        	s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
 					s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
-		        	mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-		        	mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+		        	mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+		        	mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 					pull_flag = true;
 					slide_flag();
 		        };
@@ -496,7 +461,7 @@
 						return;
 					} else {
 						app.order.sendOrderList( (pageNo[index]-1) * pageSize, pageSize, app.local.get('token'),app.local.get('courierId'), type, function(data) {
-							console.log(JSON.stringify(data));
+//							console.log(JSON.stringify(data));
 							if ( data.code == 0 ) {
 								if ( pageNo[index] == 1 ) {
 									expressBox[index].innerHTML = '';
@@ -508,7 +473,11 @@
 								var html = template( 'tmpl', data);
 								expressBox[index].innerHTML += html;
 							} else {
-								app.toast(data.message, 'center');
+								if ( data.code == 3 ) {
+									
+								} else {
+									app.toast(data.message, 'center');
+								}
 							}
 						});
 					}
@@ -543,10 +512,9 @@
 				function historyNo(index) {
 					var Newdata = '{"data":[';
 					var tradeListStr = "";
-
-					console.log(index+','+pageNo[index]+','+pageSize);
+//					console.log(index+','+pageNo[index]+','+pageSize);
 					app.order.history(pageNo[index], pageSize, "", "3", function(data) {
-						console.log('old == '+JSON.stringify(data));
+//						console.log('old == '+JSON.stringify(data));
 						if(data.success) {
 							//返回结果的处理，按订单的结束时间排序
 							var tradeList = data.data.orderInfoList;
@@ -563,7 +531,7 @@
 								}
 							}
 							app.order.newallhistory((pageNo[index]-1)  * pageSize, pageSize, app.local.get('token'), app.local.get('courierId'), 'taken',function(data1) {
-								console.log('new == '+JSON.stringify(data));
+//								console.log('new == '+JSON.stringify(data));
 								if(data1.code == 0) {
 									if ( pageNo[index] == 1 ) {
 										expressBox[3].innerHTML = '';
@@ -583,7 +551,7 @@
 								}
 								Newdata = Newdata.substring(0, Newdata.length - 1);
 								Newdata += "]}";
-								console.log(Newdata+','+Newdata.length);
+//								console.log(Newdata+','+Newdata.length);
 								if(Newdata.length <= 20) {
 									pull[3].endPullUpToRefresh(true);
 								} else {
@@ -597,7 +565,9 @@
 								}
 							});
 						} else {
-							if ( app.local.get('token') != '' ) {
+							if ( !data.sessionFlag ) {
+								
+							} else if (app.local.get('token') != '') {
 								app.toast(data.message, 'center');
 							}
 						}
@@ -632,7 +602,7 @@
 					});
 					var orderNo = this.getAttribute('data-orderNo');
 					app.order.sendOrderTake( app.local.get('token'),app.local.get('courierId'), orderNo, function(data){
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						plus.nativeUI.closeWaiting();
 						if ( data.code == 0 ) {
 							app.toast('抢单成功', 'center');

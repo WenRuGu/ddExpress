@@ -159,7 +159,6 @@
 			var pull;
 			var pageNo = 1; 			// 启始页数
 			var pageSize = 10;			//一页数量
-			var pageCount = 1; 			//总页数
 			var box_ul = app.$c('box-ul');
 			var deceleration = mui.os.ios?0.0006:0.0003;
 			mui.plusReady(function() {
@@ -246,6 +245,7 @@
 							if(pageNo == 1) {
 								box_ul.innerHTML = ''; //清空容器内数据
 							}
+							console.log(data.keyword);
 							// 判断当前返回的请求是否是应该处理的请求
 							if(data.keyword && app.local.get("keyword") != null && app.local.get("keyword") != "" && app.local.get("keyword") != data.keyword) {
 								return;
@@ -254,7 +254,6 @@
 							if(isLandInfoList.length > 0) {
 	
 								pageNo++;
-								pageCount = data.data.totalPage;
 								for(var i in isLandInfoList) {
 									Newdata += "{";
 									Newdata += "\"islandStatus\":\"" + isLandInfoList[i].ISLAND_STATUS + "\",";
@@ -293,12 +292,12 @@
 										Newdata += "},";		
 									}
 								} else {
-									app.toast(data1.message, "");
+									plus.nativeUI.closeWaiting();
+									app.toast(data1.message, "center");
 								}
-	
 								Newdata = Newdata.substring(0, Newdata.length - 1);
 								Newdata += "]}";
-								console.log(Newdata);
+//								console.log(Newdata);
 								
 								if ( Newdata.length <= 15 ) {
 									plus.nativeUI.closeWaiting();
@@ -320,10 +319,15 @@
 								}
 							});
 						} else {
+							plus.nativeUI.closeWaiting();
 							app.toast(data.message, "center");
 						}
 					});
 				}
+				window.addEventListener('update-isBox',function(e){  // 开箱send-confirm页通知刷新
+					pageNo = 1;
+					pull.pullUpLoading();
+				});
 			})
 		</script>
 	</body>

@@ -45,7 +45,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>主页</span></a>
+		    <a class=" mui-icon mui-icon-left-nav mui-pull-left"><span>主页</span></a>
 		    <h1 class="mui-title">标题</h1>
 		</header>
 		<div class="mui-content">
@@ -68,21 +68,23 @@
 				mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 				mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
 				mui.fire(plus.webview.getWebviewById('pages/express.html'),'express-record');
+				mui.fire(plus.webview.getWebviewById('isBox-normal.html'),'update-isBox');
+				mui.fire(plus.webview.getWebviewById('fast-good-details-ys.html'),'update-fast-details-ys');
 				/**
 				 * 联系运维
 				 */
 				app.$c('cell').addEventListener('tap', function() {
 					plus.device.dial(app.local.get("maintainPhone"), false);
 				}
-
 				/**
 				 * 回到主页面
 				 */
-				mui.oldback = mui.back;
-				mui.back = function() {
-					plus.webview.getWebviewById('fast-good-details-ys.html').reload();
-					mui.oldback();
-				}
+				app.$c('mui-icon-left-nav').addEventListener('tap',function(){
+					app.local.clear("isScan");
+					plus.webview.close('fast-good-details-ys.html');
+					plus.webview.close('isBox-normal.html');
+					plus.webview.close(_self);
+				})
 			});
 			
 		</script>

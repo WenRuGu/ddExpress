@@ -47,7 +47,7 @@
 					'</div>';
 				plus.contacts.getAddressBook(plus.constructor.ADDRESSBOOK_PHONE, function(addressbook) {
 					addressbook.find(["displayName", "phoneNumbers"], function(contacts) {
-						console.log(JSON.stringify(contacts));
+//						console.log(JSON.stringify(contacts));
 						var contactsStr = "";
 					    for (var i = contacts.length - 1; i >= 0; i--) {  
 					        var targetNode = contacts[i].displayName;  
@@ -75,7 +75,6 @@
 				}, function(e) {
 					app.toast("获取联系人失败,请查看是否开启通讯录权限", "center");
 				});
-				console.log('aa');
 				mui('body').on('tap', '.sort_list', function() {
 					var id = this.getAttribute('data-id');
 					var number = this.getAttribute('data-number');

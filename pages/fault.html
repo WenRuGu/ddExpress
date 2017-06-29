@@ -48,9 +48,17 @@
 		<script src="../js/mui.min.js"></script>
 		<script src="../js/fontsize.js"></script>
 		<script src="../js/feedback.js"></script>
+		<script src="../js/app.js"></script>
 		<script type="text/javascript">
 			mui.init();
-			
+			var _self;
+			var sub = app.$c('blue');
+			mui.plusReady(function(){
+				_self = plus.webview.currentWebview();
+				window.addEventListener('resize', function() {  // 底部弹出输入顶起 底部div
+				    sub.style.display = document.body.clientHeight <= 400 ? 'none' : 'block';
+				}, false);
+			});
 		</script>
 	</body>
 

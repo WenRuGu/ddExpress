@@ -71,7 +71,7 @@
 						</a>
 						<div class="mui-collapse-content">
 							<p>取件码：<span class="fetchCode blue {{item.id | psw}}"></span><span class="mui-pull-right sms" data-receiverMobile='{{item.receiverMobile}}' data-title='{{item.title}}' data-id='{{item.id}}'>点击发送短信</span></p>
-							<div class="details" data-id='{{item.id}}'>
+							<div class="details" data-id='{{item.id}}' data-islandName='{{item.terminalName}}'>
 								<p>
 									<span>联系人：<span class="contacts">未填写</span>
 									<span style="margin-left: 30px;">手机号码：<span class="mobile">{{item.receiverMobile}}</span></span>
@@ -131,7 +131,7 @@
 				islandId = _self.curIslandId;								
 				tradeTag = _self.tradeTag;								
 				userId = app.local.get('token') || '';
-				console.log(islandStatus+','+islandId);
+//				console.log(islandStatus+','+islandId);
 				if ( userId == '') {
 					app.toast('数据异常，请稍后再试','center');
 					setTimeout(function() {
@@ -180,9 +180,9 @@
 					return status2 == 2 ? '咨询':'开箱';
 				});
 				function appData() {
-					console.log((pageNo - 1) * pageSize+','+pageSize+','+token+','+courierId+','+islandId);
+//					console.log((pageNo - 1) * pageSize+','+pageSize+','+token+','+courierId+','+islandId);
 					app.order.newhistory((pageNo - 1) * pageSize, pageSize, token, courierId, islandId, "wait_take", function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.code == 0) {
 							// 订单id数组
 							var tradeIdArr = [];
@@ -205,14 +205,14 @@
 //									var isLooked = "1";							// 快递员是否看过密码标志 1.看过 0.未看过
 									data.data[i].title = data.data[i].terminalName + "  " + data.data[i].boxNum + "号箱"; // 标题，以及短信内容
 								}
-								console.log(JSON.stringify(data.data));
+//								console.log(JSON.stringify(data.data));
 								
 								var html = template('tmpl', data);
 								scroll_box.innerHTML += html;
-								console.log(tradeIdArr);
+//								console.log(tradeIdArr);
 								for(var i = 0; i < tradeIdArr.length; i++) {
 									app.order.newfindTradeMessageListByTradeIds(token, tradeIdArr[i], function(ndata) {
-										console.log(JSON.stringify(ndata));
+//										console.log(JSON.stringify(ndata));
 										if(ndata.code == 0) {
 											var orderid = ndata.data.orderId;
 											fetchpwd = ndata.data.authCode;
@@ -251,8 +251,10 @@
 				 */
 				mui('body').on('tap', '.details', function() {
 					var tradeId = this.getAttribute('data-id');
+					var islandName = this.getAttribute('data-islandName');
 					app.oPage('order-details-ys.html',{
-						tradeId: tradeId
+						tradeId: tradeId,
+						islandName: islandName
 					});
 				})
 				/**
@@ -266,7 +268,7 @@
 					var btnArray = ['取消', '确定'];
 					mui.confirm('将密码通过短信告知客户', '提示', btnArray, function(e) {
 						if(e.index == 1) {
-							console.log(phone+','+psw+','+title);
+//							console.log(phone+','+psw+','+title);
 							//发送短信通知
 							openSMS(phone, title, psw);
 						}
@@ -336,7 +338,7 @@
 					var sarkCode = app.local.get("curSarkCode");
 					if (scanCode == sarkCode) {
 						app.order.newdeliverordertake(token, courierId, app.local.get('curTradeId'), function(data) {
-							console.log(JSON.stringify(data));
+//							console.log(JSON.stringify(data));
 							if (data.code == 0) {
 //								app.local.set("openBoxResult", "" + data.success || true);
 								app.oPage('send-confirm-ys.html');
@@ -353,14 +355,10 @@
 						}, 1500);
 					}
 				});
-				/**
-				 *	返回通知刷新  *
-				 */
-				mui.oldback = mui.back;
-				mui.back = function(e) {
-					plus.webview.getWebviewById('isBox-normal.html').reload();
-					mui.oldback();
-				}
+				window.addEventListener('update-fast-details-ys',function(e){  // 开箱send-confirm页通知刷新
+					pageNo = 1;
+					pull.pullUpLoading();
+				});
 			})
 		</script>
 	</body>

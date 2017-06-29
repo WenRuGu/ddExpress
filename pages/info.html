@@ -82,10 +82,10 @@
 				_self.setStyle({
 					scrollIndicator:'none'
 				});
+				realName.innerHTML = app.local.get('newRealName');
+				mobile.innerHTML = app.local.get('userMobile');
 				userPic.src = app.local.get('userPic') || '../images/tx.png';
 				mui.previewImage();				// 预览头像 初始化
-				realName.innerHTML = app.local.get('newRealName');
-				app.$c('mobile').innerHTML = app.local.get('userMobile');
 				app.$c("head").addEventListener("tap", function(e) {
 					if(mui.os.plus){
 						var a = [{
@@ -112,37 +112,35 @@
 							}
 						})	
 					}
-					
 				});
-
 				/**
-				 * 我的页面 刷新 头像 *
+				 * 压缩图片 *
 				 */
-				function update_userPic() {
-					mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
-				}
 				function compressImage(src){
 					plus.nativeUI.showWaiting();
 					plus.zip.compressImage({
-						src: '_doc/head.jpg',
-						dst:"_downloads/cm.jpg",
-						quality: 30,
+//						src: '_doc/head.jpg',
+						src: src,
+						dst:"_doc/cm.jpg",
+						quality: 25,
 						format: 'jpg',
 						overwrite: true,
 						width:'60%'
 					},function(i){
-						console.log(JSON.stringify(i));
+//						console.log("压缩图片成功："+JSON.stringify(i));
 						plus.nativeUI.closeWaiting();
 						i.target = i.target + "?version=" + new Date().getTime();
 						userPic.src = i.target;
 						app.local.set('userPic', ''+ i.target);
-						update_userPic();
+						mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
 						app.toast('修改成功','center');
-						console.log("压缩图片成功："+JSON.stringify(i));
 					},function(e){
 						plus.nativeUI.closeWaiting();
 					});
 				}
+				/**
+				 * 拍照 *
+				 */
 				function getImage() {
 					var c = plus.camera.getCamera();
 					c.captureImage(function(e) {
@@ -158,54 +156,48 @@
 						filename: "_doc/head.jpg"
 					})
 				}
+				/**
+				 * 相册选取 *
+				 */
 				function galleryImg() {
 					plus.gallery.pick(function(a) {
-						plus.io.resolveLocalFileSystemURL(a, function(entry) {
-							plus.io.resolveLocalFileSystemURL("_doc/", function(root) {
-								root.getFile("head.jpg", {}, function(file) {
-									//文件已存在
-									file.remove(function() {
-										console.log("file remove success");
-										entry.copyTo(root, 'head.jpg', function(e) {
-												var e = e.fullPath + "?version=" + new Date().getTime();
-												compressImage(e);
-											},
-											function(e) {
-												console.log('copy image fail:' + e.message);
-											});
-									}, function() {
-										console.log("delete image fail:" + e.message);
-									});
-								}, function() {
-									//文件不存在
+						var e = a + "?version=" + new Date().getTime();
+						compressImage(e);
+//						plus.io.resolveLocalFileSystemURL(a, function(entry) {
+//							plus.io.resolveLocalFileSystemURL("_doc/", function(root) {
+//								root.getFile("head.jpg", {}, function(file) {
+//									//文件已存在
+//									file.remove(function() {
+//										entry.copyTo(root, 'head.jpg', function(e) {
+//												var e = e.fullPath + "?version=" + new Date().getTime();
+//												compressImage(e);
+//											},
+//											function(e) {
+//												console.log('copy image fail:' + e.message);
+//											});
+//									}, function() {
+//										console.log("delete image fail:" + e.message);
+//									});
+//								}, function() {
+//									//文件不存在
 //									entry.copyTo(root, 'head.jpg', function(e) {
-//											var path = e.fullPath + "?version=" + new Date().getTime();
-//											document.getElementById("head-img").src = path;
-//											document.getElementById("head-img1").src = path;
-//											//变更大图预览的src
-//											//目前仅有一张图片，暂时如此处理，后续需要通过标准组件实现
-//											document.querySelector("#__mui-imageview__group .mui-slider-item img").src = path;
-//										},
-//										function(e) {
-//											console.log('copy image fail:' + e.message);
-//										});
-								});
-							}, function(e) {
-								console.log("get _www folder fail");
-							})
-						}, function(e) {
-							console.log("读取拍照文件错误：" + e.message);
-						});
+//										var path = e.fullPath + "?version=" + new Date().getTime();
+//										compressImage(e);
+//									},
+//									function(e) {
+//										console.log('copy image fail:' + e.message);
+//									});
+//								});
+//							}, function(e) {
+//								console.log("get _www folder fail");
+//							})
+//						}, function(e) {
+//							console.log("读取拍照文件错误：" + e.message);
+//						});
 					}, function(a) {}, {
 						filter: "image"
 					})
 				};
-				mui.oldback = mui.back;
-				mui.back = function(e) {
-					// 不通知刷新头像的话，有空白闪屏。 原因，可能使用了本地头像
-					mui.fire(plus.webview.getWebviewById('pages/setting.html'),'update-userPic');
-					mui.oldback();
-				}
 			});
 		</script>
 	</body>

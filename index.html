@@ -15,7 +15,7 @@
 			nav{
 				background: #fff;
 			}
-			nav a {
+			nav a{
 				position: relative;
 			}
 			a img{
@@ -37,6 +37,17 @@
 			nav.mui-bar {
 				background-color: #fff!important;
 			}
+			.mui-tab-item:after{
+				position: absolute;
+			    right: 0;
+			    top: 0;
+			    left: 0;
+			    height: 1px;
+			    content: '';
+			    -webkit-transform: scaleY(.5);
+			    transform: scaleY(.5);
+			    background-color: #c8c7cc;
+			}
 			.active{
 				color: #12B7F5;
 			}
@@ -54,7 +65,7 @@
 		<nav class="mui-bar mui-bar-tab">
 			<a id="defaultTab" class="mui-tab-item mui-active" href="pages/main.html">
 				<img src="images/zhuye_lan.png"/>
-				<span class="mui-tab-label">主页</span>
+				<span class="mui-tab-label zy">主页</span>
 			</a>
 			<a class="mui-tab-item" href="pages/express.html">
 				<img src="images/kuaidi_hui.png"/>

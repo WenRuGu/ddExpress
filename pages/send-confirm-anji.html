@@ -153,7 +153,7 @@
 
 	<body>
 		<header class="mui-bar mui-bar-nav">
-		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>主页</span></a>
+		    <a class="mui-icon mui-icon-left-nav mui-pull-left"><span>主页</span></a>
 		    <h1 class="mui-title">存件完成</h1>
 		</header>
 		<div class="mui-content">
@@ -229,6 +229,8 @@
 				mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 				mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
 				mui.fire(plus.webview.getWebviewById('pages/express.html'),'express-record');
+				mui.fire(plus.webview.getWebviewById('isBox-normal.html'),'update-isBox');
+				mui.fire(plus.webview.getWebviewById('fast-good-details-anji.html'),'update-fast-details-anji');
 				if( tradeId == "" ) {
 					app.toast("数据异常", 'center');
 					setTimeout(function() {
@@ -237,7 +239,14 @@
 					return;
 				}
 				findTradeInfoByTradeId(tradeId);
-
+				
+				/**
+				 * 刷新已发快件 *
+				 */
+				function reload() {
+					plus.webview.getWebviewById('isBox-normal.html').reload();
+				}
+				reload();
 				// 联系运维
 				app.$c('cell').addEventListener('tap', function() {
 					plus.device.dial(app.local.get("maintainPhone"), false);
@@ -249,13 +258,12 @@
 				/**
 				 * 回到主页面
 				 */
-				mui.oldback = mui.back;
-				mui.back = function() {
+				app.$c('mui-icon-left-nav').addEventListener('tap',function(){
 					app.local.clear("isScan");
-					plus.webview.close('emptyVan-ys.html');
-					plus.webview.close('emptyVan.html');
+					plus.webview.close('fast-good-details-anji.html');
+					plus.webview.close('isBox-normal.html');
 					plus.webview.close(_self);
-				}
+				});
 				/**
 				 * tab切换-开其他箱子 *
 				 */
@@ -525,9 +533,11 @@
 							} else {
 								// 返回成功，重新加载新的可开箱子
 								findAvailOpenBoxList();
+								reload();
 								mui.fire(plus.webview.getWebviewById('pages/setting.html'),'login-setting');
 								mui.fire(plus.webview.getWebviewById('pages/record.html'),'login-record');
 								mui.fire(plus.webview.getWebviewById('pages/express.html'),'express-record');
+								mui.fire(plus.webview.getWebviewById('isBox-normal.html'),'update-isBox');
 							}
 							app.toast(data.message, 'center');
 //							result.style.color = '#3e3e3e';

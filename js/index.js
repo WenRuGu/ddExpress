@@ -17,10 +17,14 @@ var _self;
 var showLogin; 
 var deviceToken;
 var qiandao = app.$c('icon-qiandao');
+var tokenError = false;
 mui.plusReady(function() {
 	_self = plus.webview.currentWebview();
-	showLogin = app.local.get('loginFlag') || 'false';
+	showLogin = app.local.get('loginFlag');
 //	console.log(showLogin);
+	if ( showLogin == '' ) {
+		showLogin = 'false';
+	}
 	if ( showLogin == 'true') {
 		getToken();
 		page();
@@ -28,8 +32,7 @@ mui.plusReady(function() {
 		app.oLogin('pages/login.html');
 	}
 	plus.navigator.setStatusBarBackground('#12B7F5');
-//	plus.screen.lockOrientation('portrait-primary');
-	window.addEventListener('page', function(e) {
+	window.addEventListener('page', function(e) {	// 登录
 		page();
 		info();
 	})
@@ -51,9 +54,12 @@ mui.plusReady(function() {
 		loadSystemSettingParam();		//加载数据字典，必要参数的值
 	}
 	function checkDeviceToken() {
-		app.index.checkDeviceToken( deviceToken, function(data) {
-			console.log(JSON.stringify(data));
+//		console.log(deviceToken);//413461A187DA422F8CA774688F39630F
+		var randomDeviceToken = app.local.get('randomDeviceToken');
+		app.index.checkDeviceToken( deviceToken, randomDeviceToken, function(data) {
+//			console.log('再次登录'+JSON.stringify(data));
 			if ( data.success ) {
+				tokenError = true;
 				var userInfo = data.data.userInfo;
 				app.local.set("userId", userInfo.id);					// 安吉userId
 				app.local.set("realName", userInfo.realName);
@@ -66,28 +72,38 @@ mui.plusReady(function() {
 				var newpassword = hex_md5(myDate + userInfo.mobilePhone + "9FA6EB4SDFSFDSDFD075A98F84SDFSDFSDFSDFF896CF0DSDFSDFSDFSDF451");
 				newpassword = newpassword.toUpperCase();
 				app.userlogin.newlogin(userInfo.mobilePhone, newpassword, function(ndata) {
-					console.log('登录 = '+JSON.stringify(ndata));
+//					console.log('登录 = '+JSON.stringify(ndata));
 					if(ndata.code == 0) {
 						app.local.set("token", ndata.data.token);		// 验证token
 						app.local.set("courierId", ndata.data.id);		// 快递员id
 						info();
 					} else {
+						app.local.set('loginFlag','false');
 						app.toast("请绑定设备");
 						app.oLogin('pages/login.html');
 					}
 				});
 			} else {
+				app.local.set('loginFlag','false');
 				app.toast('请绑定设备');
 				app.oLogin('pages/login.html');
 			}
 		}, function(e) {
-			app.toast('请绑定设备');
-			app.oLogin('pages/login.html');
-		})
+//			app.toast('请重新打开app','center');
+//			app.oLogin('pages/login.html');
+		});
+		setTimeout(function(){
+			if( !tokenError ) {
+//				console.log(tokenError);
+//				app.local.set('loginFlag','false');
+				app.toast('请绑定设备');
+				app.oLogin('pages/login.html');
+			}
+		},3000)
 	}
 	function info() {
 		app.userlogin.info( app.local.get('courierId'),app.local.get('token'),function(data2) {
-			console.log('个人信息 = '+JSON.stringify(data2));
+//			console.log('个人信息 = '+JSON.stringify(data2));
 			if ( data2.code == 0 ) {		// realName gender balance qrCode courierId
 				app.local.set('newRealName', data2.data.realName);
 			} else {
@@ -97,29 +113,28 @@ mui.plusReady(function() {
 	}
 	function geo() {
 		plus.geolocation.getCurrentPosition( function(r) {
-			console.log(JSON.stringify(r));
+//			console.log(JSON.stringify(r));
 			var lat = r.coords.latitude;
 			var lng = r.coords.longitude;
 			
 			if ( mui.os.ios ) {
 				var arr2 = GPS.gcj_decrypt(lat,lng);
-				var ggPoing = new BMap.Point(arr2['lon'], arr2['lat']);
+				var ggPoint = new BMap.Point(arr2['lon'], arr2['lat']);
 				BMap.Convertor.translate(ggPoint, 2, function(point) {
 					var lat = point.lat; 
 					var lng = point.lng; 
 					if(lat == 0 && lng == 0) {
-						app.local.setlat(""); 
-						app.local.setlog(""); 
+						app.local.set(""); 
+						app.local.set(""); 
 					} else {
-						app.local.setlat('lat', lat); //纬度
-						app.local.setlog('lng', lng); //经度
+						app.local.set('lat', lat); //纬度
+						app.local.set('lng', lng); //经度
 					}
 				});
 			} else {
 				app.local.set('lat', lat);
 				app.local.set('lng', lng);
 			}
-			 
 		}, function(e) {
 			app.toast("请允许程序访问您的地理位置", 'center');
 		}, {
@@ -163,7 +178,7 @@ mui.plusReady(function() {
 		mui.post(oldhost + "findTypeListByParams", {
 			"params": JSON.stringify(params)
 		}, function(data) {
-			console.log(JSON.stringify(data));
+//			console.log(JSON.stringify(data));
 			if(data.success) {
 				var tradeList = data.data.typeList;
 				for(var i in tradeList) {
@@ -199,21 +214,21 @@ mui.plusReady(function() {
 	// 两次退出
 	app.quit();
 });
+var activeTab = subpages[0];
 window.addEventListener('login-sec',function(e) {
 	var that = app.$id('defaultTab');
 	tab('pages/main.html',that);
 })
-var activeTab = subpages[0];
 mui('.mui-bar-tab').on('tap', 'a', function(e) {
 	var targetTab = this.getAttribute('href');
 	var that = this;
 	tab(targetTab,that);
 });
 function tab(targetTab,that){
-//	console.log(targetTab+','+activeTab);
 	if (targetTab == activeTab) {
 		return;
 	}
+//	console.log(targetTab+','+activeTab);
 	var tabImg = that.querySelector('img');
 	mui('nav a').each(function(index) {
 		var img = this.querySelector('img');

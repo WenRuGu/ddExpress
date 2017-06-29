@@ -165,7 +165,7 @@
 					fetchName.value = e.detail.name;
 				});
 				window.addEventListener('scanLandCode', function(e) {
-					console.log(e.detail.code);
+//					console.log(e.detail.code);
 					if ( e.detail.type == 'expressId') {
 						orderId.value = e.detail.code;
 						orderId.focus();
@@ -200,7 +200,7 @@
 				 */
 				function loadBoxType() {
 					app.order.findIslandBoxInfoForExpress("1", islandId, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if ( data.success ) {
 							var list = data.data.boxEntityList;
 							var boxBig = '小';
@@ -231,7 +231,7 @@
 				 */
 				function loadBoxNoByType(boxtypeid) {
 					app.order.findBaseBoxListByIslandIdAndBoxType( islandId, boxtypeid, function(data) {
-						console.log(islandId+','+boxtypeid+',' +JSON.stringify(data));
+//						console.log(islandId+','+boxtypeid+',' +JSON.stringify(data));
 						if(data.success) {
 							boxNo.innerHTML = '';      // 清空原有编号
 							var boxList = data.data.boxEntityList;
@@ -264,7 +264,7 @@
 						return;
 					}
 					app.order.checkExpressNo( orderId.value, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.success) {
 							isErrorExpress = false;
 						} else {
@@ -308,9 +308,8 @@
 				 * 查询所在编号的柜体
 				 */
 				function getSarkCode(dec, boxId) {
-					console.log('getSarkCode');
 					app.order.getSarkCodeByBoxId(boxId, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.success) {
 							sarkCode = data.data.sarkCode;
 							if(dec == "isTrade") {
@@ -404,9 +403,9 @@
 				 */
 				function doSubmitTrade() {
 					plus.nativeUI.showWaiting("正在开箱，请稍后");
-					console.log(JSON.stringify(params));
+//					console.log(JSON.stringify(params));
 					app.order.submitLockOrder( params, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.success) {
 							isSubOrder = true;
 							tradeId = data.data.tradeid;
@@ -427,7 +426,7 @@
 				 * @param {Object} boxId 箱子编号
 				 */
 				function sendOpenCommand(litigant, tradeId, islandCode, sarkCode, boxId) {
-					console.log(litigant+','+tradeId+','+islandCode+','+sarkCode+','+boxId);
+//					console.log(litigant+','+tradeId+','+islandCode+','+sarkCode+','+boxId);
 					if(tradeId == "" || islandCode == "" || sarkCode == "" || boxId == "") {
 						app.toast("数据异常", 'center');
 						return;
@@ -457,7 +456,7 @@
 					}
 	
 					//发送开箱指令ajax请求
-					console.log(tradeId+','+sarkCode+','+islandCode+','+boxId);
+//					console.log(tradeId+','+sarkCode+','+islandCode+','+boxId);
 					mui.post(url, {
 						"userId": app.local.get("userId"),
 						"tradeId": tradeId,
@@ -466,7 +465,7 @@
 						"boxId": boxId,
 						"actiontypecode": actiontypecode
 					}, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.success) {
 							// 默认为未获取开箱结果（不论成功失败都要修改为true，等待为false）
 							sendResult = false;
@@ -503,7 +502,7 @@
 						'boxId': boxId
 					}, function(data) {
 						// 开箱成功
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(Number(data.data.resultFlag) == 1) {
 							//清除定时器
 							clearTimeout(outTime);
@@ -547,8 +546,7 @@
 						}
 						if(sendResult) {
 							app.local.set("openBoxResult", "" + data.success || true);
-							console.log(app.local.get("openBoxResult"));
-							console.log(typeof app.local.get("openBoxResult"));
+//							console.log(app.local.get("openBoxResult"));
 							app.oPage("deliver-confirm-anji.html");
 						}
 					},'json');

@@ -270,7 +270,7 @@ var app = {
 		}
 	},
 	index: {
-		'checkDeviceToken': function(token, obj, err) {
+		'checkDeviceToken': function(token, randomDeviceToken,obj, err) {
 			var url = oldhost + 'checkDeviceToken';
 			mui.ajax({
 				url: url,
@@ -279,19 +279,11 @@ var app = {
 				timeout: 10000,
 				data: {
 					"deviceToken": token,
-					"randomDeviceToken": app.local.get('randomDeviceToken'),
+					"randomDeviceToken": randomDeviceToken,
 					"userRole": "courier" //用户角色 快递员
 				},
 				success: obj,
-				error: err,
-				statusCode: {
-					404: function() {
-						console.log('not found');
-					},
-					500: function() {
-						console.log('error by server');
-					},
-				}
+				error: err
 			});
 		},
 		'checkNotice': function(appType, obj) {

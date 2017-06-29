@@ -89,7 +89,7 @@
 			var index = (this.id).substr(-1);
 			
 			plus.gallery.pick(function(e) {
-//				console.log("event:"+e);
+				console.log("event:"+e);
 				var name = e.substr(e.lastIndexOf('/') + 1);
 				console.log("name:"+name);
 					
@@ -129,6 +129,8 @@
 	};
 	feedback.newPlaceholder();
 	feedback.submitBtn.addEventListener('tap', function(event) {
+		mui.toast('暂未开启故障提交');
+		return;
 		if (feedback.question.value == '' ){
 			return mui.toast('信息填写不符合规范');
 		}

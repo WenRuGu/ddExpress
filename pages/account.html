@@ -13,7 +13,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"><span>返回</span></a>
-		    <a class="mui-icon mui-pull-right recharge">充值</a>
+		    <!--<a class="mui-icon mui-pull-right recharge">充值</a>-->
 		    <h1 class="mui-title">我的账户</h1>
 		</header>
 		<div class="mui-content">
@@ -77,12 +77,12 @@
 					deceleration: 0.0006,
 					bounce: false
 				});
-				app.$c('recharge').addEventListener('tap',function() {
-					app.oPage('recharge.html');
-				});
+//				app.$c('recharge').addEventListener('tap',function() {
+//					app.oPage('recharge.html');
+//				});
 				function getBalance() {
 					app.account.balance(function(data){
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if ( data.code == 0 ) {
 							balance.innerHTML = data.data.balance;
 						} else {

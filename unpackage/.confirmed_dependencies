@@ -278,7 +278,11 @@
     "resources": [
       "css/emptyVan2.css",
       "css/iconfont.css",
-      "css/mui.min.css"
+      "css/mui.min.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/fontsize.js",
+      "js/base_param.js"
     ],
     "refer": [
       "pages/contacts-list.html",
@@ -395,7 +399,10 @@
       "js/app.js",
       "js/mui.min.js",
       "js/fontsize.js",
-      "images/tx.png"
+      "images/tx.png",
+      "css/feedback.css",
+      "js/feedback.js",
+      "js/mui.view.js"
     ],
     "refer": []
   },
@@ -429,7 +436,8 @@
       "css/mui.min.css",
       "js/feedback.js",
       "js/mui.min.js",
-      "js/fontsize.js"
+      "js/fontsize.js",
+      "js/app.js"
     ],
     "refer": []
   },

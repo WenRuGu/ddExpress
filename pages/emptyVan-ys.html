@@ -108,6 +108,8 @@
 				islandCode = _self.islandCode;
 				boxtypeid = parseInt(_self.typeId) + 1;	// +1 请求空箱子编号 类型为 1,2,3,4  前面获取的为 0,1,2,3
 				
+				
+				
 				mui('#segmentedControl a').each(function(index) {
 					this.classList.remove('mui-active');
 				})
@@ -161,7 +163,7 @@
 					fetchName.value = e.detail.name;
 				});
 				window.addEventListener('scanLandCode', function(e) {
-					console.log(e.detail.code);
+//					console.log(e.detail.code);
 					if ( e.detail.type == 'expressId') {
 						orderId.value = e.detail.code;
 						orderId.focus();
@@ -195,10 +197,9 @@
 				 * 箱子可用数量 *
 				 */
 				function loadBoxType() {
-					console.log(app.local.get('token'));
 					app.order.newfindIslandBoxInfoForExpress( app.local.get('token'), app.local.get('courierId'), islandCode, function(data) {
 						if ( data.code == 0 ) {
-							console.log(JSON.stringify(data));
+//							console.log(JSON.stringify(data));
 							tab[0].innerHTML = '小箱('+ data.data.small + ')';
 							tab[1].innerHTML = '中箱('+ data.data.medium + ')';
 							tab[2].innerHTML = '大箱('+ data.data.big + ')';
@@ -212,7 +213,7 @@
 				 */
 				function loadBoxNoByType(boxtypeid) {
 					app.order.getBoxNum( app.local.get('token'),  app.local.get('courierId'), islandCode, boxtypeid, function(data) {
-						console.log(boxtypeid+',' +JSON.stringify(data));
+//						console.log(boxtypeid+',' +JSON.stringify(data));
 						if(data.code == 0) {
 							boxNo.innerHTML = '';      // 清空原有编号
 							var boxList = data.data;
@@ -241,7 +242,7 @@
 						return;
 					}
 					app.order.checkExpressNo( orderId.value, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.success) {
 							isErrorExpress = false;
 						} else {
@@ -338,7 +339,7 @@
 				function doSubmitTrade() {
 					plus.nativeUI.showWaiting("正在开箱，请稍后");
 					app.order.submitOrder( app.local.get('token'),app.local.get('courierId'), expressNo, fetchPhone, boxId, boxtypeid, scanLandCode, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						plus.nativeUI.closeWaiting();
 						if(data.code == 0) {
 							isSubOrder = true;

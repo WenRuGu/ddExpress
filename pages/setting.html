@@ -30,15 +30,15 @@
 			</div>
 			<ul class="setting-center">
 				<li>
-					<span class="blue">22</span>
+					<span class="blue"></span>
 					<span>待收件</span>
 				</li>
 				<li>
-					<span class="red">33</span>
+					<span class="red"></span>
 					<span>超期件</span>
 				</li>
 				<li>
-					<span class="yellow">123</span>
+					<span class="yellow"></span>
 					<span>已取件</span>
 				</li>
 			</ul>
@@ -82,7 +82,6 @@
 			_self.setStyle({
 				scrollIndicator: 'none'
 			});
-			
 			function order_count() {
 				app.$c('express').innerHTML = app.local.get('userCompany');
 				app.$c('realName').innerHTML = app.local.get('newRealName');
@@ -103,7 +102,6 @@
 			});
 			window.addEventListener('update-userPic', function(e) {
 				var pic = app.local.get('userPic') || '../images/tx.png';
-				console.log(pic);
 				portrait.src = pic;
 			});
 			// 个人信息

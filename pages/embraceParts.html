@@ -112,7 +112,7 @@
 				});
 				function appData() {
 					app.order.sendOrderList(pageNo,pageSize, app.local.get('token'), app.local.get('courierId'), 'wait_take', function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						plus.nativeUI.closeWaiting();
 						if ( data.code == 0 ) {
 							if ( pageNo == 1 ) {

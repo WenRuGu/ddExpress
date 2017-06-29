@@ -81,23 +81,6 @@
 						<div class="mui-scroll-wrapper">
 							<div class="mui-scroll">
 								<ul class="mui-table-view" >
-									<!--<li class="mui-table-view-cell">
-							          	<a class="top-a" href="#">
-											<span class="address mui-ellipsis">安吉新住院欧</span>
-											<span class="box"> 2-9号箱(大箱)</span>
-											<span class="status">未取件</span>
-										</a>
-										<div class="mui-collapse-content view-cell">
-											<p>运单号：<span class="awb-no">123456789</span></p>
-											<p>
-												<span>取件码：</span><span class="fetchCode">123456789</span>
-												<span>手机号码：</span><span class="mobile">123456789</span>
-											</p>
-											<p>存物时间：<span class="deposit">123456789</span></p>
-											<p>取物时间：<span class="fetch">123456789</span></p>
-											<p>备注：<span class="remark">123456789</span></p>
-										</div>
-									</li>-->
 					            </ul>
 							</div>
 						</div>
@@ -106,7 +89,23 @@
 						<div class="mui-scroll-wrapper">
 							<div class="mui-scroll">
 								<ul class="mui-table-view" >
-									
+									<!--<li class="mui-table-view-cell">
+							          	<a class="top-a" href="#">
+											<span class="address mui-ellipsis">安吉新住院楼</span>
+											<span class="box"> 2-9号箱(大箱)</span>
+											<span class="status">待取件</span>
+										</a>
+										<div class="mui-collapse-content view-cell">
+											<p>运单号：<span class="awb-no">5147128485</span></p>
+											<p>
+												<span>取件码：</span><span class="fetchCode">123456789</span>
+												<span>手机号码：</span><span class="mobile">123456789</span>
+											</p>
+											<p>存物时间：<span class="deposit">2017-06-20 09:30</span></p>
+											<p>取物时间：<span class="fetch">2017-06-21 11:11</span></p>
+											<p>备注：<span class="remark">正常，可以取件</span></p>
+										</div>
+									</li>-->
 					            </ul>
 							</div>
 						</div>
@@ -220,22 +219,22 @@
 						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
 						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
 					}
-					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 				};
-				slide.addEventListener('slide', function(e) {					// 以最后的 slide 事件为准，调整div显示
-					if ( version ) {
-						drag_true();
-						mui('.nav-list li').each(function(){
-							this.className = '';
-						});
-						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
-						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
-						mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-						mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-						nav_li[sindex].className = 'list-blue';
-					}
-				});
+//				slide.addEventListener('slide', function(e) {					// 以最后的 slide 事件为准，调整div显示
+//					if ( version ) {
+//						drag_true();
+//						mui('.nav-list li').each(function(){
+//							this.className = '';
+//						});
+//						s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
+//						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
+//						mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+//						mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+//						nav_li[sindex].className = 'list-blue';
+//					}
+//				});
 				slide.addEventListener('swipeleft', swipeleft, false); 			// 监听左右 滑动
 				slide.addEventListener('swiperight', swiperight ,false);
 				function swipeleft(e) {
@@ -257,8 +256,8 @@
 						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
 					}
 					nav_li[sindex].className = 'list-blue';
-					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 				};
 				function swiperight(e) {
 					e.stopPropagation();
@@ -279,8 +278,8 @@
 						s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
 					}
 					nav_li[sindex].className = 'list-blue';
-					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+					mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+					mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 				};
 				if ( version ) {											// version <= 5 禁止动画
 					slide.addEventListener('touchstart',chstart,false);
@@ -319,8 +318,8 @@
 		        	nav_li[sindex].className = 'list-blue';
 		        	s_group.style.webkitTransform = "translate3d(-" + w * sindex + "px,0,0)";
 					s_group.style.transform = "translate3d(-" + w * sindex + "px,0,0)";
-		        	mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
-		        	mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 23) + "%,0,0)";
+		        	mui(".nav-active")[0].style.webkitTransform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
+		        	mui(".nav-active")[0].style.transform = "translate3d(" + (100 * sindex +  sindex * 48 + 22) + "%,0,0)";
 					pull_flag = true;
 					slide_flag();
 		        };
@@ -415,9 +414,9 @@
 					if ( token == undefined || token == '' || token == null ) {
 						return;
 					} else {
-						console.log(type+' = ' + index+','+ pageNo[index] + ',' + pageSize);
+//						console.log(type+' = ' + index+','+ pageNo[index] + ',' + pageSize);
 						app.order.newallhistory( pageNo[index] * pageSize, pageSize, app.local.get('token'),app.local.get('courierId'), type, function(data) {
-							console.log( index+'，记录='+JSON.stringify(data));
+//							console.log( index+'，记录='+JSON.stringify(data));
 							if ( data.code == 0 ) {
 								if ( pageNo[index] == 0 ) {
 									expressBox[index].innerHTML = '';
@@ -429,14 +428,15 @@
 								}
 								for ( var i in data.data) {
 									data.data[i].status = index;
-									
 									// 暂时根据 status 来区分 状态和备注
 									// 可以根据 takeTime 来区分 已取和在箱 ，     超期？
 								}
 								var html = template( 'tmpl', data);
 								expressBox[index].innerHTML += html;
 							} else {
-								if ( app.local.get('token') != '' ) {
+								if ( !data.sessionFlag ) {
+									
+								} else if (app.local.get('token') != '') {
 									app.toast(data.message, 'center');
 								}
 							}

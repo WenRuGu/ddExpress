@@ -41,13 +41,16 @@
 		<script type="text/javascript">
 			mui.init();
 			var remark = app.$c('txt');
+			var _self;
 			mui.plusReady(function() {
-				
+				_self = plus.webview.currentWebview();
 				app.$c('finish').addEventListener('tap', function(e) {
 					if ( remark.value == '' ) {
 						app.toast('反馈的问题或意见不为空');
 						return;
 					}
+					app.toast('提交成功');
+					_self.close();
 				});
 			});
 		</script>

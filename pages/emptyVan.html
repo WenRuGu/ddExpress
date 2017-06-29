@@ -183,7 +183,7 @@
 			mui.init();
 			var _self;
 			var pull;
-			var pageNo = 0;
+			var pageNo = 1;
 			var pageSize = 15;
 			var pageCount;
 			var box = app.$c('box');
@@ -205,7 +205,7 @@
 						height: 75,
 						callback: function() {
 							var self = this;
-							pageNo = 0;
+							pageNo = 1;
 							setTimeout(function() {
 								appData();
 								self.refresh(true);
@@ -219,10 +219,10 @@
 						contentnomore: '没有更多桩点了',
 						callback: function() {
 							var self = this;
-							appData();
 							setTimeout(function() {
+								appData();
 								self.endPullUpToRefresh();
-							}, 800);
+							}, 400);
 						}
 					}
 				});
@@ -255,7 +255,7 @@
 						});
 					} else {
 						app.order.findIslandBoxInfoForExpress("1", isLandid, function(data) {
-							console.log(JSON.stringify(data));
+//							console.log(JSON.stringify(data));
 							if ( data.success ) {
 								var list = data.data.boxEntityList;
 								var boxStr = '';
@@ -277,15 +277,18 @@
 						})
 					}
 				});
+				/**
+				 * 距离单位处理  *
+				 */
 				template.helper('km', function( km ) {
-						if(km == 0){
-							return "";
-						}else if(km < 1000){
-							 var dis = parseFloat(km);
-							return dis.toFixed(1)+"m";
-						}else{
-							return Number(km/1000).toFixed(1)+"km";
-						}
+					if(km == 0){
+						return "";
+					}else if(km < 1000){
+						 var dis = parseFloat(km);
+						return dis.toFixed(1)+"m";
+					}else{
+						return Number(km/1000).toFixed(1)+"km";
+					}
 				});
 				template.helper('status', function( status ) {
 					return status == 1 ? '':'(失联)';
@@ -297,7 +300,7 @@
 						
 						if ( mui.os.ios ) {
 							var arr2 = GPS.gcj_decrypt(lat,lng);
-							var ggPoing = new BMap.Point(arr2['lon'], arr2['lat']);
+							var ggPoint = new BMap.Point(arr2['lon'], arr2['lat']);
 							BMap.Convertor.translate(ggPoint, 2, function(point) {
 								var lat = point.lat; 
 								var lng = point.lng; 
@@ -305,8 +308,8 @@
 									app.local.setlat(""); 
 									app.local.setlog(""); 
 								} else {
-									app.local.setlat('lat', lat); //纬度
-									app.local.setlog('lng', lng); //经度
+									app.local.set('lat', lat); //纬度
+									app.local.set('lng', lng); //经度
 								}
 							});
 						} else {
@@ -321,15 +324,19 @@
 						provider:'amap'
 					})
 				}
+				/**
+				 * 获取岛体，即快递桩点  *
+				 */
 				function getIsLandList() {
 					var lat = app.local.get('lat') || '';
 					var lng = app.local.get('lng') || '';
 					var keyword = app.local.get('keyword') || '';
 					var Newdata = '{"data":[';
-					pageNo++;
+					console.log(keyword);
+//					pageNo++;
 					// 全部桩点 105个
 					app.order.findIsLandListByPage(pageNo, pageSize, keyword, lng, lat, function(data) {
-//						console.log(JSON.stringify(data));
+						console.log(JSON.stringify(data));
 						if ( data.success ) {
 							if(pageNo == 1) {
 								box.innerHTML = '';   //清空容器内数据
@@ -353,38 +360,43 @@
 							app.order.newfindIsLandListByPage( app.local.get('token'), app.local.get('courierId'), (pageNo - 1) * pageSize, pageSize, keyword, lng, lat, function(data1) {
 //								console.log(JSON.stringify(data1));
 								if ( data1.code == 0 ) {
-//									pageNo++;
+									pageNo++;
 									for(var i in data1.data) {
 //										console.log(JSON.stringify(data1.data[i]));
 										Newdata += "{";
 										Newdata += "\"id\":\"" + data1.data[i].id + "\",";
 										Newdata += "\"status\":\"" + data1.data[i].onlineFlag + "\",";
 										Newdata += "\"name\":\"" + data1.data[i].terminalName + "\",";
-										Newdata += "\"address\":\"" + data1.data[i].street + "\",";
+										Newdata += "\"address\":\"" + data1.data[i].street + "\","; 
 										Newdata += "\"distance\":" + data1.data[i].distance + ",";
 										Newdata += "\"code\":\"" + data1.data[i].terminalCode + "\",";
 										Newdata += "\"typeid\":\"2";
 										Newdata += "\"},";
 									}
 								} else {
+									plus.nativeUI.closeWaiting();
 									app.toast(data1.message, 'center');
 								}
 								Newdata = Newdata.substring(0, Newdata.length - 1);
 								Newdata += "]}";
-								
+//								console.log(Newdata.length);
 								if(Newdata.length > 2 && Newdata.length >= 20 ){
 									var Newdata1 = JSON.parse(Newdata);
 									Newdata1.data = app.jsonSort(Newdata1.data, 'distance', false);
 									var html = template( 'tmpl', Newdata1);
 									box.innerHTML += html;
+									if ( Newdata1.data.length < 15 ) {
+										pull.endPullUpToRefresh(true);
+									}
 								} else {
 									app.toast('已经是最后一页了','center');
 									pull.endPullUpToRefresh(true);
 								}
 								var len = document.querySelectorAll('.box li');
-								console.log(len.length);
+//								console.log(len.length);
 							});
 						} else {
+							plus.nativeUI.closeWaiting();
 							app.toast(data.message, 'center');
 						}
 					})
@@ -401,7 +413,7 @@
 					} else if ( num == 0 ) {
 						app.toast('该类型箱子已被用完啦，请选择其他类型的', 'center');
 					} else {
-						console.log('数据='+typeId+','+num+','+boxtypeid+','+islandId+','+islandName+','+islandCode);
+//						console.log('数据='+typeId+','+num+','+boxtypeid+','+islandId+','+islandName+','+islandCode);
 						var page;											
 						if ( boxtypeid == 2 ) {
 							page = 'emptyVan-ys.html';						// 宇松

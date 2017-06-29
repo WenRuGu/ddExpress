@@ -116,7 +116,7 @@
 			var sendResult;						// 请求开箱结果
 			var outTime;						// 超时定时器
 			var data_open;						// 点击开箱 获取的 data-属性
-			var myDate = new Date().getTime();			// 获取当前时间(从1970.1.1开始的毫秒数)
+			var myDate = new Date().getTime();	// 获取当前时间(从1970.1.1开始的毫秒数)
 			var scroll_box = app.$c('mui-scroll');
 			var deceleration = mui.os.ios?0.0006:0.0003;
 			var token = app.local.get('token') || '';
@@ -142,10 +142,6 @@
 					}, 1500);
 					return;
 				}
-//				window.addEventListener('pagereturn', function(event) { //监听自定义事件
-//					pageNo = 1;
-//					getTradeListByTag();
-//				});
 				pull = mui('.mui-content .mui-scroll').pullToRefresh({
 					down: {
 						height: 50,
@@ -185,7 +181,7 @@
 				function appData() {
 //					console.log(islandId+','+tradeState);
 					app.order.history(pageNo, pageSize, islandId, tradeState, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.success) {
 							var orderInfoList = data.data.orderInfoList;
 							if(pageNo == 1) {
@@ -198,7 +194,7 @@
 							} else {
 	
 								for(var i in orderInfoList) {
-									console.log(JSON.stringify(orderInfoList[i]));
+//									console.log(JSON.stringify(orderInfoList[i]));
 									/*-------订单基础信息--------*/
 									//岛体名
 									var islandName = orderInfoList[i].ISLAND_NAME;
@@ -317,20 +313,17 @@
 												}
 											}
 										}
-										
 									}
-									
 								}
 								var html = template('tmpl', data.data);
 								scroll_box.innerHTML += html;
 								
 								var tradeArrStr = tradeIdArr.join();
-								console.log(typeof tradeArrStr);
-								console.log(tradeArrStr);
+//								console.log(tradeArrStr);
 //								tradeArrStr = '201706021324658,';
 								//再查看短信状态
 								app.order.findTradeMessageListByTradeIds(tradeArrStr, function(data) {
-									console.log('短信 == '+JSON.stringify(data));
+//									console.log('短信 == '+JSON.stringify(data));
 									if(data.success) {
 										var msgArr = data.data;
 										for(var i in msgArr) {
@@ -345,7 +338,7 @@
 											// 短信ID（发送失败会有多条短信，这里会有问题，关注）
 											var msgId = msgArr[i].msgid;
 											var sms = app.$c("sms" + curTradeId);
-											console.log(JSON.stringify(sms));
+//											console.log(JSON.stringify(sms));
 											if(msgBackTag == "" && msgSendTag == "") {
 												// 显示是否已发送
 												sms.innerHTML = '(未发送)';
@@ -377,7 +370,7 @@
 													sms.style.color = '#12B7F5';
 												}
 											}
-											console.log(sms.innerHTML+','+curTradeId);
+//											console.log(sms.innerHTML+','+curTradeId);
 										}
 									} else {
 										app.toast("短信状态查询出错", 'center');
@@ -400,7 +393,7 @@
 					var btnArray = ['取消', '确定'];
 					mui.confirm('将密码通过短信告知客户', '提示', btnArray, function(e) {
 						if(e.index == 1) {
-							console.log(phone+','+psw+','+title);
+//							console.log(phone+','+psw+','+title);
 							//发送短信通知
 							openSMS(phone, title, psw);
 						}
@@ -450,7 +443,7 @@
 						return;
 					}
 					data_open = data.split("|");
-					console.log(data_open);
+//					console.log(data_open);
 					if( data_open[5] == "4") {
 //						app.local.set("curTradeId", data1[0]);
 //						app.local.set("curBoxId", data1[1]);
@@ -504,8 +497,6 @@
 							display:'inline'
 						}
 					});
-//					console.log(tradeId+','+islandCode+','+sarkCode+','+boxId);
-//					201706021419037,AJI053,2,020
 					// 访问地址
 					var url = "";
 					// 操作类型（已作废）
@@ -529,8 +520,8 @@
 						actiontypecode = "openandfetch"
 						url = SERVER_ADDRESS + "retryOpenbox";
 					}
-					console.log(typeof SERVER_ADDRESS);
-					console.log(SERVER_ADDRESS);
+//					console.log(typeof SERVER_ADDRESS);
+//					console.log(SERVER_ADDRESS);
 					//发送开箱指令ajax请求
 					mui.post(url, {
 						"userId": app.local.get("userId"),
@@ -540,7 +531,7 @@
 						"boxId": boxId,
 						"actiontypecode": actiontypecode
 					}, function(data) {
-						console.log(JSON.stringify(data));
+//						console.log(JSON.stringify(data));
 						if(data.success) {
 							// 默认为未获取开箱结果（不论成功失败都要修改为true，等待为false）
 							sendResult = false;
@@ -634,13 +625,17 @@
 								}, 1000)
 							}
 						}
+						plus.nativeUI.closeWaiting();
 						if(sendResult) {
-							plus.nativeUI.closeWaiting();
 							app.local.set("openBoxResult", "" + data.success || true);
 							app.oPage('send-confirm-anji.html');
 						}
 					}, 'json');
 				}
+				window.addEventListener('update-fast-details-anji',function(e){  // 开箱send-confirm页通知刷新
+					pageNo = 1;
+					pull.pullUpLoading();
+				});
 			})
 		</script>
 	</body>
